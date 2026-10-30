@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import Sidebar from '@renderer/components/sidebar';
-import Topbar from '@renderer/components/topbar';
+import React, { useState } from 'react'
+import { Outlet } from 'react-router-dom'
+import Sidebar from '@renderer/components/sidebar'
+import Topbar from '@renderer/components/topbar'
 // import { Sidebar } from '../components/Sidebar';
 // import { Topbar } from '../components/Topbar';
 
 interface AdminLayoutProps {
-  children?: React.ReactNode;
+  children?: React.ReactNode
 }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex antialiased">
@@ -32,12 +32,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         />
 
         {/* Scrollable Page Body */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-          {children || <Outlet />}
-        </main>
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">{children || <Outlet />}</main>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AdminLayout;
+export default AdminLayout

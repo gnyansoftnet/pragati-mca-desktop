@@ -1,5 +1,5 @@
-import { UserProfile, UserRole } from '../types/auth';
-import { DynamicMenuItem } from '../types/menu';
+import { UserProfile, UserRole } from '../types/auth'
+import { DynamicMenuItem } from '../types/menu'
 
 export const MOCK_USERS: Record<UserRole, UserProfile> = {
   admin: {
@@ -35,12 +35,8 @@ export const MOCK_USERS: Record<UserRole, UserProfile> = {
     centerName: 'North Village Milk Center',
     mobile: '9583722800'
   }
-};
+}
 
-/**
- * Menu rows simulating dynamic MySQL query:
- * SELECT * FROM sys_menus WHERE JSON_CONTAINS(roles, '"admin"') ORDER BY order_index ASC;
- */
 export const DYNAMIC_MENUS: DynamicMenuItem[] = [
   {
     id: 1,
@@ -51,58 +47,59 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     category: 'dashboard',
     order_index: 10
   },
+  // {
+  //   id: 2,
+  //   title: 'Farmers',
+  //   path: '/farmers',
+  //   icon: 'Users',
+  //   roles: ['admin', 'staff'],
+  //   category: 'master',
+  //   order_index: 20,
+  //   badge: '13',
+  //   children: [
+  //     {
+  //       id: '2-1',
+  //       title: 'All Farmers',
+  //       path: '/farmers',
+  //       icon: 'ListFilter'
+  //     },
+  //     {
+  //       id: '2-2',
+  //       title: 'Add Farmer',
+  //       path: '/farmers/new',
+  //       icon: 'UserPlus'
+  //     }
+  //   ]
+  // },
   {
-    id: 2,
-    title: 'Samples & Fat',
-    path: '/samples',
+    id: 3,
+    title: 'Macine Connection',
+    path: '/macine-connection',
     icon: 'Package',
-    roles: ['admin', 'staff'],
+    roles: ['admin', 'staff', 'farmer'],
     category: 'operations',
-    order_index: 60
+    order_index: 50,
+    badge: ''
   },
   {
-    id: 20,
-    title: 'Farmers',
-    path: '/farmers',
-    icon: 'Users',
-    roles: ['admin', 'staff'],
-    category: 'master',
-    order_index: 20,
-    badge: '13',
-    children: [
-      {
-        id: '2-1',
-        title: 'All Farmers',
-        path: '/farmers',
-        icon: 'ListFilter'
-      },
-      {
-        id: '2-2',
-        title: 'Add Farmer',
-        path: '/farmers/new',
-        icon: 'UserPlus'
-      }
-    ]
-  },
-  {
-    id: 5,
-    title: 'Daily Collection',
-    path: '/collection',
+    id: 4,
+    title: 'Procurement Collection',
+    path: '/procurement-collection',
     icon: 'Milk',
     roles: ['admin', 'staff', 'farmer'],
     category: 'operations',
     order_index: 50,
-    badge: 'Morning'
-  },
-];
+    badge: ''
+  }
+]
 
 export async function fetchMenusForRole(role: UserRole): Promise<DynamicMenuItem[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const filtered = DYNAMIC_MENUS
-        .filter((item) => item.roles.includes(role))
-        .sort((a, b) => a.order_index - b.order_index);
-      resolve(filtered);
-    }, 20);
-  });
+      const filtered = DYNAMIC_MENUS.filter((item) => item.roles.includes(role)).sort(
+        (a, b) => a.order_index - b.order_index
+      )
+      resolve(filtered)
+    }, 20)
+  })
 }

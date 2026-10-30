@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, LogIn, ArrowRight } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Mail, Lock, Eye, EyeOff, LogIn, ArrowRight } from 'lucide-react'
+import { useAuth } from '../../context/AuthContext'
 
 export const LoginPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate()
+  const { login } = useAuth()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   // Directly navigate to admin panel without any validation
-  const handleLogin = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    login('admin', email || 'admin@pragatimilk.com');
-    navigate('/admin');
-  };
+  const handleLogin = (e?: React.FormEvent): void => {
+    if (e) e.preventDefault()
+    login('admin', email || 'admin@pragatimilk.com')
+    navigate('/admin')
+  }
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center p-4 sm:p-6 overflow-hidden select-none bg-gradient-to-b from-[#bfe3fa] via-[#dcf0fc] to-[#eef7fd]">
+    <div className="relative min-h-screen w-full flex items-center justify-center p-4 sm:p-6 overflow-hidden select-none bg-linear-to-b from-[#bfe3fa] via-[#dcf0fc] to-[#eef7fd]">
       {/* Decorative Cloud & Atmosphere Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
@@ -45,10 +45,9 @@ export const LoginPage: React.FC = () => {
 
       {/* Center Glassmorphism Login Card */}
       <div className="relative z-10 w-full max-w-[420px] rounded-[2.5rem] bg-white/75 backdrop-blur-2xl border border-white/90 shadow-[0_20px_50px_rgba(30,64,115,0.12)] p-8 sm:p-10 transition-all duration-300">
-        
         {/* Top Floating Squircle Badge */}
         <div className="w-14 h-14 bg-white rounded-2xl shadow-[0_8px_20px_rgba(0,0,0,0.06)] border border-white/80 flex items-center justify-center mx-auto -mt-2 mb-6 text-slate-800 transition-transform hover:scale-105">
-          <LogIn className="w-6 h-6 text-slate-700 stroke-[2.2]" />
+          <LogIn className="w-6 h-6 text-slate-700 strokeWidth={2.2}" />
         </div>
 
         {/* Heading & Subtitle matching Reference Image 1 */}
@@ -185,7 +184,7 @@ export const LoginPage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

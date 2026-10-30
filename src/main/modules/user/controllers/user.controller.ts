@@ -1,6 +1,6 @@
-import { injectable, inject } from "tsyringe";
-import { UserService } from "../services/user.service";
-import { CreateUserDto, UpdateUserDto } from "../dto/user.types";
+import { injectable, inject } from 'tsyringe'
+import { UserService } from '../services/user.service'
+import { CreateUserDto, UpdateUserDto } from '../dto/user.types'
 
 @injectable()
 export class UserController {
@@ -10,22 +10,22 @@ export class UserController {
   ) {}
 
   getAll() {
-    return this.userService.getAllUsers();
+    return this.userService.getAllUsers()
   }
 
   getById(id: number) {
-    return this.userService.getUserById(id);
+    return this.userService.getUserById(id)
   }
 
   create(data: CreateUserDto) {
-    return this.userService.createUser(data);
+    return this.userService.createUser(data)
   }
 
   update(id: number, data: UpdateUserDto) {
-    return this.userService.updateUser(id, data);
+    return this.userService.updateUser(id, data)
   }
 
   delete(id: number) {
-    return this.userService.deleteUser(id);
+    return this.userService.deleteUser(id)
   }
 }
