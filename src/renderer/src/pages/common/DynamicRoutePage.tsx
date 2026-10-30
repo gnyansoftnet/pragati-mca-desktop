@@ -1,19 +1,19 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { DynamicIcon } from '../../components/DynamicIcon';
-import { useAuth } from '../../context/AuthContext';
-import { DynamicMenuItem } from '../../types/menu';
+import React from 'react'
+import { useLocation } from 'react-router-dom'
+import { DynamicIcon } from '../../components/DynamicIcon'
+import { useAuth } from '../../context/AuthContext'
+import { DynamicMenuItem } from '../../types/menu'
 
 interface DynamicRoutePageProps {
-  menuItem?: DynamicMenuItem;
+  menuItem?: DynamicMenuItem
 }
 
 export const DynamicRoutePage: React.FC<DynamicRoutePageProps> = ({ menuItem: propMenuItem }) => {
-  const { user, menus } = useAuth();
-  const location = useLocation();
+  const { user, menus } = useAuth()
+  const location = useLocation()
 
   // Match menu item by current path if not passed explicitly
-  const pathSuffix = location.pathname.replace('/admin', '') || '/dashboard';
+  const pathSuffix = location.pathname.replace('/admin', '') || '/dashboard'
   const menuItem =
     propMenuItem ||
     menus.find(
@@ -21,9 +21,9 @@ export const DynamicRoutePage: React.FC<DynamicRoutePageProps> = ({ menuItem: pr
         m.path === pathSuffix ||
         m.path === location.pathname ||
         `/admin${m.path}` === location.pathname
-    );
+    )
 
-  const title = menuItem?.title || location.pathname.split('/').filter(Boolean).pop() || 'Module';
+  const title = menuItem?.title || location.pathname.split('/').filter(Boolean).pop() || 'Module'
 
   return (
     <div className="space-y-6">
@@ -61,11 +61,10 @@ export const DynamicRoutePage: React.FC<DynamicRoutePageProps> = ({ menuItem: pr
             <span className="text-2xl">🥛</span>
           )}
         </div>
-        <h3 className="text-lg font-bold text-slate-800 mb-1">
-          {title} Management
-        </h3>
+        <h3 className="text-lg font-bold text-slate-800 mb-1">{title} Management</h3>
         <p className="text-xs text-slate-500 max-w-md mb-6">
-          This page is wired to the dynamic menu system. When you configure the MySQL schema for this module, your data tables and operations will automatically bind here.
+          This page is wired to the dynamic menu system. When you configure the MySQL schema for
+          this module, your data tables and operations will automatically bind here.
         </p>
 
         <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 font-mono">
@@ -73,7 +72,7 @@ export const DynamicRoutePage: React.FC<DynamicRoutePageProps> = ({ menuItem: pr
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DynamicRoutePage;
+export default DynamicRoutePage

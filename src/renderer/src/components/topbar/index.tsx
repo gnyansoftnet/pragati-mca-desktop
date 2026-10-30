@@ -1,13 +1,13 @@
-import React from 'react';
-import { TopbarToggle } from './components/TopbarToggle';
-import { TopbarOrgName } from './components/TopbarOrgName';
-import { TopbarClock } from './components/TopbarClock';
-import { TopbarUserProfile } from './components/TopbarUserProfile';
+import React from 'react'
+import { TopbarToggle } from './components/TopbarToggle'
+import { TopbarOrgName } from './components/TopbarOrgName'
+import { TopbarClock } from './components/TopbarClock'
+import { TopbarUserProfile } from './components/TopbarUserProfile'
 
 export interface TopbarProps {
-  isSidebarCollapsed: boolean;
-  onToggleSidebar: () => void;
-  onOpenMobileSidebar: () => void;
+  isSidebarCollapsed: boolean
+  onToggleSidebar: () => void
+  onOpenMobileSidebar: () => void
 }
 
 export const Topbar: React.FC<TopbarProps> = ({
@@ -37,7 +37,7 @@ export const Topbar: React.FC<TopbarProps> = ({
         <TopbarUserProfile />
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Topbar;
+export default Topbar

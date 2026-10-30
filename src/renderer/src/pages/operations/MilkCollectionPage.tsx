@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { Milk, Plus, CheckCircle, Calendar, Download } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import React, { useState } from 'react'
+import { Milk, Plus, CheckCircle, Calendar, Download } from 'lucide-react'
+import { useAuth } from '../../context/AuthContext'
 
 interface MilkEntry {
-  id: string;
-  farmerId: string;
-  farmerName: string;
-  shift: 'Morning' | 'Evening';
-  milkType: 'Cow' | 'Buffalo';
-  quantityLtr: number;
-  fatPercent: number;
-  snfPercent: number;
-  ratePerLtr: number;
-  totalAmount: number;
-  timestamp: string;
+  id: string
+  farmerId: string
+  farmerName: string
+  shift: 'Morning' | 'Evening'
+  milkType: 'Cow' | 'Buffalo'
+  quantityLtr: number
+  fatPercent: number
+  snfPercent: number
+  ratePerLtr: number
+  totalAmount: number
+  timestamp: string
 }
 
 const SAMPLE_ENTRIES: MilkEntry[] = [
@@ -56,12 +56,12 @@ const SAMPLE_ENTRIES: MilkEntry[] = [
     totalAmount: 333.0,
     timestamp: '08:10 AM'
   }
-];
+]
 
 export const MilkCollectionPage: React.FC = () => {
-  const { user } = useAuth();
-  const [entries] = useState<MilkEntry[]>(SAMPLE_ENTRIES);
-  const [shift, setShift] = useState<'Morning' | 'Evening'>('Morning');
+  const { user } = useAuth()
+  const [entries] = useState<MilkEntry[]>(SAMPLE_ENTRIES)
+  const [shift, setShift] = useState<'Morning' | 'Evening'>('Morning')
 
   return (
     <div className="space-y-6">
@@ -72,7 +72,8 @@ export const MilkCollectionPage: React.FC = () => {
             Daily Milk Collection
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Real-time dairy procurement, automatic fat/SNF rate calculation, and weighing scale recording.
+            Real-time dairy procurement, automatic fat/SNF rate calculation, and weighing scale
+            recording.
           </p>
         </div>
 
@@ -82,22 +83,20 @@ export const MilkCollectionPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setShift('Morning')}
-              className={`px-3 py-1.5 rounded-lg transition ${
-                shift === 'Morning'
-                  ? 'bg-amber-500 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
+              className={`px-3 py-1.5 rounded-lg transition ${shift === 'Morning'
+                ? 'bg-amber-500 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+                }`}
             >
               ☀️ Morning
             </button>
             <button
               type="button"
               onClick={() => setShift('Evening')}
-              className={`px-3 py-1.5 rounded-lg transition ${
-                shift === 'Evening'
-                  ? 'bg-indigo-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
+              className={`px-3 py-1.5 rounded-lg transition ${shift === 'Evening'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+                }`}
             >
               🌙 Evening
             </button>
@@ -106,9 +105,9 @@ export const MilkCollectionPage: React.FC = () => {
           {user?.role !== 'farmer' && (
             <button
               type="button"
-              className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-primary to-secondary hover:opacity-95 text-white rounded-xl text-xs font-semibold shadow-xs shadow-primary/20 transition cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2 bg-linear-to-r from-primary to-secondary hover:opacity-95 text-white rounded-xl text-xs font-semibold shadow-xs shadow-primary/20 transition cursor-pointer"
             >
-              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <Plus className="w-4 h-4 strokeWidth={2.5}" />
               <span>+ Record Milk Entry</span>
             </button>
           )}
@@ -125,7 +124,7 @@ export const MilkCollectionPage: React.FC = () => {
             <h3 className="text-2xl font-bold text-slate-800 mt-1">39.5 Liters</h3>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-teal-500 text-white flex items-center justify-center shadow-md shadow-teal-500/20">
-            <Milk className="w-6 h-6 stroke-[2]" />
+            <Milk className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
 
@@ -137,7 +136,7 @@ export const MilkCollectionPage: React.FC = () => {
             <h3 className="text-2xl font-bold text-slate-800 mt-1">5.0% / 8.7</h3>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-md shadow-indigo-500/20">
-            <CheckCircle className="w-6 h-6 stroke-[2]" />
+            <CheckCircle className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
 
@@ -149,7 +148,7 @@ export const MilkCollectionPage: React.FC = () => {
             <h3 className="text-2xl font-bold text-slate-800 mt-1">₹ 1,786.25</h3>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
-            <Calendar className="w-6 h-6 stroke-[2]" />
+            <Calendar className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
       </div>
@@ -157,9 +156,7 @@ export const MilkCollectionPage: React.FC = () => {
       {/* Collection Data Table */}
       <div className="bg-white rounded-2xl border border-slate-100/90 shadow-xs overflow-hidden">
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-slate-800">
-            Recent {shift} Pouring Logs
-          </h3>
+          <h3 className="text-sm font-bold text-slate-800">Recent {shift} Pouring Logs</h3>
           <button
             type="button"
             className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-lg text-xs font-medium text-slate-600 transition"
@@ -193,21 +190,26 @@ export const MilkCollectionPage: React.FC = () => {
                   </td>
                   <td className="py-3.5 px-4">
                     <span
-                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                        item.milkType === 'Cow'
-                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                          : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
-                      }`}
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${item.milkType === 'Cow'
+                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                        : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                        }`}
                     >
                       {item.milkType}
                     </span>
                   </td>
-                  <td className="py-3.5 px-4 font-bold text-slate-900">{item.quantityLtr.toFixed(1)}</td>
+                  <td className="py-3.5 px-4 font-bold text-slate-900">
+                    {item.quantityLtr.toFixed(1)}
+                  </td>
                   <td className="py-3.5 px-4 text-slate-700">{item.fatPercent.toFixed(1)}%</td>
                   <td className="py-3.5 px-4 text-slate-700">{item.snfPercent.toFixed(1)}%</td>
                   <td className="py-3.5 px-4 text-slate-700">₹{item.ratePerLtr.toFixed(2)}</td>
-                  <td className="py-3.5 px-4 font-bold text-emerald-600">₹{item.totalAmount.toFixed(2)}</td>
-                  <td className="py-3.5 px-4 text-slate-400 font-mono text-[11px]">{item.timestamp}</td>
+                  <td className="py-3.5 px-4 font-bold text-emerald-600">
+                    ₹{item.totalAmount.toFixed(2)}
+                  </td>
+                  <td className="py-3.5 px-4 text-slate-400 font-mono text-[11px]">
+                    {item.timestamp}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -215,5 +217,5 @@ export const MilkCollectionPage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,10 +1,12 @@
-import React from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { LoginPage } from '../pages/auth/LoginPage';
-import { AdminLayout } from '../layouts/AdminLayout';
-import { DashboardPage } from '../pages/dashboard/DashboardPage';
-import { MilkCollectionPage } from '../pages/operations/MilkCollectionPage';
-import { DynamicRoutePage } from '../pages/common/DynamicRoutePage';
+import React from 'react'
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { LoginPage } from '../pages/auth/LoginPage'
+import { AdminLayout } from '../layouts/AdminLayout'
+import { DashboardPage } from '../pages/dashboard/DashboardPage'
+import { MilkCollectionPage } from '../pages/operations/MilkCollectionPage'
+import { MacineConnection } from '../pages/operations/macineconnection/MacineConnection'
+import { ProcurementCollection } from '../pages/operations/procurementcollection/ProcurementCollection'
+import { DynamicRoutePage } from '../pages/common/DynamicRoutePage'
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -20,7 +22,8 @@ export const AppRoutes: React.FC = () => {
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="farmers" element={<DashboardPage />} />
           <Route path="collection" element={<MilkCollectionPage />} />
-          {/* Dynamic route handler for all MySQL database menus */}
+          <Route path="macine-connection" element={<MacineConnection />} />
+          <Route path="procurement-collection" element={<ProcurementCollection />} />
           <Route path="*" element={<DynamicRoutePage />} />
         </Route>
 
@@ -28,7 +31,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>
-  );
-};
+  )
+}
 
-export default AppRoutes;
+export default AppRoutes
