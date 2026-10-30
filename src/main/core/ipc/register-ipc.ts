@@ -8,3 +8,8 @@ export function registerIpcHandlers(): void {
   registerMilkCollectionIpc();
 
 }
+import { registerUserIpc } from '../../modules/user/user.ipc'
+
+export function registerIpcHandlers(): void {
+  registerUserIpc()
+}

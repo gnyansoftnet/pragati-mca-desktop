@@ -1,21 +1,17 @@
-import React from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { SidebarLogo } from './components/SidebarLogo';
-import { SidebarMenu } from './components/SidebarMenu';
-import { SidebarSignOut } from './components/SidebarSignOut';
+import React from 'react'
+import { useAuth } from '../../context/AuthContext'
+import { SidebarLogo } from './components/SidebarLogo'
+import { SidebarMenu } from './components/SidebarMenu'
+import { SidebarSignOut } from './components/SidebarSignOut'
 
 export interface SidebarProps {
-  isCollapsed: boolean;
-  isMobileOpen: boolean;
-  onCloseMobile: () => void;
+  isCollapsed: boolean
+  isMobileOpen: boolean
+  onCloseMobile: () => void
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({
-  isCollapsed,
-  isMobileOpen,
-  onCloseMobile
-}) => {
-  const { user } = useAuth();
+export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, isMobileOpen, onCloseMobile }) => {
+  const { user } = useAuth()
 
   return (
     <>
@@ -31,9 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <aside
         className={`fixed lg:static top-0 bottom-0 left-0 z-50 bg-white border-r border-slate-100/90 flex flex-col justify-between transition-all duration-300 ease-in-out select-none shadow-sm lg:shadow-none ${
           isCollapsed ? 'w-20' : 'w-64'
-        } ${
-          isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        }`}
+        } ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
         {/* Brand Header */}
         <SidebarLogo isCollapsed={isCollapsed} roleLabel={user?.roleLabel} />
@@ -45,7 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <SidebarSignOut isCollapsed={isCollapsed} />
       </aside>
     </>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

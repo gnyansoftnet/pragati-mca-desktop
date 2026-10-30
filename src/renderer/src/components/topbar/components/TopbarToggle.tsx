@@ -1,10 +1,10 @@
-import React from 'react';
-import { Menu, ChevronLeft, ChevronRight } from 'lucide-react';
+import React from 'react'
+import { Menu, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface TopbarToggleProps {
-  isSidebarCollapsed: boolean;
-  onToggleSidebar: () => void;
-  onOpenMobileSidebar: () => void;
+  isSidebarCollapsed: boolean
+  onToggleSidebar: () => void
+  onOpenMobileSidebar: () => void
 }
 
 export const TopbarToggle: React.FC<TopbarToggleProps> = ({
@@ -38,7 +38,7 @@ export const TopbarToggle: React.FC<TopbarToggleProps> = ({
         )}
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default TopbarToggle;
+export default TopbarToggle
