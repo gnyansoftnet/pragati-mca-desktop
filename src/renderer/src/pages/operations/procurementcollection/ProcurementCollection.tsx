@@ -315,6 +315,7 @@ import PageBreadcrumb from '../../../components/breadcrumbs/PageBreadcrumb';
 import CustomForm from '../../../components/customform/CustomForm';
 import api from '@renderer/services';
 import type { Route } from '@renderer/types/routes/routes.types';
+import type { Vendor } from '@renderer/types/vendors/vendors.types';
 
 interface SelectOption {
   value: string;
@@ -327,6 +328,12 @@ export const ProcurementCollection: React.FC = () => {
   const [routeOptions, setRouteOptions] = useState<SelectOption[]>([]);
   const [selectedRoute, setSelectedRoute] = useState<string>('');
   const [loadingRoutes, setLoadingRoutes] = useState<boolean>(false);
+
+  //vendor states
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [vendorOptions, setVendorOptions] = useState<SelectOption[]>([]);
+  const [selectedVendor, setSelectedVendor] = useState<string>('');
+  const [loadingVendors, setLoadingVendors] = useState<boolean>(false);
 
   // Other Form States
   const [shift, setShift] = useState('');
@@ -348,7 +355,7 @@ export const ProcurementCollection: React.FC = () => {
       // Convert routes into { value, label } format for dropdown
       const options: SelectOption[] = response.map((route) => ({
         value: String(route.id),
-        label: route.routeCode ? `${route.routeName} (${route.routeCode})` : route.routeName,
+        label: route.routeName,
       }));
 
       setRouteOptions(options);
@@ -361,9 +368,33 @@ export const ProcurementCollection: React.FC = () => {
     }
   };
 
+  const fetchVendors = async (): Promise<void> => {
+    try {
+      setLoadingVendors(true);
+
+      const response = await api.vendors.getAll();
+      setVendors(response);
+
+      // Convert vendors into { value, label } format for dropdown
+      const options: SelectOption[] = response.map((vendor) => ({
+        value: String(vendor.id),
+        label: vendor.vendorCode,
+      }));
+
+      setVendorOptions(options);
+
+      
+    } catch (error) {
+      console.error('Failed to fetch vendors:', error);
+    } finally {
+      setLoadingVendors(false);
+    }
+  };
+
   // Load routes when component mounts
   useEffect(() => {
     fetchRoutes();
+    fetchVendors();
   }, []);
 
   // Current Date
@@ -388,8 +419,8 @@ export const ProcurementCollection: React.FC = () => {
 
   // Static Dropdown Options
   const shifts = [
-    { value: 'morning', label: 'Morning' },
-    { value: 'evening', label: 'Evening' }
+    { value: '1', label: 'Morning' },
+    { value: '2', label: 'Evening' }
   ];
 
   const weights = [
@@ -414,19 +445,19 @@ export const ProcurementCollection: React.FC = () => {
     { value: '3grid', label: '3 Grid' }
   ];
 
-  const vendors = [
-    { value: 'v1', label: 'Rajesh' },
-    { value: 'v2', label: 'Ajay' },
-    { value: 'v3', label: 'Gyana' }
-  ];
+  // const vendors = [
+  //   { value: 'v1', label: 'Rajesh' },
+  //   { value: 'v2', label: 'Ajay' },
+  //   { value: 'v3', label: 'Gyana' }
+  // ];
 
   return (
     <div className="space-y-4">
       {/* Breadcrumb Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <PageBreadcrumb
-          title="Machine Connection"
-          desc="Connect with machine before milk collection"
+          title="Procurement Collection"
+          desc="collect you milk here"
         />
       </div>
 
@@ -559,13 +590,15 @@ export const ProcurementCollection: React.FC = () => {
             {/* Vendor Name */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Vendor Name
+                Vendor Name{loadingVendors && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
-                name="vendor"
-                value={vendor}
-                onChange={(e: any) => setVendor(e.target.value)}
-                options={vendors}
+                name="route"
+                placeholder={loadingVendors ? "Loading vendors..." : "Select a vendor..."}
+                value={selectedVendor}
+                onChange={(e: any) => setSelectedVendor(e.target.value)}
+                options={vendorOptions}
+                disabled={loadingVendors}
               />
             </div>
 
