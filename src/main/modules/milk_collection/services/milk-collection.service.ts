@@ -1,7 +1,7 @@
 import { injectable, inject } from "tsyringe";
 import { PaginationRequestDto } from "../../../utils/pagination.dto";
 import { MilkCollectionRepo } from "../repositories/milk-collection.repo";
-import { PaginatedMilkCollectionDto } from "../dtos/milk-collection.dto";
+import { MilkCollectionDto, PaginatedMilkCollectionDto } from "../dtos/milk-collection.dto";
 import { SaveMilkCollectionDto } from "../dtos/milk-collection-save.dt";
 
 
@@ -21,7 +21,7 @@ export class MilkCollectionService {
         return await this.milkRepo.getPaginatedMilkCollctions(data);
   }
 
-  async saveMilkCollection(data:SaveMilkCollectionDto):Promise<any>{
+  async saveMilkCollection(data:SaveMilkCollectionDto):Promise<MilkCollectionDto>{
     return await this.milkRepo.saveMilkCollection(data);
   }
   

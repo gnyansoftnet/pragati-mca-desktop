@@ -1,15 +1,15 @@
 export interface SaveMilkCollectionDto {
-  plant: string;
+ plant: string;
   shift: number;
-  tippingTime: string;
+  tipingTime: string;
   entry: string;
   userCode: string;
   rootCode: string;
   vendorCode: string;
   canType?: string;
   weightSystem?: string;
-  milkType?: string ;
-  milkStatus?: string ;
+  milkType?: string;
+  milkStatus?: string;
   noOfCans?: number;
   grossWeight?: number;
   netWeight?: number;

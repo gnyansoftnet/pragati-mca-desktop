@@ -7,33 +7,33 @@ import { MilkCollectionDto, PaginatedMilkCollectionDto } from "../dtos/milk-coll
 import { SaveMilkCollectionDto } from "../dtos/milk-collection-save.dt";
 
 interface MilkCollectionRow extends RowDataPacket {
-   id: number;
+    id: number;
     trans_code: string;
     plant: string;
-    user_code: string | null;
-    root_code: string | null;
-    vendor_code: string | null;
+    user_code: string ;
+    root_code: string ;
+    vendor_code: string;
     shift: number;
-    sample_date: Date | string;
+    sample_date:  string;
     sample_code: number;
-    can_type: string | null;
-    weight_system: string | null;
-    milk_type: string | null;
-    milk_status: string | null;
+    can_type: string;
+    weight_system: string;
+    milk_type: string;
+    milk_status: string;
     tiping_time: string;
     no_of_cans: number;
-    gross_weight: number | string;
-    net_weight: number | string;
-    net_ltr: number | string;
-    fat: number | string | null;
-    snf: number | string | null;
-    clr: number | string | null;
+    gross_weight: number;
+    net_weight: number;
+    net_ltr: number;
+    fat: number ;
+    snf: number;
+    clr: number;
     is_analyse: number;
-    entry: "manual" | "machine";
-    sync_status: "pending" | "synced";
-    sync_date: Date | string | null;
-    created_at: Date | string | null;
-    updated_at: Date | string | null;
+    entry: string;
+    sync_status: string;
+    sync_date: string;
+    created_at: string;
+    updated_at: string;
     d_flag: number;
 }
 
@@ -81,28 +81,7 @@ export class MilkCollectionRepo {
         // Get paginated milk collection records
         const [rows] = await db.query<MilkCollectionRow[]>(
             `SELECT
-                id,
-                trans_code,
-                plant,
-                user_code,
-                root_code,
-                vendor_code,
-                can_type,
-                weight_system,
-                milk_type,
-                milk_status,
-                tiping_time,
-                no_of_cans,
-                gross_weight,
-                net_weight,
-                net_ltr,
-                fat,
-                snf,
-                clr,
-                is_analyse,
-                created_at,
-                updated_at,
-                d_flag
+               *
              FROM milk_collection_details
              ${where}
              ORDER BY id ASC
@@ -115,28 +94,30 @@ export class MilkCollectionRepo {
                 id: r.id,
                 transCode: r.trans_code,
                 plant: r.plant,
-                userCode: r.user_code ?? "",
-                rootCode: r.root_code ?? "",
-                vendorCode: r.vendor_code ?? "",
-                canType: r.can_type ?? "",
-                weightSystem: r.weight_system ?? "",
-                milkType: r.milk_type ?? "",
-                milkStatus: r.milk_status ?? "",
-                tippingTime: r.tiping_time,
+                userCode: r.user_code,
+                rootCode: r.root_code,
+                vendorCode: r.vendor_code,
+                shift: r.shift,
+                sampleDate: r.sample_date,
+                sampleCode: r.sample_code,
+                canType: r.can_type,
+                weightSystem: r.weight_system,
+                milkType: r.milk_type,
+                milkStatus: r.milk_status,
+                tipingTime: r.tiping_time,
                 noOfCans: r.no_of_cans,
-                grossWeight: Number(r.gross_weight),
-                netWeight: Number(r.net_weight),
-                netLtr: Number(r.net_ltr),
-                fat: r.fat === null ? 0 : Number(r.fat),
-                snf: r.snf === null ? 0 : Number(r.snf),
-                clr: r.clr === null ? 0 : Number(r.clr),
+                grossWeight: r.gross_weight,
+                netWeight: r.net_weight,
+                netLtr: r.net_ltr,
+                fat: r.fat,
+                snf: r.snf,
+                clr: r.clr,
                 isAnalyse: r.is_analyse,
-                createdAt: r.created_at
-                    ? String(r.created_at)
-                    : "",
-                updatedAt: r.updated_at
-                    ? String(r.updated_at)
-                    : "",
+                entry: r.entry,
+                syncStatus: r.sync_status,
+                syncDate: r.sync_date,
+                createdAt: r.created_at,
+                updatedAt: r.updated_at,
                 dFlag: r.d_flag,
             })),
             pagination: {
@@ -152,36 +133,73 @@ export class MilkCollectionRepo {
 
     
 
-   async saveMilkCollection(data: SaveMilkCollectionDto): Promise<MilkCollectionRow> {
-    const [result] = await db.query<RowDataPacket[][]>(
+   async saveMilkCollection(data: SaveMilkCollectionDto): Promise<MilkCollectionDto> {
+    console.log(data)
+    const [result] = await db.query<MilkCollectionRow[][]>(
         "CALL USP_M_MILK_COLLECTION_IUD(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
             "INSERT",
             null,
-            data.plant?.trim() ?? "",
-            data.userCode ?? null,
-            data.rootCode ?? null,
-            data.vendorCode ?? null,
+            data.plant,
+            data.userCode,
+            data.rootCode,
+            data.vendorCode,
             data.shift,
-            data.canType ?? null,
-            data.weightSystem ?? null,
-            data.milkType ?? null,
-            data.milkStatus ?? null,
-            data.tippingTime ?? "",
-            data.noOfCans ?? 0,
-            data.grossWeight ?? 0,
-            data.netWeight ?? 0,
-            data.netLtr ?? 0,
-            data.fat ?? null,
-            data.snf ?? null,
-            data.clr ?? null,
+            data.canType,
+            data.weightSystem ,
+            data.milkType ,
+            data.milkStatus,
+            data.tipingTime,
+            data.noOfCans,
+            data.grossWeight,
+            data.netWeight,
+            data.netLtr,
+            data.fat,
+            data.snf,
+            data.clr,
             data.entry,
         ]
     );
 
-    const row = result[0]?.[0];
-    if (!row) throw new Error("No response from procedure");
-    if (row.success === 0) throw new Error(String(row.message));
-    return row as MilkCollectionRow;
+     const row = result[0]?.[0];
+
+    if (!row) {
+        throw new Error("No response from procedure");
+    }
+
+    if (row.success === 0) {
+        throw new Error(String(row.message));
+    }
+
+     return {
+        id: row.id,
+        transCode: row.trans_code,
+        plant: row.plant,
+        userCode: row.user_code,
+        rootCode: row.root_code,
+        vendorCode: row.vendor_code,
+        shift: row.shift,
+        sampleDate: row.sample_date,
+        sampleCode: row.sample_code,
+        canType: row.can_type,
+        weightSystem: row.weight_system,
+        milkType: row.milk_type,
+        milkStatus: row.milk_status,
+        tipingTime: row.tiping_time,
+        noOfCans: row.no_of_cans,
+        grossWeight: row.gross_weight,
+        netWeight: row.net_weight,
+        netLtr: row.net_ltr,
+        fat: row.fat,
+        snf: row.snf,
+        clr: row.clr,
+        isAnalyse: row.is_analyse,
+        entry: row.entry,
+        syncStatus: row.sync_status,
+        syncDate: row.sync_date,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+        dFlag: row.d_flag,
+    };
 }
 }
