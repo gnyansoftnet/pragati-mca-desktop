@@ -3,15 +3,19 @@ import { injectable } from "tsyringe";
 import type { RowDataPacket } from "mysql2";
 import { db } from "../../../core/config/database.config";
 import { PaginationRequestDto } from "../../../utils/pagination.dto";
-import { PaginatedMilkCollectionDto } from "../dtos/milk-collection.dto";
+import { MilkCollectionDto, PaginatedMilkCollectionDto } from "../dtos/milk-collection.dto";
+import { SaveMilkCollectionDto } from "../dtos/milk-collection-save.dt";
 
 interface MilkCollectionRow extends RowDataPacket {
-    id: number;
+   id: number;
     trans_code: string;
     plant: string;
     user_code: string | null;
     root_code: string | null;
     vendor_code: string | null;
+    shift: number;
+    sample_date: Date | string;
+    sample_code: number;
     can_type: string | null;
     weight_system: string | null;
     milk_type: string | null;
@@ -25,6 +29,9 @@ interface MilkCollectionRow extends RowDataPacket {
     snf: number | string | null;
     clr: number | string | null;
     is_analyse: number;
+    entry: "manual" | "machine";
+    sync_status: "pending" | "synced";
+    sync_date: Date | string | null;
     created_at: Date | string | null;
     updated_at: Date | string | null;
     d_flag: number;
@@ -98,7 +105,7 @@ export class MilkCollectionRepo {
                 d_flag
              FROM milk_collection_details
              ${where}
-             ORDER BY id DESC
+             ORDER BY id ASC
              LIMIT ? OFFSET ?`,
             [...whereParams, limit, offset]
         );
@@ -142,4 +149,39 @@ export class MilkCollectionRepo {
             },
         };
     }
+
+    
+
+   async saveMilkCollection(data: SaveMilkCollectionDto): Promise<MilkCollectionRow> {
+    const [result] = await db.query<RowDataPacket[][]>(
+        "CALL USP_M_MILK_COLLECTION_IUD(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+            "INSERT",
+            null,
+            data.plant?.trim() ?? "",
+            data.userCode ?? null,
+            data.rootCode ?? null,
+            data.vendorCode ?? null,
+            data.shift,
+            data.canType ?? null,
+            data.weightSystem ?? null,
+            data.milkType ?? null,
+            data.milkStatus ?? null,
+            data.tippingTime ?? "",
+            data.noOfCans ?? 0,
+            data.grossWeight ?? 0,
+            data.netWeight ?? 0,
+            data.netLtr ?? 0,
+            data.fat ?? null,
+            data.snf ?? null,
+            data.clr ?? null,
+            data.entry,
+        ]
+    );
+
+    const row = result[0]?.[0];
+    if (!row) throw new Error("No response from procedure");
+    if (row.success === 0) throw new Error(String(row.message));
+    return row as MilkCollectionRow;
+}
 }
