@@ -59,7 +59,7 @@ export const MacineConnection: React.FC = () => {
               <CustomForm.CustomSelectSearchField
                 name="center"
                 value=""
-                onChange=""
+                // onChange=""
                 options={centerOptions}
               />
             </div>
@@ -70,7 +70,7 @@ export const MacineConnection: React.FC = () => {
               <CustomForm.CustomNumberField
                 name="parity"
                 value="15"
-                onChange=""
+                // onChange=""
                 placeholder=""
                 readOnly={true}
               />
@@ -82,7 +82,7 @@ export const MacineConnection: React.FC = () => {
               <CustomForm.CustomNumberField
                 name="braude"
                 value="45"
-                onChange=""
+                // onChange=""
                 placeholder=""
                 readOnly={true}
               />
@@ -94,7 +94,7 @@ export const MacineConnection: React.FC = () => {
               <CustomForm.CustomNumberField
                 name="braude"
                 value="10"
-                onChange=""
+                // onChange=""
                 placeholder=""
                 readOnly={true}
               />
@@ -106,7 +106,7 @@ export const MacineConnection: React.FC = () => {
               <CustomForm.CustomNumberField
                 name="stop"
                 value="45"
-                onChange=""
+                // onChange=""
                 placeholder=""
                 readOnly={true}
               />
