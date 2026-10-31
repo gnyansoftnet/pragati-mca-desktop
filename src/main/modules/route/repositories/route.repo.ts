@@ -23,7 +23,7 @@ export class RouteRepo {
     const [rows] = await db.execute<RouteRow[]>(
       `SELECT id, route_name,route_code
        FROM route
-       ORDER BY id DESC`
+       ORDER BY id ASC`
     );
     return rows.map((r) => ({
       id: r.id,
@@ -58,7 +58,7 @@ export class RouteRepo {
       `SELECT id, route_name, route_code
        FROM route
        ${where}
-       ORDER BY id DESC
+       ORDER BY id ASC
        LIMIT ? OFFSET ?`,
       [...whereParams, limit, offset]
     );
