@@ -6,12 +6,17 @@ const routesApi = {
     return window.api.getRoutes()
   },
 
-  getPaginated: (page: number, limit: number): Promise<PaginatedResponse<Route>> => {
+  getPaginated: (
+    page: number,
+    limit: number,
+    search: string
+  ): Promise<PaginatedResponse<Route>> => {
     return window.api.getPaginatedRoutes({
       page,
-      limit
-    })
-  }
-}
+      limit,
+      search,
+    });
+  },
+};
 
 export default routesApi

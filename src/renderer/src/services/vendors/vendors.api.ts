@@ -6,12 +6,17 @@ const vendorsApi = {
     return window.api.getVendors()
   },
 
-  getPaginated: (page: number, limit: number): Promise<PaginatedResponse<Vendor>> => {
+  getPaginated: (
+    page: number,
+    limit: number,
+    search: string
+  ): Promise<PaginatedResponse<Vendor>> => {
     return window.api.getPaginatedVendors({
       page,
-      limit
-    })
-  }
-}
+      limit,
+      search,
+    });
+  },
+};
 
 export default vendorsApi

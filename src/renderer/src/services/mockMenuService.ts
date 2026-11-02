@@ -90,7 +90,37 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     category: 'operations',
     order_index: 50,
     badge: ''
-  }
+  },
+  {
+    id: 5,
+    title: 'Analyze',
+    path: '/analyze',
+    icon: 'FileSpreadsheet',
+    roles: ['admin', 'staff', 'farmer'],
+    category: 'operations',
+    order_index: 50,
+    badge: ''
+  },
+  {
+    id: 6,
+    title: 'Routes',
+    path: '/routes',
+    icon: 'Banknote',
+    roles: ['admin', 'staff', 'farmer'],
+    category: 'master',
+    order_index: 50,
+    badge: ''
+  },
+  {
+    id: 6,
+    title: 'Vendors',
+    path: '/vendors',
+    icon: 'Receipt',
+    roles: ['admin', 'staff', 'farmer'],
+    category: 'master',
+    order_index: 50,
+    badge: ''
+  },
 ]
 
 export async function fetchMenusForRole(role: UserRole): Promise<DynamicMenuItem[]> {
