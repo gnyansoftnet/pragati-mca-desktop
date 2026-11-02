@@ -76,9 +76,9 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed, onCloseMo
           // Check if any child is currently active
           const isAnyChildActive = hasChildren
             ? item.children!.some((c) => {
-              const cTarget = c.path.startsWith('/admin') ? c.path : `/admin${c.path}`
-              return location.pathname === cTarget
-            })
+                const cTarget = c.path.startsWith('/admin') ? c.path : `/admin${c.path}`
+                return location.pathname === cTarget
+              })
             : false
 
           const isParentActive = isDirectActive || isAnyChildActive
@@ -90,20 +90,22 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed, onCloseMo
                 type="button"
                 onClick={() => handleMenuClick(item)}
                 title={isCollapsed ? item.title : undefined}
-                className={`w-full group flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-sm font-medium transition-all duration-200 cursor-pointer ${isParentActive && !hasChildren
-                  ? 'bg-linear-to-r from-primary to-secondary text-white shadow-md shadow-primary/25 font-semibold'
-                  : isParentActive && hasChildren
-                    ? 'bg-teal-50/70 text-primary font-semibold'
-                    : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-                  }`}
+                className={`w-full group flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-sm font-medium transition-all duration-200 cursor-pointer ${
+                  isParentActive && !hasChildren
+                    ? 'bg-linear-to-r from-primary to-secondary text-white shadow-md shadow-primary/25 font-semibold'
+                    : isParentActive && hasChildren
+                      ? 'bg-teal-50/70 text-primary font-semibold'
+                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                }`}
               >
                 <div
-                  className={`shrink-0 transition-transform group-hover:scale-105 ${isParentActive && !hasChildren
-                    ? 'text-white'
-                    : isParentActive
-                      ? 'text-primary'
-                      : 'text-slate-400 group-hover:text-slate-600'
-                    }`}
+                  className={`shrink-0 transition-transform group-hover:scale-105 ${
+                    isParentActive && !hasChildren
+                      ? 'text-white'
+                      : isParentActive
+                        ? 'text-primary'
+                        : 'text-slate-400 group-hover:text-slate-600'
+                  }`}
                 >
                   <DynamicIcon name={item.icon} className="w-5 h-5 strokeWidth={2}" />
                 </div>
@@ -114,10 +116,11 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed, onCloseMo
                     <div className="flex items-center gap-1.5">
                       {item.badge && (
                         <span
-                          className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${isParentActive && !hasChildren
-                            ? 'bg-white/20 text-white'
-                            : 'bg-teal-50 text-teal-700 border border-teal-100'
-                            }`}
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                            isParentActive && !hasChildren
+                              ? 'bg-white/20 text-white'
+                              : 'bg-teal-50 text-teal-700 border border-teal-100'
+                          }`}
                         >
                           {item.badge}
                         </span>
@@ -152,10 +155,11 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed, onCloseMo
                         key={subItem.id}
                         type="button"
                         onClick={() => handleSubmenuClick(subItem.path)}
-                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer ${isSubActive
-                          ? 'bg-linear-to-r from-primary to-secondary text-white shadow-xs font-semibold'
-                          : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100/70'
-                          }`}
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer ${
+                          isSubActive
+                            ? 'bg-linear-to-r from-primary to-secondary text-white shadow-xs font-semibold'
+                            : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100/70'
+                        }`}
                       >
                         <div
                           className={`shrink-0 ${isSubActive ? 'text-white' : 'text-slate-300'}`}

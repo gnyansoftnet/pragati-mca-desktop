@@ -44,8 +44,9 @@ export const TopbarUserProfile: React.FC = () => {
               {user?.name || 'Dhruv Halbe'}
             </h4>
             <ChevronDown
-              className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : 'rotate-0'
-                }`}
+              className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
+                isOpen ? 'rotate-180' : 'rotate-0'
+              }`}
             />
           </div>
           <p className="text-[10px] text-slate-400 font-medium">

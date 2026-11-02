@@ -1,10 +1,6 @@
-import { injectable, inject } from "tsyringe";
-import { MilkAnalysisRepo } from "../repo/milk-analysis.repo";
-import { UpdateMilkCollectionDto } from "../dtos/milk-analysis-update.dto";
-
-
-
-
+import { injectable, inject } from 'tsyringe'
+import { MilkAnalysisRepo } from '../repo/milk-analysis.repo'
+import { UpdateMilkCollectionDto } from '../dtos/milk-analysis-update.dto'
 
 @injectable()
 export class MilkAnalysisService {
@@ -13,9 +9,7 @@ export class MilkAnalysisService {
     private readonly milkAnaRepo: MilkAnalysisRepo
   ) {}
 
-  async updateMilkAnalysis(data:UpdateMilkCollectionDto):Promise<any>{
-    return await this.milkAnaRepo.updateMilkAnalysis(data);
+  async updateMilkAnalysis(data: UpdateMilkCollectionDto): Promise<any> {
+    return await this.milkAnaRepo.updateMilkAnalysis(data)
   }
-
-  
 }

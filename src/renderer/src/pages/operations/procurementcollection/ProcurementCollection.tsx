@@ -1,82 +1,82 @@
-import React, { useEffect, useState } from 'react';
-import { Bookmark, X, ChevronLeft, ChevronRight } from 'lucide-react';
-import Button1 from '@renderer/components/buttons/Button1';
-import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb';
-import CustomForm from '@renderer/components/customform/CustomForm';
-import api from '@renderer/services';
-import type { Route } from '@renderer/types/routes/routes.types';
-import type { Vendor } from '@renderer/types/vendors/vendors.types';
+import React, { useEffect, useState } from 'react'
+import { Bookmark, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import Button1 from '@renderer/components/buttons/Button1'
+import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
+import CustomForm from '@renderer/components/customform/CustomForm'
+import api from '@renderer/services'
+import type { Route } from '@renderer/types/routes/routes.types'
+import type { Vendor } from '@renderer/types/vendors/vendors.types'
 
 interface SelectOption {
-  value: string;
-  label: string;
+  value: string
+  label: string
 }
 
 interface MilkEntry {
-  id: number;
-  sampleCode?: string | number;
-  farmerId?: string;
-  chillingPlant?: string;
-  plant?: string;
-  date?: string;
-  sampleDate?: string | Date;
-  routes?: string;
-  rootCode?: string;
-  canType?: string;
-  shift?: number | string;
-  shiftName?: string;
-  milkType?: string;
-  milkStatus?: string;
-  tipingTime?: string;
-  vendorCode?: string;
-  noOfCans?: number | string;
-  netWeight?: string | number;
-  grossWeight?: string | number;
-  fatPercent?: number;
-  fat?: string | number;
-  snfPercent?: number;
-  snf?: string | number;
-  clrPercent?: number;
-  clr?: string | number;
-  weightSystem?: string;
+  id: number
+  sampleCode?: string | number
+  farmerId?: string
+  chillingPlant?: string
+  plant?: string
+  date?: string
+  sampleDate?: string | Date
+  routes?: string
+  rootCode?: string
+  canType?: string
+  shift?: number | string
+  shiftName?: string
+  milkType?: string
+  milkStatus?: string
+  tipingTime?: string
+  vendorCode?: string
+  noOfCans?: number | string
+  netWeight?: string | number
+  grossWeight?: string | number
+  fatPercent?: number
+  fat?: string | number
+  snfPercent?: number
+  snf?: string | number
+  clrPercent?: number
+  clr?: string | number
+  weightSystem?: string
 }
 
 interface PaginationState {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
 }
 
 export const ProcurementCollection: React.FC = () => {
   // Routes State
-  const [routes, setRoutes] = useState<Route[]>([]);
-  const [routeOptions, setRouteOptions] = useState<SelectOption[]>([]);
-  const [selectedRoute, setSelectedRoute] = useState<string>('');
-  const [loadingRoutes, setLoadingRoutes] = useState<boolean>(false);
+  const [routes, setRoutes] = useState<Route[]>([])
+  const [routeOptions, setRouteOptions] = useState<SelectOption[]>([])
+  const [selectedRoute, setSelectedRoute] = useState<string>('')
+  const [loadingRoutes, setLoadingRoutes] = useState<boolean>(false)
 
   // Vendor states
-  const [vendors, setVendors] = useState<Vendor[]>([]);
-  const [vendorOptions, setVendorOptions] = useState<SelectOption[]>([]);
-  const [selectedVendor, setSelectedVendor] = useState<string>('');
-  const [loadingVendors, setLoadingVendors] = useState<boolean>(false);
+  const [vendors, setVendors] = useState<Vendor[]>([])
+  const [vendorOptions, setVendorOptions] = useState<SelectOption[]>([])
+  const [selectedVendor, setSelectedVendor] = useState<string>('')
+  const [loadingVendors, setLoadingVendors] = useState<boolean>(false)
 
   // Other Form States
-  const [shift, setShift] = useState('');
-  const [weightSystem, setWeightSystem] = useState('');
-  const [cansType, setCansType] = useState('');
-  const [milkType, setMilkType] = useState('');
-  const [milkStatus, setMilkStatus] = useState('');
-  const [noOfCans, setNoOfCans] = useState('');
-  const [weightCans, setWeightCans] = useState('');
-  const [clrp, setClrp] = useState('2.4');
-  const [fatp, setFatp] = useState('24.5');
-  const [snfp, setSnfp] = useState('78.5');
+  const [shift, setShift] = useState('')
+  const [weightSystem, setWeightSystem] = useState('')
+  const [cansType, setCansType] = useState('')
+  const [milkType, setMilkType] = useState('')
+  const [milkStatus, setMilkStatus] = useState('')
+  const [noOfCans, setNoOfCans] = useState('')
+  const [weightCans, setWeightCans] = useState('')
+  const [clrp, setClrp] = useState('2.4')
+  const [fatp, setFatp] = useState('24.5')
+  const [snfp, setSnfp] = useState('78.5')
 
-  const userCode = "USR0001";
-  const entry = "MACHINE";
+  const userCode = 'USR0001'
+  const entry = 'MACHINE'
 
   // Pagination State
   const [pagination, setPagination] = useState<PaginationState>({
@@ -86,52 +86,52 @@ export const ProcurementCollection: React.FC = () => {
     totalPages: 1,
     hasNextPage: false,
     hasPrevPage: false
-  });
+  })
 
-  const [entries, setEntries] = useState<MilkEntry[]>([]);
+  const [entries, setEntries] = useState<MilkEntry[]>([])
 
   // Fetch routes from Electron Main Process via api service
   const fetchRoutes = async () => {
     try {
-      setLoadingRoutes(true);
+      setLoadingRoutes(true)
 
-      const response = await api.routes.getAll();
-      setRoutes(response);
+      const response = await api.routes.getAll()
+      setRoutes(response)
 
       // Convert routes into { value, label } format for dropdown
       const options: SelectOption[] = response.map((route) => ({
         value: String(route.id),
-        label: route.routeName,
-      }));
+        label: route.routeName
+      }))
 
-      setRouteOptions(options);
+      setRouteOptions(options)
     } catch (error) {
-      console.error('Failed to fetch routes:', error);
+      console.error('Failed to fetch routes:', error)
     } finally {
-      setLoadingRoutes(false);
+      setLoadingRoutes(false)
     }
-  };
+  }
 
   const fetchVendors = async (): Promise<void> => {
     try {
-      setLoadingVendors(true);
+      setLoadingVendors(true)
 
-      const response = await api.vendors.getAll();
-      setVendors(response);
+      const response = await api.vendors.getAll()
+      setVendors(response)
 
       // Convert vendors into { value, label } format for dropdown
       const options: SelectOption[] = response.map((vendor) => ({
         value: String(vendor.id),
-        label: vendor.vendorCode,
-      }));
+        label: vendor.vendorCode
+      }))
 
-      setVendorOptions(options);
+      setVendorOptions(options)
     } catch (error) {
-      console.error('Failed to fetch vendors:', error);
+      console.error('Failed to fetch vendors:', error)
     } finally {
-      setLoadingVendors(false);
+      setLoadingVendors(false)
     }
-  };
+  }
 
   // Fetch paginated milk collection entries from Electron Main Process
   const fetchCollections = async (page = 1): Promise<void> => {
@@ -139,116 +139,119 @@ export const ProcurementCollection: React.FC = () => {
       if (typeof window !== 'undefined') {
         const getFn =
           (window as any).api?.getPaginatedMilkCollctions ||
-          (window as any).api?.getPaginatedMilkCollections;
+          (window as any).api?.getPaginatedMilkCollections
 
         if (getFn) {
-          const response = await getFn({ page, limit: 10 });
+          const response = await getFn({ page, limit: 10 })
           if (response) {
             if (response.data) {
-              setEntries(response.data);
+              setEntries(response.data)
             }
             if (response.pagination) {
-              setPagination(response.pagination);
+              setPagination(response.pagination)
             }
           }
         }
       }
     } catch (error) {
-      console.error('Failed to fetch milk collections:', error);
+      console.error('Failed to fetch milk collections:', error)
     }
-  };
+  }
 
   // Load routes, vendors, and table entries when component mounts
   useEffect(() => {
-    fetchRoutes();
-    fetchVendors();
-    fetchCollections(1);
-  }, []);
+    fetchRoutes()
+    fetchVendors()
+    fetchCollections(1)
+  }, [])
 
   // Current Date
   const getCurrentLocalDate = (): string => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = String(today.getMonth() + 1).padStart(2, '0')
+    const day = String(today.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
 
   // Current Time
   const getCurrentLocalDateTime = (): string => {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const now = new Date()
+    const hours = String(now.getHours()).padStart(2, '0')
+    const minutes = String(now.getMinutes()).padStart(2, '0')
+    const seconds = String(now.getSeconds()).padStart(2, '0')
 
-    return `${hours}:${minutes}:${seconds}`;
-  };
+    return `${hours}:${minutes}:${seconds}`
+  }
 
-  const [currentTime, setCurrentTime] = useState(getCurrentLocalDateTime);
+  const [currentTime, setCurrentTime] = useState(getCurrentLocalDateTime)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTime(getCurrentLocalDateTime());
-    }, 1000);
+      setCurrentTime(getCurrentLocalDateTime())
+    }, 1000)
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     if (noOfCans !== '') {
-      setWeightCans(String(Number(noOfCans) * 20));
+      setWeightCans(String(Number(noOfCans) * 20))
     } else {
-      setWeightCans('');
+      setWeightCans('')
     }
-  }, [noOfCans]);
+  }, [noOfCans])
 
   // Static Dropdown Options
   const shifts = [
     { value: '1', label: 'Morning' },
     { value: '2', label: 'Evening' }
-  ];
+  ]
 
   const weights = [
     { value: 'WeightBowl', label: 'WeightBowl' },
     { value: 'Container', label: 'Container' }
-  ];
+  ]
 
   const cans = [
     { value: 'Aluminium', label: 'Aluminium' },
     { value: 'Iron', label: 'Iron' }
-  ];
+  ]
 
   const mtype = [
     { value: 'mixed', label: 'Mixed' },
     { value: 'cow', label: 'Cow' },
     { value: 'buffalo', label: 'Buffalo' }
-  ];
+  ]
 
   const mstatus = [
     { value: 'good', label: 'Good' },
     { value: 'better', label: 'Better' },
     { value: 'best', label: 'Best' }
-  ];
+  ]
 
   // Save Collection Handler
   const handleSaveCollection = async () => {
     try {
       const currentRoute = routes.find(
         (r) => String(r.id) === selectedRoute || (r as any).routeCode === selectedRoute
-      );
-      const rootCode = (currentRoute as any)?.routeCode || currentRoute?.routeName || selectedRoute || 'ROOT001';
+      )
+      const rootCode =
+        (currentRoute as any)?.routeCode || currentRoute?.routeName || selectedRoute || 'ROOT001'
 
       const currentVendor = vendors.find(
         (v) => String(v.id) === selectedVendor || v.vendorCode === selectedVendor
-      );
-      const vendorCode = currentVendor?.vendorCode || selectedVendor || 'VEND001';
+      )
+      const vendorCode = currentVendor?.vendorCode || selectedVendor || 'VEND001'
 
-      const selectedCan = cans.find((c) => c.value === cansType)?.label || cansType || '';
-      const selectedWeight = weights.find((w) => w.value === weightSystem)?.label || weightSystem || '';
-      const selectedMilkType = mtype.find((m) => m.value === milkType)?.label || milkType || '';
-      const selectedMilkStatus = mstatus.find((m) => m.value === milkStatus)?.label || milkStatus || '';
+      const selectedCan = cans.find((c) => c.value === cansType)?.label || cansType || ''
+      const selectedWeight =
+        weights.find((w) => w.value === weightSystem)?.label || weightSystem || ''
+      const selectedMilkType = mtype.find((m) => m.value === milkType)?.label || milkType || ''
+      const selectedMilkStatus =
+        mstatus.find((m) => m.value === milkStatus)?.label || milkStatus || ''
 
-      const weightNum = Number(weightCans);
+      const weightNum = Number(weightCans)
 
       const payload = {
         plant: '1102',
@@ -269,53 +272,45 @@ export const ProcurementCollection: React.FC = () => {
         snf: Number(snfp),
         clr: Number(clrp),
         entry: entry
-      };
+      }
 
       if (typeof window !== 'undefined' && (window as any).api?.saveMilkCollection) {
-        await (window as any).api.saveMilkCollection(payload);
+        await (window as any).api.saveMilkCollection(payload)
       }
 
       // Refresh table from page 1 immediately after save
-      await fetchCollections(1);
+      await fetchCollections(1)
     } catch (error) {
-      console.error('Failed to save milk collection:', error);
+      console.error('Failed to save milk collection:', error)
     }
-  };
+  }
 
   // Cancel Handler
   const handleCancel = () => {
-    setSelectedRoute('');
-    setSelectedVendor('');
-    setShift('');
-    setWeightSystem('');
-    setCansType('');
-    setMilkType('');
-    setMilkStatus('');
-    setNoOfCans('');
-    setWeightCans('');
-  };
+    setSelectedRoute('')
+    setSelectedVendor('')
+    setShift('')
+    setWeightSystem('')
+    setCansType('')
+    setMilkType('')
+    setMilkStatus('')
+    setNoOfCans('')
+    setWeightCans('')
+  }
 
   return (
     <div className="space-y-4">
       {/* Breadcrumb Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb
-          title="Procurement Collection"
-          desc="collect you milk here"
-        />
+        <PageBreadcrumb title="Procurement Collection" desc="collect you milk here" />
       </div>
 
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
-        <CustomForm
-          onSubmit={(e) => e.preventDefault()}
-          className="w-full"
-        >
+        <CustomForm onSubmit={(e) => e.preventDefault()} className="w-full">
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2.5">
             {/* Shift */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Select Shift
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Select Shift</label>
               <CustomForm.CustomSelectSearchField
                 name="shift"
                 value={shift}
@@ -326,9 +321,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* Chilling Center */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Chilling Center
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomSelectField
                 name="chilling"
                 value="center1"
@@ -342,9 +335,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* Date */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Date
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Date</label>
               <CustomForm.CustomTextField
                 name="date"
                 value={getCurrentLocalDate()}
@@ -354,9 +345,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* Weight System */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Weight System
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Weight System</label>
               <CustomForm.CustomSelectSearchField
                 name="weight"
                 value={weightSystem}
@@ -368,7 +357,8 @@ export const ProcurementCollection: React.FC = () => {
             {/* Dynamic Routes Dropdown */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Routes {loadingRoutes && <span className="text-slate-400 font-normal">(Loading...)</span>}
+                Routes{' '}
+                {loadingRoutes && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
                 name="route"
@@ -382,9 +372,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* Cans Type */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Cans Type
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Cans Type</label>
               <CustomForm.CustomSelectSearchField
                 name="cans"
                 value={cansType}
@@ -395,9 +383,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* Milk Type */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Milk Type
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Milk Type</label>
               <CustomForm.CustomSelectSearchField
                 name="milktype"
                 value={milkType}
@@ -408,9 +394,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* Milk Status */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Milk Status
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Milk Status</label>
               <CustomForm.CustomSelectSearchField
                 name="milkstatus"
                 value={milkStatus}
@@ -421,9 +405,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* Tipping Time */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Tipping Time
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Tipping Time</label>
               <CustomForm.CustomTextField
                 name="time"
                 value={getCurrentLocalDateTime()}
@@ -434,7 +416,8 @@ export const ProcurementCollection: React.FC = () => {
             {/* Vendor Name */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Vendor Name{loadingVendors && <span className="text-slate-400 font-normal">(Loading...)</span>}
+                Vendor Name
+                {loadingVendors && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
                 name="vendor"
@@ -448,9 +431,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* Number of Cans */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                No. of Cans
-              </label>
+              <label className="text-xs font-semibold text-slate-700">No. of Cans</label>
               <CustomForm.CustomNumberField
                 name="noOfCans"
                 value={noOfCans}
@@ -461,9 +442,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* Weight */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Weight (LTR)
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Weight (LTR)</label>
               <CustomForm.CustomTextField
                 name="weight"
                 value={weightCans}
@@ -474,9 +453,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* CLR Percentage */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                CLR Percentage (%)
-              </label>
+              <label className="text-xs font-semibold text-slate-700">CLR Percentage (%)</label>
               <CustomForm.CustomTextField
                 name="clr"
                 value={clrp}
@@ -487,9 +464,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* FAT Percentage */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                FAT Percentage (%)
-              </label>
+              <label className="text-xs font-semibold text-slate-700">FAT Percentage (%)</label>
               <CustomForm.CustomTextField
                 name="fat"
                 value={fatp}
@@ -500,9 +475,7 @@ export const ProcurementCollection: React.FC = () => {
 
             {/* SNF Percentage */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                SNF Percentage (%)
-              </label>
+              <label className="text-xs font-semibold text-slate-700">SNF Percentage (%)</label>
               <CustomForm.CustomTextField
                 name="snf"
                 value={snfp}
@@ -563,15 +536,15 @@ export const ProcurementCollection: React.FC = () => {
                         String(item.shift) === '1'
                           ? 'bg-orange-50 text-orange-500 border-orange-200'
                           : String(item.shift) === '2'
-                          ? 'bg-sky-50 text-sky-500 border-sky-200'
-                          : 'bg-rose-50 text-rose-700 border-rose-200'
+                            ? 'bg-sky-50 text-sky-500 border-sky-200'
+                            : 'bg-rose-50 text-rose-700 border-rose-200'
                       }`}
                     >
                       {String(item.shift) === '1'
                         ? 'Morning'
                         : String(item.shift) === '2'
-                        ? 'Evening'
-                        : item.shiftName || `Shift ${item.shift}`}
+                          ? 'Evening'
+                          : item.shiftName || `Shift ${item.shift}`}
                     </span>
                   </td>
                   <td className="py-2 px-4 font-semibold text-slate-800">
@@ -580,8 +553,10 @@ export const ProcurementCollection: React.FC = () => {
                   <td className="py-2 px-4 font-semibold text-primary">
                     {item.sampleDate
                       ? (() => {
-                          const d = new Date(item.sampleDate);
-                          return isNaN(d.getTime()) ? String(item.sampleDate) : d.toLocaleDateString();
+                          const d = new Date(item.sampleDate)
+                          return isNaN(d.getTime())
+                            ? String(item.sampleDate)
+                            : d.toLocaleDateString()
                         })()
                       : item.date || ''}
                   </td>
@@ -598,10 +573,10 @@ export const ProcurementCollection: React.FC = () => {
                         String(item.milkType).toLowerCase() === 'cow'
                           ? 'bg-amber-50 text-amber-700 border-amber-200'
                           : String(item.milkType).toLowerCase() === 'buffalo'
-                          ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-                          : String(item.milkType).toLowerCase() === 'mixed'
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : 'bg-gray-50 text-gray-700 border-gray-200'
+                            ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                            : String(item.milkType).toLowerCase() === 'mixed'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : 'bg-gray-50 text-gray-700 border-gray-200'
                       }`}
                     >
                       {item.milkType}
@@ -612,9 +587,15 @@ export const ProcurementCollection: React.FC = () => {
                   <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
                   <td className="py-2 px-4 font-semibold text-primary">{item.noOfCans}</td>
                   <td className="py-2 px-4 font-bold text-emerald-600">{item.netWeight}</td>
-                  <td className="py-2 px-4 text-slate-700">{item.clr !== undefined ? item.clr : item.clrPercent}%</td>
-                  <td className="py-2 px-4 text-slate-700">{item.fat !== undefined ? item.fat : item.fatPercent}%</td>
-                  <td className="py-2 px-4 text-slate-700">{item.snf !== undefined ? item.snf : item.snfPercent}%</td>
+                  <td className="py-2 px-4 text-slate-700">
+                    {item.clr !== undefined ? item.clr : item.clrPercent}%
+                  </td>
+                  <td className="py-2 px-4 text-slate-700">
+                    {item.fat !== undefined ? item.fat : item.fatPercent}%
+                  </td>
+                  <td className="py-2 px-4 text-slate-700">
+                    {item.snf !== undefined ? item.snf : item.snfPercent}%
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -625,7 +606,8 @@ export const ProcurementCollection: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500">
           <div>
             Showing page <span className="font-semibold text-slate-700">{pagination.page}</span> of{' '}
-            <span className="font-semibold text-slate-700">{pagination.totalPages || 1}</span> ({pagination.total || entries.length} items)
+            <span className="font-semibold text-slate-700">{pagination.totalPages || 1}</span> (
+            {pagination.total || entries.length} items)
           </div>
           <div className="flex items-center gap-1.5">
             <button
@@ -650,7 +632,7 @@ export const ProcurementCollection: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProcurementCollection;
+export default ProcurementCollection

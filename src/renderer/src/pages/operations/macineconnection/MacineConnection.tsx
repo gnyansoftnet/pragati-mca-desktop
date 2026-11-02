@@ -1,29 +1,19 @@
-
 import React from 'react'
 import Button1 from '../../../components/buttons/Button1'
 import PageBreadcrumb from '../../../components/breadcrumbs/PageBreadcrumb'
-import CustomForm from '../../../components/customform/CustomForm';
+import CustomForm from '../../../components/customform/CustomForm'
 import { Cable } from 'lucide-react'
 
-
-
-
-
 export const MacineConnection: React.FC = () => {
-
   const centerOptions = [
     { value: 'center1', label: 'North Hub' },
     { value: 'center2', label: 'East Hub' }
-  ];
-
+  ]
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb
-          title="Macine Connection"
-          desc="Connect you macine before collection"
-        />
+        <PageBreadcrumb title="Macine Connection" desc="Connect you macine before collection" />
 
         {/* <div className="flex items-center gap-2.5">
           <Button1
@@ -46,16 +36,14 @@ export const MacineConnection: React.FC = () => {
         </div> */}
       </div>
 
-      <div className='mt-2'>
+      <div className="mt-2">
         <CustomForm
           onSubmit={(e) => e.preventDefault()}
           className="w-full p-3 bg-white rounded-2xl border border-slate-100"
         >
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 mb-2">
-                Select Port Name
-              </label>
+              <label className="text-xs font-semibold text-slate-700 mb-2">Select Port Name</label>
               <CustomForm.CustomSelectSearchField
                 name="center"
                 value=""
@@ -75,9 +63,7 @@ export const MacineConnection: React.FC = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 mb-2">
-                Braude Rate
-              </label>
+              <label className="text-xs font-semibold text-slate-700 mb-2">Braude Rate</label>
               <CustomForm.CustomNumberField
                 name="braude"
                 value="45"
@@ -86,9 +72,7 @@ export const MacineConnection: React.FC = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 mb-2">
-                Data Bits
-              </label>
+              <label className="text-xs font-semibold text-slate-700 mb-2">Data Bits</label>
               <CustomForm.CustomNumberField
                 name="braude"
                 value="10"
@@ -97,9 +81,7 @@ export const MacineConnection: React.FC = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 mb-2">
-                Stop Bits
-              </label>
+              <label className="text-xs font-semibold text-slate-700 mb-2">Stop Bits</label>
               <CustomForm.CustomNumberField
                 name="stop"
                 value="45"
@@ -107,7 +89,6 @@ export const MacineConnection: React.FC = () => {
                 placeholder=""
               />
             </div>
-
           </div>
 
           <div className="flex justify-end items-center gap-2.5 mt-6">
@@ -122,6 +103,5 @@ export const MacineConnection: React.FC = () => {
         </CustomForm>
       </div>
     </div>
-  );
-};
-
+  )
+}

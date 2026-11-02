@@ -1,9 +1,9 @@
-import { PaginatedResponseDto } from "../../../utils/pagination.dto";
+import { PaginatedResponseDto } from '../../../utils/pagination.dto'
 
 export interface RouteResponseDto {
-  id: number;
-  routeName: string;
-  routeCode: string;
+  id: number
+  routeName: string
+  routeCode: string
 }
 
-export type PaginatedRoutesDto = PaginatedResponseDto<RouteResponseDto>;
+export type PaginatedRoutesDto = PaginatedResponseDto<RouteResponseDto>

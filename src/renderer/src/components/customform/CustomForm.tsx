@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import Select from 'react-select';
-import { Eye, EyeOff, ChevronDown } from 'lucide-react';
+import React, { useState } from 'react'
+import Select from 'react-select'
+import { Eye, EyeOff, ChevronDown } from 'lucide-react'
 
 // Enhanced base class with read-only & disabled styling
 const baseInputClass =
-  'w-full pl-5 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all duration-200 disabled:bg-slate-100 disabled:cursor-not-allowed read-only:bg-slate-50 read-only:text-slate-600 read-only:border-slate-200 read-only:focus:border-slate-200 read-only:focus:ring-0 read-only:cursor-default';
+  'w-full pl-5 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all duration-200 disabled:bg-slate-100 disabled:cursor-not-allowed read-only:bg-slate-50 read-only:text-slate-600 read-only:border-slate-200 read-only:focus:border-slate-200 read-only:focus:ring-0 read-only:cursor-default'
 
 export default function CustomForm(props) {
   return (
     <form onSubmit={props.onSubmit} className={props.className || 'space-y-4'} {...props}>
       {props.children}
     </form>
-  );
+  )
 }
 
 /* ==========================================================================
@@ -39,8 +39,8 @@ CustomForm.CustomTextField = function CustomTextField({
       className={`${baseInputClass} ${className}`}
       {...props}
     />
-  );
-};
+  )
+}
 
 /* ==========================================================================
    2. Custom Number Field
@@ -75,8 +75,8 @@ CustomForm.CustomNumberField = function CustomNumberField({
         </span>
       )}
     </div>
-  );
-};
+  )
+}
 
 /* ==========================================================================
    3. Custom Email Field
@@ -103,8 +103,8 @@ CustomForm.CustomEmailField = function CustomEmailField({
       className={`${baseInputClass} ${className}`}
       {...props}
     />
-  );
-};
+  )
+}
 
 /* ==========================================================================
    4. Custom Password Field (with Show/Hide Toggle)
@@ -119,7 +119,7 @@ CustomForm.CustomPasswordField = function CustomPasswordField({
   className = '',
   ...props
 }) {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
 
   return (
     <div className="relative w-full flex items-center">
@@ -149,8 +149,8 @@ CustomForm.CustomPasswordField = function CustomPasswordField({
         </button>
       )}
     </div>
-  );
-};
+  )
+}
 
 /* ==========================================================================
    5. Custom Date Field
@@ -175,8 +175,8 @@ CustomForm.CustomDateField = function CustomDateField({
       className={`${baseInputClass} ${className}`}
       {...props}
     />
-  );
-};
+  )
+}
 
 /* ==========================================================================
    6. Custom Address (Textarea)
@@ -204,8 +204,8 @@ CustomForm.CustomAddress = function CustomAddress({
       className={`${baseInputClass} py-2.5 resize-none ${className}`}
       {...props}
     />
-  );
-};
+  )
+}
 
 /* ==========================================================================
    7. Custom Select Field (HTML Native with readOnly support)
@@ -252,8 +252,8 @@ CustomForm.CustomSelectField = function CustomSelectField({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 /* ==========================================================================
    8. Custom Select Search Field (react-select with readOnly & safe Array)
@@ -273,11 +273,10 @@ CustomForm.CustomSelectSearchField = function CustomSelectSearchField({
   const safeOptions = Array.isArray(options)
     ? options
     : typeof options === 'object' && options !== null
-    ? Object.entries(options).map(([val, lbl]) => ({ value: val, label: String(lbl) }))
-    : [];
+      ? Object.entries(options).map(([val, lbl]) => ({ value: val, label: String(lbl) }))
+      : []
 
-  const selectedValue =
-    safeOptions.find((opt) => String(opt.value) === String(value)) || null;
+  const selectedValue = safeOptions.find((opt) => String(opt.value) === String(value)) || null
 
   return (
     <Select
@@ -288,9 +287,9 @@ CustomForm.CustomSelectSearchField = function CustomSelectSearchField({
           onChange({
             target: {
               name: name,
-              value: selectedOption?.value ?? '',
-            },
-          });
+              value: selectedOption?.value ?? ''
+            }
+          })
         }
       }}
       placeholder={placeholder}
@@ -301,7 +300,7 @@ CustomForm.CustomSelectSearchField = function CustomSelectSearchField({
       styles={{
         container: (base) => ({
           ...base,
-          width: '100%',
+          width: '100%'
         }),
         control: (base, state) => ({
           ...base,
@@ -315,39 +314,39 @@ CustomForm.CustomSelectSearchField = function CustomSelectSearchField({
           fontSize: '0.875rem',
           cursor: readOnly ? 'default' : 'pointer',
           '&:hover': {
-            borderColor: readOnly ? '#e2e8f0' : state.isFocused ? '#10257B' : '#cbd5e1',
-          },
+            borderColor: readOnly ? '#e2e8f0' : state.isFocused ? '#10257B' : '#cbd5e1'
+          }
         }),
         valueContainer: (base) => ({
           ...base,
-          padding: '0 4px',
+          padding: '0 4px'
         }),
         placeholder: (base) => ({
           ...base,
           color: '#94a3b8',
-          fontSize: '0.875rem',
+          fontSize: '0.875rem'
         }),
         singleValue: (base) => ({
           ...base,
           color: readOnly ? '#475569' : '#1e293b',
           fontSize: '0.875rem',
-          fontWeight: '500',
+          fontWeight: '500'
         }),
         indicatorsContainer: (base) => ({
           ...base,
           display: readOnly ? 'none' : 'flex',
-          paddingRight: '6px',
+          paddingRight: '6px'
         }),
         dropdownIndicator: (base, state) => ({
           ...base,
           color: state.isFocused ? '#10257B' : '#94a3b8',
           padding: '4px',
           '&:hover': {
-            color: '#10257B',
-          },
+            color: '#10257B'
+          }
         }),
         indicatorSeparator: () => ({
-          display: 'none',
+          display: 'none'
         }),
         menu: (base) => ({
           ...base,
@@ -355,25 +354,21 @@ CustomForm.CustomSelectSearchField = function CustomSelectSearchField({
           overflow: 'hidden',
           boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
           border: '1px solid #f1f5f9',
-          zIndex: 50,
+          zIndex: 50
         }),
         option: (base, state) => ({
           ...base,
           fontSize: '0.875rem',
           cursor: 'pointer',
-          backgroundColor: state.isSelected
-            ? '#10257B'
-            : state.isFocused
-            ? '#f1f5f9'
-            : '#ffffff',
+          backgroundColor: state.isSelected ? '#10257B' : state.isFocused ? '#f1f5f9' : '#ffffff',
           color: state.isSelected ? '#ffffff' : '#1e293b',
           '&:active': {
             backgroundColor: '#10257B',
-            color: '#ffffff',
-          },
-        }),
+            color: '#ffffff'
+          }
+        })
       }}
       {...props}
     />
-  );
-};
+  )
+}

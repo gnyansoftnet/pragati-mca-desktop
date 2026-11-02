@@ -111,7 +111,6 @@ export const DashboardPage: React.FC = () => {
       f.mobile.includes(filterQuery)
   )
 
-
   // const [formData, setFormData] = useState({
   //   name: '',
   //   milkQty: '',
@@ -134,12 +133,7 @@ export const DashboardPage: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-
-        <PageBreadcrumb
-          title="Dashboard"
-          desc="View your personal daily milk pouring logs"
-        />
-
+        <PageBreadcrumb title="Dashboard" desc="View your personal daily milk pouring logs" />
 
         <div className="flex items-center gap-2.5">
           <Button1
@@ -160,7 +154,6 @@ export const DashboardPage: React.FC = () => {
           /> */}
         </div>
       </div>
-
 
       {/* <CustomForm onSubmit={(e) => e.preventDefault()} className="max-w-xl space-y-4 p-6 bg-white rounded-2xl border border-slate-100">
         <CustomForm.CustomTextField
