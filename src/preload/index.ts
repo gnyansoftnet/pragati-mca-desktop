@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { PaginationRequestDto } from '../main/utils/pagination.dto'
 import { SaveMilkCollectionDto } from '../main/modules/milk_collection/dtos/milk-collection-save.dt'
+import { UpdateMilkCollectionDto } from '../main/modules/analysis/dtos/milk-analysis-update.dto'
 
 // Custom APIs for renderer
 
@@ -13,6 +14,10 @@ const api = {
   // milk
   getPaginatedMilkCollctions: (params: PaginationRequestDto) =>ipcRenderer.invoke('milk-collection:getPaginatedMilkCollctions', params),
   saveMilkCollection: (params: SaveMilkCollectionDto) =>ipcRenderer.invoke('milk-collection:saveMilkCollection', params),
+  getWeightSystems: () =>ipcRenderer.invoke('milk-collection:getWeightSystems'),
+
+  // milk analysis
+  updateMilkAnalysis: (params: UpdateMilkCollectionDto) =>ipcRenderer.invoke('milk-analysis:updateMilkAnalysis', params),
 
   // vendor
   getVendors: () => ipcRenderer.invoke('vendor:getVendors'),
