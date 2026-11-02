@@ -8,11 +8,13 @@ const vendorsApi = {
 
   getPaginated: (
     page: number,
-    limit: number
+    limit: number,
+    search: string
   ): Promise<PaginatedResponse<Vendor>> => {
     return window.api.getPaginatedVendors({
       page,
       limit,
+      search,
     });
   },
 };

@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Bookmark, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Button1 from '@renderer/components/buttons/Button1';
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb';
 import CustomForm from '@renderer/components/customform/CustomForm';
@@ -65,6 +68,7 @@ export const ProcurementCollection: React.FC = () => {
 
   // Other Form States
   const [shift, setShift] = useState('');
+  const [plant, setPlant] = useState('1102'); // 👈 Set to '1102' (Raipur) by default
   const [weightSystem, setWeightSystem] = useState('');
   const [cansType, setCansType] = useState('');
   const [milkType, setMilkType] = useState('');
@@ -208,6 +212,11 @@ export const ProcurementCollection: React.FC = () => {
     { value: '2', label: 'Evening' }
   ];
 
+  const plantOptions = [
+    { value: '1102', label: 'Raipur' },
+    { value: '1103', label: 'Jagatpur' }
+  ];
+
   const weights = [
     { value: 'WeightBowl', label: 'WeightBowl' },
     { value: 'Container', label: 'Container' }
@@ -233,6 +242,14 @@ export const ProcurementCollection: React.FC = () => {
   // Save Collection Handler
   const handleSaveCollection = async () => {
     try {
+
+
+
+
+
+
+
+
       const currentRoute = routes.find(
         (r) => String(r.id) === selectedRoute || (r as any).routeCode === selectedRoute
       );
@@ -248,26 +265,26 @@ export const ProcurementCollection: React.FC = () => {
       const selectedMilkType = mtype.find((m) => m.value === milkType)?.label || milkType || '';
       const selectedMilkStatus = mstatus.find((m) => m.value === milkStatus)?.label || milkStatus || '';
 
-      const weightNum = Number(weightCans);
+      const weightNum = Number(weightCans) || 0;
 
       const payload = {
-        plant: '1102',
+        plant: plant ,
         userCode: userCode,
         rootCode: rootCode,
         vendorCode: vendorCode,
-        shift: Number(shift),
+        shift: Number(shift) || 1,
         canType: selectedCan,
         weightSystem: selectedWeight,
         milkType: selectedMilkType,
         milkStatus: selectedMilkStatus,
         tipingTime: currentTime,
-        noOfCans: Number(noOfCans),
+        noOfCans: Number(noOfCans) || 0,
         grossWeight: weightNum,
         netWeight: weightNum,
         netLtr: weightNum,
-        fat: Number(fatp),
-        snf: Number(snfp),
-        clr: Number(clrp),
+        fat: Number(fatp) || 0,
+        snf: Number(snfp) || 0,
+        clr: Number(clrp) || 0,
         entry: entry
       };
 
@@ -275,10 +292,16 @@ export const ProcurementCollection: React.FC = () => {
         await (window as any).api.saveMilkCollection(payload);
       }
 
+      console.log("payload milk collection", payload);
+
+      // Success Toast Alert
+      toast.success('Milk collection saved successfully!');
+
       // Refresh table from page 1 immediately after save
       await fetchCollections(1);
     } catch (error) {
       console.error('Failed to save milk collection:', error);
+      toast.error('Failed to save milk collection. Please try again.');
     }
   };
 
@@ -301,7 +324,7 @@ export const ProcurementCollection: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <PageBreadcrumb
           title="Procurement Collection"
-          desc="collect you milk here"
+          desc="Record real-time machine tipping"
         />
       </div>
 
@@ -331,11 +354,9 @@ export const ProcurementCollection: React.FC = () => {
               </label>
               <CustomForm.CustomSelectField
                 name="chilling"
-                value="center1"
-                options={[
-                  { value: '1102', label: 'Raipur' },
-                  { value: '1103', label: 'Jagatpur' }
-                ]}
+                value={plant}
+                onChange={(e: any) => setPlant(e.target.value)}
+                options={plantOptions}
                 readOnly={true}
               />
             </div>
@@ -588,7 +609,7 @@ export const ProcurementCollection: React.FC = () => {
                   <td className="py-2 px-4 font-bold text-slate-900">
                     {item.weightSystem || item.grossWeight}
                   </td>
-                  <td className="py-3.5 px-4 font-semibold text-primary max-w-[150px] truncate">
+                  <td className="py-2 px-4 font-semibold text-primary max-w-[150px] truncate">
                     {item.rootCode || item.routes}
                   </td>
                   <td className="py-2 px-4 font-semibold text-primary">{item.canType}</td>

@@ -8,11 +8,13 @@ const routesApi = {
 
   getPaginated: (
     page: number,
-    limit: number
+    limit: number,
+    search: string
   ): Promise<PaginatedResponse<Route>> => {
     return window.api.getPaginatedRoutes({
       page,
       limit,
+      search,
     });
   },
 };
