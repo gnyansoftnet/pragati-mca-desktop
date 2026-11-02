@@ -30,7 +30,6 @@
     "react-router-dom": "^7.18.5",
     "react-select": "^5.10.2",
     "reflect-metadata": "^0.2.2",
-    "serialport": "^13.0.0",
     "tsyringe": "^4.10.0",
     "zod": "^4.6.7"
   },
