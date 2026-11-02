@@ -1,9 +1,9 @@
-import type { Route } from "../../types/routes/routes.types";
-import type { PaginatedResponse } from "../../types/common.types";
+import type { Route } from '../../types/routes/routes.types'
+import type { PaginatedResponse } from '../../types/common.types'
 
 const routesApi = {
   getAll: (): Promise<Route[]> => {
-    return window.api.getRoutes();
+    return window.api.getRoutes()
   },
 
   getPaginated: (
@@ -19,4 +19,4 @@ const routesApi = {
   },
 };
 
-export default routesApi;
+export default routesApi

@@ -1,9 +1,9 @@
-import type { Vendor } from "../../types/vendors/vendors.types";
-import type { PaginatedResponse } from "../../types/common.types";
+import type { Vendor } from '../../types/vendors/vendors.types'
+import type { PaginatedResponse } from '../../types/common.types'
 
 const vendorsApi = {
   getAll: (): Promise<Vendor[]> => {
-    return window.api.getVendors();
+    return window.api.getVendors()
   },
 
   getPaginated: (
@@ -19,4 +19,4 @@ const vendorsApi = {
   },
 };
 
-export default vendorsApi;
+export default vendorsApi
