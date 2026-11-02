@@ -1,5 +1,6 @@
 export interface Vendor {
   id: number;
-  vendorName: string;
+  dskCode: string;
+  dskName: string;
   vendorCode: string;
 }

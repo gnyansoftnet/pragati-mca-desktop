@@ -72,7 +72,6 @@ export const MacineConnection: React.FC = () => {
                 value="15"
                 // onChange=""
                 placeholder=""
-                readOnly={true}
               />
             </div>
             <div className="space-y-1.5">
@@ -84,7 +83,6 @@ export const MacineConnection: React.FC = () => {
                 value="45"
                 // onChange=""
                 placeholder=""
-                readOnly={true}
               />
             </div>
             <div className="space-y-1.5">
@@ -96,7 +94,6 @@ export const MacineConnection: React.FC = () => {
                 value="10"
                 // onChange=""
                 placeholder=""
-                readOnly={true}
               />
             </div>
             <div className="space-y-1.5">
@@ -108,7 +105,6 @@ export const MacineConnection: React.FC = () => {
                 value="45"
                 // onChange=""
                 placeholder=""
-                readOnly={true}
               />
             </div>
 
