@@ -12,6 +12,8 @@ export function registerMilkCollectionIpc(): void {
   ipcMain.handle("milk-collection:getPaginatedMilkCollctions", (_event, params: PaginationRequestDto) =>
     service.getPaginatedMilkCollctions(params)
   );
+  
+  ipcMain.handle("milk-collection:getWeightSystems", () =>service.getWeightSystems());
 
   ipcMain.handle("milk-collection:saveMilkCollection", (_event, params: SaveMilkCollectionDto) =>
     service.saveMilkCollection(params)

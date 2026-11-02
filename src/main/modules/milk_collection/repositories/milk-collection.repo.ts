@@ -5,6 +5,7 @@ import { db } from "../../../core/config/database.config";
 import { PaginationRequestDto } from "../../../utils/pagination.dto";
 import { MilkCollectionDto, PaginatedMilkCollectionDto } from "../dtos/milk-collection.dto";
 import { SaveMilkCollectionDto } from "../dtos/milk-collection-save.dt";
+import { WeightSystemDto } from "../dtos/weight-system.dto";
 
 interface MilkCollectionRow extends RowDataPacket {
     id: number;
@@ -37,12 +38,40 @@ interface MilkCollectionRow extends RowDataPacket {
     d_flag: number;
 }
 
+
+interface WeightSystemRow extends RowDataPacket {
+  id: number;
+  system_list: string;
+
+}
+
+
+
+
 interface CountRow extends RowDataPacket {
     total: number;
 }
 
 @injectable()
 export class MilkCollectionRepo {
+
+     async getWeightSystems(): Promise<WeightSystemDto[]> {
+        const [rows] = await db.execute<WeightSystemRow[]>(
+          `SELECT id,system_list
+           FROM weight_system_list
+           ORDER BY id ASC`
+        );
+        return rows.map((r) => ({
+          id: r.id,
+         system_list:r.system_list,
+        }));
+      }
+
+
+
+
+
+
     async getPaginatedMilkCollctions(
         data: PaginationRequestDto
     ): Promise<PaginatedMilkCollectionDto> {
