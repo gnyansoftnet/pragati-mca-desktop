@@ -1,9 +1,9 @@
-import routesApi from "./routes/routes.api";
-import vendorsApi from "./vendors/vendors.api";
+import routesApi from './routes/routes.api'
+import vendorsApi from './vendors/vendors.api'
 
 const api = {
   routes: routesApi,
-  vendors: vendorsApi,
-};
+  vendors: vendorsApi
+}
 
-export default api;
+export default api

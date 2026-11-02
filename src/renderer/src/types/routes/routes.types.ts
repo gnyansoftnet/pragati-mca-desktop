@@ -1,5 +1,5 @@
 export interface Route {
-  id: number;
-  routeName: string;
-  routeCode: string;
+  id: number
+  routeName: string
+  routeCode: string
 }

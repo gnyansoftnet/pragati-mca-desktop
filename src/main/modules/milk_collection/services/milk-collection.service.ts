@@ -1,13 +1,9 @@
-import { injectable, inject } from "tsyringe";
-import { PaginationRequestDto } from "../../../utils/pagination.dto";
-import { MilkCollectionRepo } from "../repositories/milk-collection.repo";
-import { MilkCollectionDto, PaginatedMilkCollectionDto } from "../dtos/milk-collection.dto";
-import { SaveMilkCollectionDto } from "../dtos/milk-collection-save.dt";
-import { WeightSystemDto } from "../dtos/weight-system.dto";
-
-
-
-
+import { injectable, inject } from 'tsyringe'
+import { PaginationRequestDto } from '../../../utils/pagination.dto'
+import { MilkCollectionRepo } from '../repositories/milk-collection.repo'
+import { MilkCollectionDto, PaginatedMilkCollectionDto } from '../dtos/milk-collection.dto'
+import { SaveMilkCollectionDto } from '../dtos/milk-collection-save.dt'
+import { WeightSystemDto } from '../dtos/weight-system.dto'
 
 @injectable()
 export class MilkCollectionService {
@@ -16,18 +12,19 @@ export class MilkCollectionService {
     private readonly milkRepo: MilkCollectionRepo
   ) {}
 
-  async getPaginatedMilkCollctions(data:PaginationRequestDto):Promise<PaginatedMilkCollectionDto>{
-        if (data.page <= 0) throw new Error("Page must be greater than 0");
-        if (data.limit <= 0) throw new Error("Limit must be greater than 0");
-        return await this.milkRepo.getPaginatedMilkCollctions(data);
+  async getPaginatedMilkCollctions(
+    data: PaginationRequestDto
+  ): Promise<PaginatedMilkCollectionDto> {
+    if (data.page <= 0) throw new Error('Page must be greater than 0')
+    if (data.limit <= 0) throw new Error('Limit must be greater than 0')
+    return await this.milkRepo.getPaginatedMilkCollctions(data)
   }
 
-  async saveMilkCollection(data:SaveMilkCollectionDto):Promise<MilkCollectionDto>{
-    return await this.milkRepo.saveMilkCollection(data);
+  async saveMilkCollection(data: SaveMilkCollectionDto): Promise<MilkCollectionDto> {
+    return await this.milkRepo.saveMilkCollection(data)
   }
 
-  async getWeightSystems():Promise<WeightSystemDto[]>{
-    return await this.milkRepo.getWeightSystems();
+  async getWeightSystems(): Promise<WeightSystemDto[]> {
+    return await this.milkRepo.getWeightSystems()
   }
-  
 }

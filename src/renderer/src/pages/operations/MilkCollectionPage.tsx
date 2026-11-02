@@ -83,20 +83,22 @@ export const MilkCollectionPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setShift('Morning')}
-              className={`px-3 py-1.5 rounded-lg transition ${shift === 'Morning'
-                ? 'bg-amber-500 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
-                }`}
+              className={`px-3 py-1.5 rounded-lg transition ${
+                shift === 'Morning'
+                  ? 'bg-amber-500 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
               ☀️ Morning
             </button>
             <button
               type="button"
               onClick={() => setShift('Evening')}
-              className={`px-3 py-1.5 rounded-lg transition ${shift === 'Evening'
-                ? 'bg-indigo-600 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
-                }`}
+              className={`px-3 py-1.5 rounded-lg transition ${
+                shift === 'Evening'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
               🌙 Evening
             </button>
@@ -190,10 +192,11 @@ export const MilkCollectionPage: React.FC = () => {
                   </td>
                   <td className="py-3.5 px-4">
                     <span
-                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${item.milkType === 'Cow'
-                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                        : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
-                        }`}
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                        item.milkType === 'Cow'
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                          : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                      }`}
                     >
                       {item.milkType}
                     </span>

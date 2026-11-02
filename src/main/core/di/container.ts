@@ -10,6 +10,7 @@ import { MilkAnalysisRepo } from '../../modules/analysis/repo/milk-analysis.repo
 import { MilkAnalysisService } from '../../modules/analysis/service/milk-analysis.service'
 import { PortConnectionRepo } from '../../modules/connection/repo/port-connection.repo'
 import { PortConnectionService } from '../../modules/connection/service/port-connection.service'
+import { SerialService } from '../../modules/connection/service/serial.service'
 
 // route
 container.registerSingleton(RouteRepo)
@@ -18,7 +19,6 @@ container.registerSingleton(RouteService)
 // vendor
 container.registerSingleton(VendorRepo)
 container.registerSingleton(VendorService)
-
 
 // milk-collection
 container.registerSingleton(MilkCollectionRepo)
@@ -32,7 +32,7 @@ container.registerSingleton(MilkAnalysisService)
 container.registerSingleton(PortConnectionRepo)
 container.registerSingleton(PortConnectionService)
 
-
-
+// serial port
+container.registerSingleton(SerialService)
 
 export { container }

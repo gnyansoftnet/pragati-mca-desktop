@@ -1,16 +1,15 @@
-// import { ipcMain } from "electron";
-// import { container } from "../../core/di/container";
-// import { SerialConnectDto } from "./dtos/serial.dto";
-// import { SerialService } from "./service/serial.service";
+import { ipcMain } from 'electron'
+import { container } from '../../core/di/container'
+import { SerialService } from './service/serial.service'
 
-// const service = container.resolve(SerialService);
+const service = container.resolve(SerialService)
 
-// export function registerSerialIpc(): void {
-//   ipcMain.handle("serial:list", () => service.listPorts());
+export function registerSerialIpc(): void {
+  ipcMain.handle('serial:list', () => service.listPorts())
 
-//   ipcMain.handle("serial:connect", (_event, params: SerialConnectDto) =>
-//     service.connect(params)
-//   );
+  ipcMain.handle('serial:connect', (_e, p) =>
+    service.connect(p.path, p.baudRate, p.parity, p.dataBits, p.stopBits)
+  )
 
-//   ipcMain.handle("serial:disconnect", () => service.disconnect());
-// }
+  ipcMain.handle('serial:disconnect', () => service.disconnect())
+}
