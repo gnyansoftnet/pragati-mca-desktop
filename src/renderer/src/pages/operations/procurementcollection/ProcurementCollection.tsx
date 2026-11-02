@@ -1,318 +1,8 @@
-// import React, { useEffect, useState } from 'react'
-// import { Download, Upload, Plus } from 'lucide-react'
-// import Button1 from '../../../components/buttons/Button1'
-// import PageBreadcrumb from '../../../components/breadcrumbs/PageBreadcrumb'
-// import CustomForm from '../../../components/customform/CustomForm';
-// import { Bookmark, X } from 'lucide-react'
-// import api from '@renderer/services';
-// import type { Route } from "@renderer/types/routes/routes.types";
-// interface SelectOption {
-//   value: string;
-//   label: string;
-// }
-
-
-// export const ProcurementCollection: React.FC = () => {
-//   const [selectedRoute, setSelectedRoute] = useState("");
-
-//   //all routes
-//   const [routes, setRoutes] = useState<Route[]>([]);
-//   const [routeOptions, setRouteOptions] = useState<SelectOption[]>([]);
-//   const [loading, setLoading] = useState<boolean>(false);
-
-
-//   const fetchRoutes = async () => {
-//     try {
-//       setLoading(true);
-
-//       const response = await api.routes.getAll();
-
-//       setRoutes(response);
-
-//       // Convert routes into select options
-//       const options = response.map((route) => ({
-//         value: String(route.id),
-//         label: route.routeName,
-//       }));
-
-//       setRouteOptions(options);
-
-//       console.log("routes", routes)
-
-//     } catch (error) {
-//       console.error("Failed to fetch routes:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   // Load routes when component mounts
-//   useEffect(() => {
-//     fetchRoutes();
-//   }, []);
-
-
-
-//   //current date
-//   const getCurrentLocalDate = (): string => {
-//     const today = new Date()
-
-//     const year = today.getFullYear()
-//     const month = String(today.getMonth() + 1).padStart(2, '0')
-//     const day = String(today.getDate()).padStart(2, '0')
-
-//     return `${year}-${month}-${day}`
-//   }
-//   //current time
-//   const getCurrentLocalDateTime = (): string => {
-//     const now = new Date()
-
-//     const year = now.getFullYear()
-//     const month = String(now.getMonth() + 1).padStart(2, '0')
-//     const day = String(now.getDate()).padStart(2, '0')
-//     const hours = String(now.getHours()).padStart(2, '0')
-//     const minutes = String(now.getMinutes()).padStart(2, '0')
-
-//     return `${year}-${month}-${day} ${hours}:${minutes}`
-//   }
-
-
-//   const shifts = [
-//     { value: 'morning', label: 'Morning' },
-//     { value: 'evening', label: 'Evening' }
-//   ];
-//   const weights = [
-//     { value: 'w1', label: 'Weight Bowl' },
-//     { value: 'w2', label: 'Container' }
-//   ];
-//   // const routes = [
-//   //   { value: 'r1', label: 'jajpur' },
-//   //   { value: 'r2', label: 'cuttack' }
-//   // ];
-//   const cans = [
-//     { value: 'k1', label: 'Aluminium' },
-//     { value: 'k2', label: 'Iron' }
-//   ];
-//   const mtype = [
-//     { value: 'm1', label: 'Mixed' },
-//     { value: 'm2', label: 'Cow' },
-//     { value: 'm3', label: 'Bufalo' },
-//   ];
-//   const mstatus = [
-//     { value: '1grid', label: '1 Grid' },
-//     { value: '2grid', label: '2 Grid' },
-//     { value: '3grid', label: '3 Grid' },
-//   ];
-//   const vendors = [
-//     { value: 'v1', label: 'Rajesh' },
-//     { value: 'v2', label: 'Ajay' },
-//     { value: 'v3', label: 'Gyana' },
-//   ];
-
-//   return (
-//     <div className="space-y-4">
-//       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-//         <PageBreadcrumb
-//           title="Macine Connection"
-//           desc="Connect with macine before collection"
-//         />
-
-//       </div>
-
-//       <div className='mt-2'>
-//         <CustomForm
-//           onSubmit={(e) => e.preventDefault()}
-//           className="w-full p-3 bg-white rounded-2xl border border-slate-100"
-//         >
-//           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Select Shift
-//               </label>
-//               <CustomForm.CustomSelectSearchField
-//                 name="shift"
-//                 value="morning"
-//                 onChange=""
-//                 options={shifts}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Chilling Center
-//               </label>
-//               <CustomForm.CustomSelectField
-//                 name="chilling"
-//                 value="Raipur"
-//                 options={[
-//                   { value: 'center1', label: 'Raipur' },
-//                   { value: 'center2', label: 'Jagatpur' }
-//                 ]}
-//                 readOnly={true}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Date
-//               </label>
-//               <CustomForm.CustomTextField
-//                 name="date"
-//                 value={getCurrentLocalDate()}
-//                 readOnly={true}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Weight System
-//               </label>
-//               <CustomForm.CustomSelectSearchField
-//                 name="weight"
-//                 value="w1"
-//                 onChange=""
-//                 options={weights}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Routes
-//               </label>
-//               <CustomForm.CustomSelectSearchField
-//                 name="route"
-//                 value={selectedRoute}
-//                 onChange={setSelectedRoute}
-//                 options={routes}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Cans Type
-//               </label>
-//               <CustomForm.CustomSelectSearchField
-//                 name="cans"
-//                 value=""
-//                 onChange=""
-//                 options={cans}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Milk Type
-//               </label>
-//               <CustomForm.CustomSelectSearchField
-//                 name="milktype"
-//                 value=""
-//                 onChange=""
-//                 options={mtype}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Milk Status
-//               </label>
-//               <CustomForm.CustomSelectSearchField
-//                 name="milkstatus"
-//                 value="1grid"
-//                 onChange=""
-//                 options={mstatus}
-//                 readOnly={true}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Tipping Time
-//               </label>
-//               <CustomForm.CustomTextField
-//                 name="time"
-//                 value={getCurrentLocalDateTime()}
-//                 readOnly={true}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Vendor Name
-//               </label>
-//               <CustomForm.CustomSelectSearchField
-//                 name="route"
-//                 value=""
-//                 onChange=""
-//                 options={vendors}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 No. of Cans
-//               </label>
-//               <CustomForm.CustomNumberField
-//                 name="no of cans"
-//                 value=""
-//                 placeholder="e.g.: 8"
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Weight (LTR)
-//               </label>
-//               <CustomForm.CustomTextField
-//                 name="weight"
-//                 value="80"
-//                 readOnly={true}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 CLR Percentage(%)
-//               </label>
-//               <CustomForm.CustomTextField
-//                 name="clr"
-//                 value="2.4"
-//                 readOnly={true}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 FAT Percentage(%)
-//               </label>
-//               <CustomForm.CustomTextField
-//                 name="fat"
-//                 value="4.5"
-//                 readOnly={true}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 SNF Percentage(%)
-//               </label>
-//               <CustomForm.CustomTextField
-//                 name="snf"
-//                 value="78.5"
-//                 readOnly={true}
-//               />
-//             </div>
-//           </div>
-//           <div className="flex justify-end items-center gap-2.5 mt-6">
-//             <Button1
-//               variant="outline"
-//               icon={<X className="w-3.5 h-3.5 text-primary" />}
-//               label="Cancel"
-//             />
-//             <Button1
-//               variant="primary"
-//               icon={<Bookmark className="w-3.5 h-3.5 text-white" />}
-//               label="Save"
-//             />
-//           </div>
-//           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
-
-//           </div>
-//         </CustomForm>
-//       </div>
-//     </div>
-//   )
-// }
 import React, { useEffect, useState } from 'react';
-import { Bookmark, X } from 'lucide-react';
-import Button1 from '../../../components/buttons/Button1';
-import PageBreadcrumb from '../../../components/breadcrumbs/PageBreadcrumb';
-import CustomForm from '../../../components/customform/CustomForm';
+import { Bookmark, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import Button1 from '@renderer/components/buttons/Button1';
+import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb';
+import CustomForm from '@renderer/components/customform/CustomForm';
 import api from '@renderer/services';
 import type { Route } from '@renderer/types/routes/routes.types';
 import type { Vendor } from '@renderer/types/vendors/vendors.types';
@@ -322,6 +12,44 @@ interface SelectOption {
   label: string;
 }
 
+interface MilkEntry {
+  id: number;
+  sampleCode?: string | number;
+  farmerId?: string;
+  chillingPlant?: string;
+  plant?: string;
+  date?: string;
+  sampleDate?: string | Date;
+  routes?: string;
+  rootCode?: string;
+  canType?: string;
+  shift?: number | string;
+  shiftName?: string;
+  milkType?: string;
+  milkStatus?: string;
+  tipingTime?: string;
+  vendorCode?: string;
+  noOfCans?: number | string;
+  netWeight?: string | number;
+  grossWeight?: string | number;
+  fatPercent?: number;
+  fat?: string | number;
+  snfPercent?: number;
+  snf?: string | number;
+  clrPercent?: number;
+  clr?: string | number;
+  weightSystem?: string;
+}
+
+interface PaginationState {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
 export const ProcurementCollection: React.FC = () => {
   // Routes State
   const [routes, setRoutes] = useState<Route[]>([]);
@@ -329,7 +57,7 @@ export const ProcurementCollection: React.FC = () => {
   const [selectedRoute, setSelectedRoute] = useState<string>('');
   const [loadingRoutes, setLoadingRoutes] = useState<boolean>(false);
 
-  //vendor states
+  // Vendor states
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [vendorOptions, setVendorOptions] = useState<SelectOption[]>([]);
   const [selectedVendor, setSelectedVendor] = useState<string>('');
@@ -340,9 +68,27 @@ export const ProcurementCollection: React.FC = () => {
   const [weightSystem, setWeightSystem] = useState('');
   const [cansType, setCansType] = useState('');
   const [milkType, setMilkType] = useState('');
-  const [milkStatus] = useState('1grid');
-  const [vendor, setVendor] = useState('');
+  const [milkStatus, setMilkStatus] = useState('');
   const [noOfCans, setNoOfCans] = useState('');
+  const [weightCans, setWeightCans] = useState('');
+  const [clrp, setClrp] = useState('2.4');
+  const [fatp, setFatp] = useState('24.5');
+  const [snfp, setSnfp] = useState('78.5');
+
+  const userCode = "USR0001";
+  const entry = "MACHINE";
+
+  // Pagination State
+  const [pagination, setPagination] = useState<PaginationState>({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false
+  });
+
+  const [entries, setEntries] = useState<MilkEntry[]>([]);
 
   // Fetch routes from Electron Main Process via api service
   const fetchRoutes = async () => {
@@ -359,8 +105,6 @@ export const ProcurementCollection: React.FC = () => {
       }));
 
       setRouteOptions(options);
-
-      
     } catch (error) {
       console.error('Failed to fetch routes:', error);
     } finally {
@@ -382,8 +126,6 @@ export const ProcurementCollection: React.FC = () => {
       }));
 
       setVendorOptions(options);
-
-      
     } catch (error) {
       console.error('Failed to fetch vendors:', error);
     } finally {
@@ -391,10 +133,36 @@ export const ProcurementCollection: React.FC = () => {
     }
   };
 
-  // Load routes when component mounts
+  // Fetch paginated milk collection entries from Electron Main Process
+  const fetchCollections = async (page = 1): Promise<void> => {
+    try {
+      if (typeof window !== 'undefined') {
+        const getFn =
+          (window as any).api?.getPaginatedMilkCollctions ||
+          (window as any).api?.getPaginatedMilkCollections;
+
+        if (getFn) {
+          const response = await getFn({ page, limit: 10 });
+          if (response) {
+            if (response.data) {
+              setEntries(response.data);
+            }
+            if (response.pagination) {
+              setPagination(response.pagination);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch milk collections:', error);
+    }
+  };
+
+  // Load routes, vendors, and table entries when component mounts
   useEffect(() => {
     fetchRoutes();
     fetchVendors();
+    fetchCollections(1);
   }, []);
 
   // Current Date
@@ -409,13 +177,30 @@ export const ProcurementCollection: React.FC = () => {
   // Current Time
   const getCurrentLocalDateTime = (): string => {
     const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    return `${hours}:${minutes}:${seconds}`;
   };
+
+  const [currentTime, setCurrentTime] = useState(getCurrentLocalDateTime);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(getCurrentLocalDateTime());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (noOfCans !== '') {
+      setWeightCans(String(Number(noOfCans) * 20));
+    } else {
+      setWeightCans('');
+    }
+  }, [noOfCans]);
 
   // Static Dropdown Options
   const shifts = [
@@ -424,32 +209,91 @@ export const ProcurementCollection: React.FC = () => {
   ];
 
   const weights = [
-    { value: 'w1', label: 'Weight Bowl' },
-    { value: 'w2', label: 'Container' }
+    { value: 'WeightBowl', label: 'WeightBowl' },
+    { value: 'Container', label: 'Container' }
   ];
 
   const cans = [
-    { value: 'k1', label: 'Aluminium' },
-    { value: 'k2', label: 'Iron' }
+    { value: 'Aluminium', label: 'Aluminium' },
+    { value: 'Iron', label: 'Iron' }
   ];
 
   const mtype = [
-    { value: 'm1', label: 'Mixed' },
-    { value: 'm2', label: 'Cow' },
-    { value: 'm3', label: 'Buffalo' }
+    { value: 'mixed', label: 'Mixed' },
+    { value: 'cow', label: 'Cow' },
+    { value: 'buffalo', label: 'Buffalo' }
   ];
 
   const mstatus = [
-    { value: '1grid', label: '1 Grid' },
-    { value: '2grid', label: '2 Grid' },
-    { value: '3grid', label: '3 Grid' }
+    { value: 'good', label: 'Good' },
+    { value: 'better', label: 'Better' },
+    { value: 'best', label: 'Best' }
   ];
 
-  // const vendors = [
-  //   { value: 'v1', label: 'Rajesh' },
-  //   { value: 'v2', label: 'Ajay' },
-  //   { value: 'v3', label: 'Gyana' }
-  // ];
+  // Save Collection Handler
+  const handleSaveCollection = async () => {
+    try {
+      const currentRoute = routes.find(
+        (r) => String(r.id) === selectedRoute || (r as any).routeCode === selectedRoute
+      );
+      const rootCode = (currentRoute as any)?.routeCode || currentRoute?.routeName || selectedRoute || 'ROOT001';
+
+      const currentVendor = vendors.find(
+        (v) => String(v.id) === selectedVendor || v.vendorCode === selectedVendor
+      );
+      const vendorCode = currentVendor?.vendorCode || selectedVendor || 'VEND001';
+
+      const selectedCan = cans.find((c) => c.value === cansType)?.label || cansType || '';
+      const selectedWeight = weights.find((w) => w.value === weightSystem)?.label || weightSystem || '';
+      const selectedMilkType = mtype.find((m) => m.value === milkType)?.label || milkType || '';
+      const selectedMilkStatus = mstatus.find((m) => m.value === milkStatus)?.label || milkStatus || '';
+
+      const weightNum = Number(weightCans);
+
+      const payload = {
+        plant: '1102',
+        userCode: userCode,
+        rootCode: rootCode,
+        vendorCode: vendorCode,
+        shift: Number(shift),
+        canType: selectedCan,
+        weightSystem: selectedWeight,
+        milkType: selectedMilkType,
+        milkStatus: selectedMilkStatus,
+        tipingTime: currentTime,
+        noOfCans: Number(noOfCans),
+        grossWeight: weightNum,
+        netWeight: weightNum,
+        netLtr: weightNum,
+        fat: Number(fatp),
+        snf: Number(snfp),
+        clr: Number(clrp),
+        entry: entry
+      };
+
+      if (typeof window !== 'undefined' && (window as any).api?.saveMilkCollection) {
+        await (window as any).api.saveMilkCollection(payload);
+      }
+
+      // Refresh table from page 1 immediately after save
+      await fetchCollections(1);
+    } catch (error) {
+      console.error('Failed to save milk collection:', error);
+    }
+  };
+
+  // Cancel Handler
+  const handleCancel = () => {
+    setSelectedRoute('');
+    setSelectedVendor('');
+    setShift('');
+    setWeightSystem('');
+    setCansType('');
+    setMilkType('');
+    setMilkStatus('');
+    setNoOfCans('');
+    setWeightCans('');
+  };
 
   return (
     <div className="space-y-4">
@@ -461,12 +305,12 @@ export const ProcurementCollection: React.FC = () => {
         />
       </div>
 
-      <div className="mt-2">
+      <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
         <CustomForm
           onSubmit={(e) => e.preventDefault()}
-          className="w-full p-4 sm:p-6 bg-white rounded-2xl border border-slate-100 shadow-xs"
+          className="w-full"
         >
-          <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
+          <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2.5">
             {/* Shift */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
@@ -489,8 +333,8 @@ export const ProcurementCollection: React.FC = () => {
                 name="chilling"
                 value="center1"
                 options={[
-                  { value: 'center1', label: 'Raipur' },
-                  { value: 'center2', label: 'Jagatpur' }
+                  { value: '1102', label: 'Raipur' },
+                  { value: '1103', label: 'Jagatpur' }
                 ]}
                 readOnly={true}
               />
@@ -521,14 +365,14 @@ export const ProcurementCollection: React.FC = () => {
               />
             </div>
 
-            {/* 🌟 Dynamic Routes Dropdown */}
+            {/* Dynamic Routes Dropdown */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
                 Routes {loadingRoutes && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
                 name="route"
-                placeholder={loadingRoutes ? "Loading routes..." : "Select a route..."}
+                placeholder={loadingRoutes ? 'Loading routes...' : 'Select & search route...'}
                 value={selectedRoute}
                 onChange={(e: any) => setSelectedRoute(e.target.value)}
                 options={routeOptions}
@@ -570,8 +414,8 @@ export const ProcurementCollection: React.FC = () => {
               <CustomForm.CustomSelectSearchField
                 name="milkstatus"
                 value={milkStatus}
+                onChange={(e: any) => setMilkStatus(e.target.value)}
                 options={mstatus}
-                readOnly={true}
               />
             </div>
 
@@ -593,8 +437,8 @@ export const ProcurementCollection: React.FC = () => {
                 Vendor Name{loadingVendors && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
-                name="route"
-                placeholder={loadingVendors ? "Loading vendors..." : "Select a vendor..."}
+                name="vendor"
+                placeholder={loadingVendors ? 'Loading vendors...' : 'Select & search vendor...'}
                 value={selectedVendor}
                 onChange={(e: any) => setSelectedVendor(e.target.value)}
                 options={vendorOptions}
@@ -611,7 +455,7 @@ export const ProcurementCollection: React.FC = () => {
                 name="noOfCans"
                 value={noOfCans}
                 onChange={(e: any) => setNoOfCans(e.target.value)}
-                placeholder="e.g. 8"
+                placeholder="e.g. 4"
               />
             </div>
 
@@ -622,8 +466,9 @@ export const ProcurementCollection: React.FC = () => {
               </label>
               <CustomForm.CustomTextField
                 name="weight"
-                value="80"
-                readOnly={true}
+                value={weightCans}
+                onChange={(e: any) => setWeightCans(e.target.value)}
+                placeholder="e.g. 80"
               />
             </div>
 
@@ -634,7 +479,8 @@ export const ProcurementCollection: React.FC = () => {
               </label>
               <CustomForm.CustomTextField
                 name="clr"
-                value="2.4"
+                value={clrp}
+                onChange={(e: any) => setClrp(e.target.value)}
                 readOnly={true}
               />
             </div>
@@ -646,7 +492,8 @@ export const ProcurementCollection: React.FC = () => {
               </label>
               <CustomForm.CustomTextField
                 name="fat"
-                value="4.5"
+                value={fatp}
+                onChange={(e: any) => setFatp(e.target.value)}
                 readOnly={true}
               />
             </div>
@@ -658,26 +505,149 @@ export const ProcurementCollection: React.FC = () => {
               </label>
               <CustomForm.CustomTextField
                 name="snf"
-                value="78.5"
+                value={snfp}
+                onChange={(e: any) => setSnfp(e.target.value)}
                 readOnly={true}
               />
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end items-center gap-2.5 mt-6 pt-4 border-t border-slate-100">
+          <div className="flex justify-end items-center gap-2.5 mt-3 pt-2 border-t border-slate-100">
             <Button1
               variant="outline"
               icon={<X className="w-3.5 h-3.5 text-primary" />}
               label="Cancel"
+              onClick={handleCancel}
             />
             <Button1
               variant="primary"
               icon={<Bookmark className="w-3.5 h-3.5 text-white" />}
               label="Save Collection"
+              onClick={handleSaveCollection}
             />
           </div>
         </CustomForm>
+      </div>
+
+      <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-slate-100 bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <th className="py-3 px-2 whitespace-nowrap">Sample Code</th>
+                <th className="py-3 px-2 whitespace-nowrap">Shift</th>
+                <th className="py-3 px-2 whitespace-nowrap">Chilling Plant</th>
+                <th className="py-3 px-2 whitespace-nowrap">Date</th>
+                <th className="py-3 px-2 whitespace-nowrap">Weight System</th>
+                <th className="py-3 px-2 whitespace-nowrap">Routes</th>
+                <th className="py-3 px-2 whitespace-nowrap">Cans Type</th>
+                <th className="py-3 px-2 whitespace-nowrap">Milk Type</th>
+                <th className="py-3 px-2 whitespace-nowrap">Milk Status</th>
+                <th className="py-3 px-2 whitespace-nowrap">Tipping Time</th>
+                <th className="py-3 px-2 whitespace-nowrap">Vendor Name</th>
+                <th className="py-3 px-2 whitespace-nowrap">No. of Cans</th>
+                <th className="py-3 px-2 whitespace-nowrap">Net Weight</th>
+                <th className="py-3 px-2 whitespace-nowrap">CLR(%)</th>
+                <th className="py-3 px-2 whitespace-nowrap">FAT(%)</th>
+                <th className="py-3 px-2 whitespace-nowrap">SNF(%)</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-xs">
+              {entries.map((item, index) => (
+                <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
+                  <td className="py-2 px-4 font-semibold text-primary">{item.sampleCode}</td>
+                  <td className="py-2 px-4">
+                    <span
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                        String(item.shift) === '1'
+                          ? 'bg-orange-50 text-orange-500 border-orange-200'
+                          : String(item.shift) === '2'
+                          ? 'bg-sky-50 text-sky-500 border-sky-200'
+                          : 'bg-rose-50 text-rose-700 border-rose-200'
+                      }`}
+                    >
+                      {String(item.shift) === '1'
+                        ? 'Morning'
+                        : String(item.shift) === '2'
+                        ? 'Evening'
+                        : item.shiftName || `Shift ${item.shift}`}
+                    </span>
+                  </td>
+                  <td className="py-2 px-4 font-semibold text-slate-800">
+                    {item.plant || item.chillingPlant}
+                  </td>
+                  <td className="py-2 px-4 font-semibold text-primary">
+                    {item.sampleDate
+                      ? (() => {
+                          const d = new Date(item.sampleDate);
+                          return isNaN(d.getTime()) ? String(item.sampleDate) : d.toLocaleDateString();
+                        })()
+                      : item.date || ''}
+                  </td>
+                  <td className="py-2 px-4 font-bold text-slate-900">
+                    {item.weightSystem || item.grossWeight}
+                  </td>
+                  <td className="py-3.5 px-4 font-semibold text-primary max-w-[150px] truncate">
+                    {item.rootCode || item.routes}
+                  </td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.canType}</td>
+                  <td className="py-2 px-4">
+                    <span
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                        String(item.milkType).toLowerCase() === 'cow'
+                          ? 'bg-amber-50 text-amber-700 border-amber-200'
+                          : String(item.milkType).toLowerCase() === 'buffalo'
+                          ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                          : String(item.milkType).toLowerCase() === 'mixed'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-gray-50 text-gray-700 border-gray-200'
+                      }`}
+                    >
+                      {item.milkType}
+                    </span>
+                  </td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.milkStatus}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.tipingTime}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.noOfCans}</td>
+                  <td className="py-2 px-4 font-bold text-emerald-600">{item.netWeight}</td>
+                  <td className="py-2 px-4 text-slate-700">{item.clr !== undefined ? item.clr : item.clrPercent}%</td>
+                  <td className="py-2 px-4 text-slate-700">{item.fat !== undefined ? item.fat : item.fatPercent}%</td>
+                  <td className="py-2 px-4 text-slate-700">{item.snf !== undefined ? item.snf : item.snfPercent}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500">
+          <div>
+            Showing page <span className="font-semibold text-slate-700">{pagination.page}</span> of{' '}
+            <span className="font-semibold text-slate-700">{pagination.totalPages || 1}</span> ({pagination.total || entries.length} items)
+          </div>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              disabled={!pagination.hasPrevPage}
+              onClick={() => fetchCollections(pagination.page - 1)}
+              className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition flex items-center gap-1"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Previous</span>
+            </button>
+            <button
+              type="button"
+              disabled={!pagination.hasNextPage}
+              onClick={() => fetchCollections(pagination.page + 1)}
+              className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition flex items-center gap-1"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
