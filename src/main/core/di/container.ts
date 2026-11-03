@@ -11,6 +11,10 @@ import { MilkAnalysisService } from '../../modules/analysis/service/milk-analysi
 import { PortConnectionRepo } from '../../modules/connection/repo/port-connection.repo'
 import { PortConnectionService } from '../../modules/connection/service/port-connection.service'
 import { SerialService } from '../../modules/connection/service/serial.service'
+import { SupervisorRepo } from '../../modules/supervisor/repo/supervisor.repo'
+import { SupervisorService } from '../../modules/supervisor/service/supervisor.service'
+import { MilkRejectionRepo } from '../../modules/milk_rejection/repo/milk-rejection.repo'
+import { MilkRejectionService } from '../../modules/milk_rejection/service/milk-rejection.service'
 
 // route
 container.registerSingleton(RouteRepo)
@@ -34,5 +38,13 @@ container.registerSingleton(PortConnectionService)
 
 // serial port
 container.registerSingleton(SerialService)
+
+// supervisor
+container.registerSingleton(SupervisorRepo)
+container.registerSingleton(SupervisorService)
+
+// milkRejection
+container.registerSingleton(MilkRejectionRepo)
+container.registerSingleton(MilkRejectionService)
 
 export { container }
