@@ -1,8 +1,11 @@
 import { injectable } from 'tsyringe'
 import type { RowDataPacket } from 'mysql2'
 import { db } from '../../../core/config/database.config'
-import { PaginatedRoutesDto, RouteResponseDto } from '../dtos/route-response.dto'
-import { PaginationRequestDto } from '../../../utils/pagination.dto'
+import {
+  PaginatedRoutesDto,
+  RouteResponseDto
+} from '../../../../shared/dtos/route/route-response.dto'
+import { PaginationRequestDto } from '../../../../shared/dtos/pagination.dto'
 
 interface RouteRow extends RowDataPacket {
   id: number

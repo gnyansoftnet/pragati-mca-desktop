@@ -1,8 +1,11 @@
 import { injectable } from 'tsyringe'
 import type { RowDataPacket } from 'mysql2'
 import { db } from '../../../core/config/database.config'
-import { PaginationRequestDto } from '../../../utils/pagination.dto'
-import { PaginatedSupervisorDto, SupervisorResponseDto } from '../dto/supervisor.dto'
+import { PaginationRequestDto } from '../../../../shared/dtos/pagination.dto'
+import {
+  PaginatedSupervisorDto,
+  SupervisorResponseDto
+} from '../../../../shared/dtos/supervisor/supervisor.dto'
 
 interface SupervisorRow extends RowDataPacket {
   id: number

@@ -1,8 +1,11 @@
 import { injectable, inject } from 'tsyringe'
 
-import { PaginationRequestDto } from '../../../utils/pagination.dto'
+import { PaginationRequestDto } from '../../../../shared/dtos/pagination.dto'
 import { SupervisorRepo } from '../repo/supervisor.repo'
-import { PaginatedSupervisorDto, SupervisorResponseDto } from '../dto/supervisor.dto'
+import {
+  PaginatedSupervisorDto,
+  SupervisorResponseDto
+} from '../../../../shared/dtos/supervisor/supervisor.dto'
 
 @injectable()
 export class SupervisorService {

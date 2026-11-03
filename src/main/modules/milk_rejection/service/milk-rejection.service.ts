@@ -1,12 +1,12 @@
 import { injectable, inject } from 'tsyringe'
-import { PaginationRequestDto } from '../../../utils/pagination.dto'
+import { PaginationRequestDto } from '../../../../shared/dtos/pagination.dto'
 import { MilkRejectionRepo } from '../repo/milk-rejection.repo'
 import {
   MilkRejectionResponseDto,
   MilkRejectionSaveDto,
   PaginatedMilkRejectionDto,
   ReasonDto
-} from '../dtos/milk-rejection.dto'
+} from '../../../../shared/dtos/milk-rejection/milk-rejection.dto'
 
 @injectable()
 export class MilkRejectionService {

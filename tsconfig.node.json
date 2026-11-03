@@ -3,13 +3,17 @@
   "include": [
     "electron.vite.config.*",
     "src/main/**/*",
-    "src/preload/**/*"
+    "src/preload/**/*",
+    "src/shared/**/*"
   ],
   "compilerOptions": {
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strict": true,
     "composite": true,
+     "paths": {
+      "@shared/*": ["./src/shared/*"]
+    },
     "types": [
       "electron-vite/node"
     ]

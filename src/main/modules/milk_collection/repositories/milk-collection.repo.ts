@@ -1,10 +1,13 @@
 import { injectable } from 'tsyringe'
 import type { RowDataPacket } from 'mysql2'
 import { db } from '../../../core/config/database.config'
-import { PaginationRequestDto } from '../../../utils/pagination.dto'
-import { MilkCollectionDto, PaginatedMilkCollectionDto } from '../dtos/milk-collection.dto'
-import { SaveMilkCollectionDto } from '../dtos/milk-collection-save.dt'
-import { WeightSystemDto } from '../dtos/weight-system.dto'
+import { PaginationRequestDto } from '../../../../shared/dtos/pagination.dto'
+import {
+  MilkCollectionDto,
+  PaginatedMilkCollectionDto
+} from '../../../../shared/dtos/milk-collection/milk-collection.dto'
+import { SaveMilkCollectionDto } from '../../../../shared/dtos/milk-collection/milk-collection-save.dt'
+import { WeightSystemDto } from '../../../../shared/dtos/milk-collection/weight-system.dto'
 
 interface MilkCollectionRow extends RowDataPacket {
   id: number

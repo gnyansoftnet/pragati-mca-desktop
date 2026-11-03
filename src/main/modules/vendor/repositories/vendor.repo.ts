@@ -1,8 +1,8 @@
 import { injectable } from 'tsyringe'
 import type { RowDataPacket } from 'mysql2'
 import { db } from '../../../core/config/database.config'
-import { PaginatedVendorsDto, VendoreDto } from '../dtos/vendor.dto'
-import { PaginationRequestDto } from '../../../utils/pagination.dto'
+import { PaginatedVendorsDto, VendoreDto } from '../../../../shared/dtos/vendor/vendor.dto'
+import { PaginationRequestDto } from '../../../../shared/dtos/pagination.dto'
 
 interface VendorRow extends RowDataPacket {
   id: number

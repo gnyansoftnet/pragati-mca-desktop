@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron'
 import { container } from '../../core/di/container'
-import { UpdateMilkCollectionDto } from './dtos/milk-analysis-update.dto'
+import { UpdateMilkCollectionDto } from '../../../shared/dtos/analysis/milk-analysis-update.dto'
 import { MilkAnalysisService } from './service/milk-analysis.service'
 
 const service = container.resolve(MilkAnalysisService)

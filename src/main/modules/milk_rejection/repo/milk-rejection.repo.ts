@@ -1,13 +1,13 @@
 import { injectable } from 'tsyringe'
 import type { ResultSetHeader, RowDataPacket } from 'mysql2'
 import { db } from '../../../core/config/database.config'
-import { PaginationRequestDto } from '../../../utils/pagination.dto'
+import { PaginationRequestDto } from '../../../../shared/dtos/pagination.dto'
 import {
   MilkRejectionResponseDto,
   MilkRejectionSaveDto,
   PaginatedMilkRejectionDto,
   ReasonDto
-} from '../dtos/milk-rejection.dto'
+} from '../../../../shared/dtos/milk-rejection/milk-rejection.dto'
 
 interface MilkRejectionRow extends RowDataPacket {
   id: number

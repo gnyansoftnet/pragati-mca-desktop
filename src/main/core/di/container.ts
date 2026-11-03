@@ -15,6 +15,9 @@ import { SupervisorRepo } from '../../modules/supervisor/repo/supervisor.repo'
 import { SupervisorService } from '../../modules/supervisor/service/supervisor.service'
 import { MilkRejectionRepo } from '../../modules/milk_rejection/repo/milk-rejection.repo'
 import { MilkRejectionService } from '../../modules/milk_rejection/service/milk-rejection.service'
+import { PasswordService } from '../../modules/user/service/password.service'
+import { UserRepo } from '../../modules/user/repo/user.repo.dto'
+import { UserService } from '../../modules/user/service/user.service'
 
 // route
 container.registerSingleton(RouteRepo)
@@ -46,5 +49,11 @@ container.registerSingleton(SupervisorService)
 // milkRejection
 container.registerSingleton(MilkRejectionRepo)
 container.registerSingleton(MilkRejectionService)
+
+// password
+container.registerSingleton(PasswordService)
+// user
+container.registerSingleton(UserRepo)
+container.registerSingleton(UserService)
 
 export { container }

@@ -1,7 +1,10 @@
 import { injectable, inject } from 'tsyringe'
 import { RouteRepo } from '../repositories/route.repo'
-import { PaginatedRoutesDto, RouteResponseDto } from '../dtos/route-response.dto'
-import { PaginationRequestDto } from '../../../utils/pagination.dto'
+import {
+  PaginatedRoutesDto,
+  RouteResponseDto
+} from '../../../../shared/dtos/route/route-response.dto'
+import { PaginationRequestDto } from '../../../../shared/dtos/pagination.dto'
 
 @injectable()
 export class RouteService {

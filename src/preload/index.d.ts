@@ -1,40 +1,35 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import type {
-  PaginatedRoutesDto,
-  RouteResponseDto
-} from '../main/modules/route/dto/route-response.dto'
-import type { VendoreDto, PaginatedVendorsDto } from '../main/modules/vendor/dto/vendor.dto'
-import type {
-  PaginatedMilkCollectionDto,
-  MilkCollectionDto
-} from '../main/modules/milk_collection/dtos/milk-collection.dto'
-import type { SaveMilkCollectionDto } from '../main/modules/milk_collection/dtos/milk-collection-save.dto'
-import type { WeightSystemDto } from '../main/modules/milk_collection/dtos/weight-system.dto'
-import type { UpdateMilkCollectionDto } from '../main/modules/analysis/dtos/milk-analysis-update.dto'
-
-import type {
-  PaginatedSupervisorDto,
-  SupervisorResponseDto
-} from '../main/modules/supervisor/dto/supervisor.dto'
-
-import type {
-  ReasonDto,
-  PaginatedMilkRejectionDto,
+import { UpdateMilkCollectionDto } from '@shared/dtos/analysis/milk-analysis-update.dto'
+import { SaveMilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection-save.dt'
+import {
+  MilkCollectionDto,
+  PaginatedMilkCollectionDto
+} from '@shared/dtos/milk-collection/milk-collection.dto'
+import { WeightSystemDto } from '@shared/dtos/milk-collection/weight-system.dto'
+import {
+  MilkRejectionResponseDto,
   MilkRejectionSaveDto,
-  MilkRejectionResponseDto
-} from '../main/modules/milk_rejection/dto/milk-rejection.dto'
+  ReasonDto
+} from '@shared/dtos/milk-rejection/milk-rejection.dto'
+import { PaginationRequestDto } from '@shared/dtos/pagination.dto'
+import { PaginatedRoutesDto, RouteResponseDto } from '@shared/dtos/route/route-response.dto'
+import { PaginatedSupervisorDto } from '@shared/dtos/supervisor/supervisor.dto'
+import { UserResponseDto } from '@shared/dtos/user/user.dto'
+import { PaginatedVendorsDto, VendoreDto } from '@shared/dtos/vendor/vendor.dto'
 
 declare global {
   interface Window {
     electron: ElectronAPI
     api: {
+      // user
+      login: (userName: string, password: string) => Promise<UserResponseDto>
+
       // routes
       getRoutes: () => Promise<RouteResponseDto[]>
       getPaginatedRoutes: (params: PaginationRequestDto) => Promise<PaginatedRoutesDto>
       // supervisor
-      getRoutes: () => Promise<SupervisorResponseDto[]>
-      getPaginatedRoutes: (params: PaginationRequestDto) => Promise<PaginatedSupervisorDto>
-
+      getSupervisors: () => Promise<SupervisorResponseDto[]>
+      getPaginatedSupervisors: (params: PaginationRequestDto) => Promise<PaginatedSupervisorDto>
       //  vendor
       getVendors: () => Promise<VendoreDto[]>
       getPaginatedVendors: (params: PaginationRequestDto) => Promise<PaginatedVendorsDto>

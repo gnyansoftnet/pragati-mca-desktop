@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe'
 import { db } from '../../../core/config/database.config'
-import { UpdateMilkCollectionDto } from '../dtos/milk-analysis-update.dto'
+import { UpdateMilkCollectionDto } from '../../../../shared/dtos/analysis/milk-analysis-update.dto'
 import { RowDataPacket } from 'mysql2'
 
 export interface UpdateAnalysisResultDto {

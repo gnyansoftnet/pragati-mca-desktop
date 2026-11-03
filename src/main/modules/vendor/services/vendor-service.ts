@@ -1,7 +1,7 @@
 import { inject, injectable } from 'tsyringe'
 import { VendorRepo } from '../repositories/vendor.repo'
-import { PaginatedVendorsDto, VendoreDto } from '../dtos/vendor.dto'
-import { PaginationRequestDto } from '../../../utils/pagination.dto'
+import { PaginatedVendorsDto, VendoreDto } from '../../../../shared/dtos/vendor/vendor.dto'
+import { PaginationRequestDto } from '../../../../shared/dtos/pagination.dto'
 
 @injectable()
 export class VendorService {
