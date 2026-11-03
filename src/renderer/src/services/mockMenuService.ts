@@ -140,6 +140,16 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     category: 'master',
     order_index: 50,
     badge: ''
+  },
+  {
+    id: 10,
+    title: 'Gyana',
+    path: '/gyana',
+    icon: 'FolderUsers',
+    roles: ['admin', 'staff', 'farmer'],
+    category: 'operations',
+    order_index: 50,
+    badge: ''
   }
 ]
 
