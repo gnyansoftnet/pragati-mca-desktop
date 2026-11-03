@@ -10,7 +10,7 @@ import Button1 from '@renderer/components/buttons/Button1'
 interface AnalyzeArray {
   id: number
   sampleNo: number
-  port: string
+  // port: string
   netWeight: string
   fatPercentage: number
   snfPercentage: number
@@ -82,7 +82,7 @@ export const Analyze: React.FC = () => {
       toast.success('Analysis data saved successfully!')
     } catch (error) {
       console.error('Failed to update analysis:', error)
-      toast.error('Failed to save analysis. Please try again. ', error)
+      toast.error('Failed to save analysis. Please try again. ')
     } finally {
       setLoading(false)
     }

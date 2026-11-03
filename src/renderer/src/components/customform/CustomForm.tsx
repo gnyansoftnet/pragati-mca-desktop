@@ -17,21 +17,31 @@ export default function CustomForm(props) {
 /* ==========================================================================
    1. Custom Text Field
    ========================================================================== */
+interface CustomTextFieldProps {
+  name?: string
+  value?: string | number
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  placeholder?: string
+  readOnly?: boolean
+  disabled?: boolean
+  className?: string
+  [key: string]: any
+}
 CustomForm.CustomTextField = function CustomTextField({
   name,
   value,
   onChange,
-  placeholder = 'Enter text...',
+  placeholder = '',
   readOnly = false,
   disabled = false,
   className = '',
   ...props
-}) {
+}: CustomTextFieldProps) {
   return (
     <input
       type="text"
       name={name}
-      value={value}
+      value={value ?? ''}
       onChange={onChange}
       placeholder={placeholder}
       readOnly={readOnly}
@@ -210,6 +220,24 @@ CustomForm.CustomAddress = function CustomAddress({
 /* ==========================================================================
    7. Custom Select Field (HTML Native with readOnly support)
    ========================================================================== */
+interface SelectOption {
+  value: string | number
+  label: string
+}
+
+interface CustomSelectFieldProps {
+  name?: string
+  value?: string | number
+  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  options?: SelectOption[]
+  placeholder?: string
+  readOnly?: boolean
+  disabled?: boolean
+  className?: string
+  children?: React.ReactNode
+  [key: string]: any
+}
+
 CustomForm.CustomSelectField = function CustomSelectField({
   name,
   value,
@@ -221,7 +249,7 @@ CustomForm.CustomSelectField = function CustomSelectField({
   className = '',
   children,
   ...props
-}) {
+}: CustomSelectFieldProps) {
   return (
     <div className="relative w-full flex items-center">
       <select
@@ -239,6 +267,7 @@ CustomForm.CustomSelectField = function CustomSelectField({
             {placeholder}
           </option>
         )}
+
         {children ||
           options.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -246,11 +275,10 @@ CustomForm.CustomSelectField = function CustomSelectField({
             </option>
           ))}
       </select>
-      {!readOnly && (
-        <div className="absolute right-3.5 text-slate-400 pointer-events-none">
-          <ChevronDown strokeWidth={2} className="w-4 h-4" />
-        </div>
-      )}
+
+      <div className="absolute right-3.5 text-slate-400 pointer-events-none">
+        <ChevronDown strokeWidth={2} className="w-4 h-4" />
+      </div>
     </div>
   )
 }

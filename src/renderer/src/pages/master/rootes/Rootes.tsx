@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Plus, RefreshCw } from 'lucide-react'
+import { RefreshCw } from 'lucide-react'
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
 import Button1 from '@renderer/components/buttons/Button1'
 import TableToolbar from '@renderer/components/table/TableToolbar'
