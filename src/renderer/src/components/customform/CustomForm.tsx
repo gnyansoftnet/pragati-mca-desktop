@@ -55,6 +55,18 @@ CustomForm.CustomTextField = function CustomTextField({
 /* ==========================================================================
    2. Custom Number Field
    ========================================================================== */
+interface CustomNumberFieldProps {
+  name?: string
+  value?: string | number
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  placeholder?: string
+  unit?: string
+  readOnly?: boolean
+  disabled?: boolean
+  className?: string
+  [key: string]: any
+}
+
 CustomForm.CustomNumberField = function CustomNumberField({
   name,
   value,
@@ -65,20 +77,23 @@ CustomForm.CustomNumberField = function CustomNumberField({
   disabled = false,
   className = '',
   ...props
-}) {
+}: CustomNumberFieldProps) {
   return (
     <div className="relative w-full flex items-center">
       <input
         type="number"
         name={name}
-        value={value}
+        value={value ?? ''}
         onChange={onChange}
         placeholder={placeholder}
         readOnly={readOnly}
         disabled={disabled}
-        className={`${baseInputClass} ${unit ? 'pr-12' : ''} ${className}`}
+        className={`${baseInputClass} ${unit ? 'pr-12' : ''} ${
+          readOnly ? 'cursor-default bg-slate-50' : ''
+        } ${className}`}
         {...props}
       />
+
       {unit && (
         <span className="absolute right-3 text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md pointer-events-none select-none">
           {unit}
@@ -286,6 +301,27 @@ CustomForm.CustomSelectField = function CustomSelectField({
 /* ==========================================================================
    8. Custom Select Search Field (react-select with readOnly & safe Array)
    ========================================================================== */
+   interface SelectSearchOption {
+  value: string | number
+  label: string
+}
+
+interface CustomSelectSearchFieldProps {
+  name?: string
+  value?: string | number
+  onChange?: (event: {
+    target: {
+      name?: string
+      value: string | number
+    }
+  }) => void
+  options?: SelectSearchOption[]
+  placeholder?: string
+  readOnly?: boolean
+  disabled?: boolean
+  className?: string
+  [key: string]: any
+}
 CustomForm.CustomSelectSearchField = function CustomSelectSearchField({
   options = [],
   value,
@@ -296,7 +332,7 @@ CustomForm.CustomSelectSearchField = function CustomSelectSearchField({
   disabled = false,
   className = '',
   ...props
-}) {
+}: CustomSelectSearchFieldProps) {
   // Safe Array validation
   const safeOptions = Array.isArray(options)
     ? options
