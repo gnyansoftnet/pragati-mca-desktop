@@ -17,7 +17,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   )
 }
 
-export default function MacineConnection() {
+export default function MacineConnection2() {
   const [ports, setPorts] = useState<{ path: string }[]>([])
   const [path, setPath] = useState('')
   const [baudRate, setBaudRate] = useState(2400)
