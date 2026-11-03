@@ -157,16 +157,16 @@ export const Vendors: React.FC = () => {
                   <td className="py-2 px-4 font-semibold text-primary">{item.dskCode}</td>
                   <td className="py-2 px-4 font-semibold text-primary">{item.dskName}</td>
                   <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
-                  {/* <td className="py-2 px-4 font-semibold text-primary">{item.mobileNumber}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.mobileNumber}</td>
                   <td className="py-2 px-4 font-semibold text-primary">{item.routeCode}</td>
-                  <td className="py-2 px-4 font-semibold text-primary">{item.supervisorEmpId}</td> */}
+                  <td className="py-2 px-4 font-semibold text-primary">{item.supervisorEmpId}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        {/* Pagination Footer */}
+
         <TablePagination
           page={pagination.page}
           totalPages={pagination.totalPages}

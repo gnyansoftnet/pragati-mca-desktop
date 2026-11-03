@@ -174,7 +174,7 @@ export const Analyze: React.FC = () => {
               {reports.map((item, index) => (
                 <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
                   <td className="py-2 px-4 font-bold text-slate-900">{item.sampleNo}</td>
-                  <td className="py-2 px-4 font-semibold text-slate-800">{item.port}</td>
+                  {/* <td className="py-2 px-4 font-semibold text-slate-800">{item.port}</td> */}
                   <td className="py-2 px-4 font-semibold text-primary max-w-[150px] truncate">
                     {item.netWeight}
                   </td>
