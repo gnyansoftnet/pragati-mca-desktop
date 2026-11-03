@@ -93,6 +93,16 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
   },
   {
     id: 5,
+    title: 'PortConnection',
+    path: '/port-connection',
+    icon: 'MonitorSpeaker',
+    roles: ['admin', 'staff', 'farmer'],
+    category: 'operations',
+    order_index: 50,
+    badge: ''
+  },
+  {
+    id: 6,
     title: 'Analyze',
     path: '/analyze',
     icon: 'FileSpreadsheet',
@@ -102,7 +112,7 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     badge: ''
   },
   {
-    id: 6,
+    id: 7,
     title: 'Routes',
     path: '/routes',
     icon: 'Banknote',
@@ -112,10 +122,20 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     badge: ''
   },
   {
-    id: 6,
+    id: 8,
     title: 'Vendors',
     path: '/vendors',
-    icon: 'Receipt',
+    icon: 'Users',
+    roles: ['admin', 'staff', 'farmer'],
+    category: 'master',
+    order_index: 50,
+    badge: ''
+  },
+  {
+    id: 9,
+    title: 'Supervisors',
+    path: '/supervisors',
+    icon: 'FolderUsers',
     roles: ['admin', 'staff', 'farmer'],
     category: 'master',
     order_index: 50,

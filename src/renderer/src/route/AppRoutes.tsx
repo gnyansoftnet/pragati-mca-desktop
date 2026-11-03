@@ -6,9 +6,11 @@ import { DashboardPage } from '../pages/dashboard/DashboardPage'
 import { MilkCollectionPage } from '../pages/operations/MilkCollectionPage'
 import { MacineConnection } from '../pages/operations/macineconnection/MacineConnection'
 import { ProcurementCollection } from '../pages/operations/procurementcollection/ProcurementCollection'
+import { PortConnection } from '../pages/operations/portconnection/PortConnection'
 import { Analyze } from '../pages/operations/analyze/Analyze'
 import { Rootes } from '../pages/master/rootes/Rootes'
 import { Vendors } from '../pages/master/vendors/Vendors'
+import { Supervisors } from '../pages/master/supervisors/Supervisors'
 import { DynamicRoutePage } from '../pages/common/DynamicRoutePage'
 
 export const AppRoutes: React.FC = () => {
@@ -27,9 +29,11 @@ export const AppRoutes: React.FC = () => {
           <Route path="collection" element={<MilkCollectionPage />} />
           <Route path="macine-connection" element={<MacineConnection />} />
           <Route path="procurement-collection" element={<ProcurementCollection />} />
+          <Route path="port-connection" element={<PortConnection />} />
           <Route path="analyze" element={<Analyze />} />
           <Route path="routes" element={<Rootes />} />
           <Route path="vendors" element={<Vendors />} />
+          <Route path="supervisors" element={<Supervisors />} />
           <Route path="*" element={<DynamicRoutePage />} />
         </Route>
 

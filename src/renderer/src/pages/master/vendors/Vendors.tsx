@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb';
 import Button1 from '@renderer/components/buttons/Button1';
 import TableToolbar from '@renderer/components/table/TableToolbar';
@@ -42,7 +42,7 @@ export const Vendors: React.FC = () => {
       setLoadingVendors(true);
 
       // When "all" is selected, send a high limit like 10000
-      const actualLimit = limitVal === 'all' ? 10000 : limitVal;
+      const actualLimit = limitVal === 'all' ? 100000000000000 : limitVal;
 
       const response = await api.vendors.getPaginated(pageNo, actualLimit, searchVal.trim());
 
@@ -109,8 +109,8 @@ export const Vendors: React.FC = () => {
         <div className="flex items-center gap-2.5">
           <Button1
             variant="primary"
-            icon={<Plus className="w-3.5 h-3.5 text-white" />}
-            label="Add Vendor"
+            icon={<RefreshCw className="w-3.5 h-3.5 text-white" />}
+            label="Sync Vendor Data"
           />
         </div>
       </div>
