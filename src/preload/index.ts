@@ -4,6 +4,7 @@ import { PaginationRequestDto } from '../main/utils/pagination.dto'
 import { SaveMilkCollectionDto } from '../main/modules/milk_collection/dtos/milk-collection-save.dt'
 import { UpdateMilkCollectionDto } from '../main/modules/analysis/dtos/milk-analysis-update.dto'
 import { subscribe } from 'diagnostics_channel'
+import { MilkRejectionSaveDto } from '../main/modules/milk_rejection/dtos/milk-rejection.dto'
 
 // Custom APIs for renderer
 
@@ -12,6 +13,10 @@ const api = {
   getRoutes: () => ipcRenderer.invoke('route:getRoutes'),
   getPaginatedRoutes: (params: PaginationRequestDto) =>
     ipcRenderer.invoke('route:getPaginatedRoutes', params),
+
+  getSupervisors: () => ipcRenderer.invoke('supervisor:getSupervisors'),
+  getPaginatedSupervisors: (params: PaginationRequestDto) =>
+    ipcRenderer.invoke('supervisor:getPaginatedSupervisors', params),
 
   // milk
   getPaginatedMilkCollctions: (params: PaginationRequestDto) =>
@@ -28,6 +33,14 @@ const api = {
   getVendors: () => ipcRenderer.invoke('vendor:getVendors'),
   getPaginatedVendors: (params: PaginationRequestDto) =>
     ipcRenderer.invoke('vendor:getPaginatedVendors', params),
+
+  // milk rejection
+  getReasons: () => ipcRenderer.invoke('milk-rejection:getReasons'),
+  getPaginatedMilkRejections: (params: PaginationRequestDto) =>
+    ipcRenderer.invoke('milk-rejection:getPaginatedMilkRejections', params),
+
+  saveMilkRejection: (params: MilkRejectionSaveDto) =>
+    ipcRenderer.invoke('milk-rejection:saveMilkRejection', params),
 
   // serial port
   getSerialPorts: () => ipcRenderer.invoke('serial:list'),

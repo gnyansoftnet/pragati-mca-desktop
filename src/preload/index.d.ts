@@ -12,6 +12,18 @@ import type { SaveMilkCollectionDto } from '../main/modules/milk_collection/dtos
 import type { WeightSystemDto } from '../main/modules/milk_collection/dtos/weight-system.dto'
 import type { UpdateMilkCollectionDto } from '../main/modules/analysis/dtos/milk-analysis-update.dto'
 
+import type {
+  PaginatedSupervisorDto,
+  SupervisorResponseDto
+} from '../main/modules/supervisor/dto/supervisor.dto'
+
+import type {
+  ReasonDto,
+  PaginatedMilkRejectionDto,
+  MilkRejectionSaveDto,
+  MilkRejectionResponseDto
+} from '../main/modules/milk_rejection/dto/milk-rejection.dto'
+
 declare global {
   interface Window {
     electron: ElectronAPI
@@ -19,6 +31,9 @@ declare global {
       // routes
       getRoutes: () => Promise<RouteResponseDto[]>
       getPaginatedRoutes: (params: PaginationRequestDto) => Promise<PaginatedRoutesDto>
+      // supervisor
+      getRoutes: () => Promise<SupervisorResponseDto[]>
+      getPaginatedRoutes: (params: PaginationRequestDto) => Promise<PaginatedSupervisorDto>
 
       //  vendor
       getVendors: () => Promise<VendoreDto[]>
@@ -33,6 +48,13 @@ declare global {
 
       //  milk collection
       updateMilkAnalysis: (params: UpdateMilkCollectionDto) => Promise<any>
+
+      // milk rejection
+      getReasons: () => Promise<ReasonDto[]>
+      getPaginatedMilkRejections: (
+        params: PaginationRequestDto
+      ) => Promise<PaginatedMilkRejectionDto>
+      saveMilkRejection: (params: MilkRejectionSaveDto) => Promise<MilkRejectionResponseDto>
 
       //  port
       getSerialPorts: () => Promise<{ path: string }[]>
