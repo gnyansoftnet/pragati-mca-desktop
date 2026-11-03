@@ -88,7 +88,7 @@ export const ProcurementCollection: React.FC = () => {
 
   const [entries, setEntries] = useState<MilkEntry[]>([])
 
-  const fetchRoutes = async () => {
+  const fetchRoutes = async (): Promise<void> => {
     try {
       setLoadingRoutes(true)
 

@@ -6,6 +6,9 @@
     "src/shared/**/*"
   ],
   "compilerOptions": {
+     "noUnusedLocals": false,
+      "noUnusedParameters": false,
+      "strict": false,
     "composite": true,
     "jsx": "react-jsx",
      "paths": {

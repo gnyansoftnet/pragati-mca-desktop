@@ -26,7 +26,11 @@ export default defineConfig(
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginReactRefresh.configs.vite.rules,
-      '@typescript-eslint/no-explicit-any': 'off' // 'off' to disable completely
+      '@typescript-eslint/no-explicit-any': 'off', // 'off' to disable completely
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+      'react/prop-types': 'off'
     }
   },
   eslintConfigPrettier

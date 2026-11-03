@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { Search } from 'lucide-react'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
 import CustomForm from '@renderer/components/customform/CustomForm'
-import Button1 from '@renderer/components/buttons/Button1'
 
 export const Rejection: React.FC = () => {
   return (
