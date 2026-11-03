@@ -1,17 +1,17 @@
-import React from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 export interface TablePaginationProps {
-  page: number;
-  totalPages: number;
-  totalItems?: number;
-  pageSize?: number | 'all';
-  hasNextPage?: boolean;
-  hasPrevPage?: boolean;
-  loading?: boolean;
-  itemName?: string; // e.g. "routes", "records", "items"
-  onPageChange: (newPage: number) => void;
-  className?: string;
+  page: number
+  totalPages: number
+  totalItems?: number
+  pageSize?: number | 'all'
+  hasNextPage?: boolean
+  hasPrevPage?: boolean
+  loading?: boolean
+  itemName?: string // e.g. "routes", "records", "items"
+  onPageChange: (newPage: number) => void
+  className?: string
 }
 
 export const TablePagination: React.FC<TablePaginationProps> = ({
@@ -24,12 +24,12 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   loading = false,
   itemName = 'items',
   onPageChange,
-  className = '',
+  className = ''
 }) => {
-  const isAll = pageSize === 'all';
-  const effectiveTotalPages = isAll ? 1 : Math.max(totalPages || 1, 1);
-  const canGoPrev = !isAll && (hasPrevPage ?? page > 1) && !loading;
-  const canGoNext = !isAll && (hasNextPage ?? page < effectiveTotalPages) && !loading;
+  const isAll = pageSize === 'all'
+  const effectiveTotalPages = isAll ? 1 : Math.max(totalPages || 1, 1)
+  const canGoPrev = !isAll && (hasPrevPage ?? page > 1) && !loading
+  const canGoNext = !isAll && (hasNextPage ?? page < effectiveTotalPages) && !loading
 
   return (
     <div
@@ -40,7 +40,8 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
         <span className="font-semibold text-slate-700">{effectiveTotalPages}</span>
         {totalItems !== undefined && (
           <>
-            {' '}({totalItems} total {itemName})
+            {' '}
+            ({totalItems} total {itemName})
           </>
         )}
       </div>
@@ -66,7 +67,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TablePagination;
+export default TablePagination

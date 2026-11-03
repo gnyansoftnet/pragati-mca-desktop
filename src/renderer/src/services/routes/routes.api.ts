@@ -14,9 +14,9 @@ const routesApi = {
     return window.api.getPaginatedRoutes({
       page,
       limit,
-      search,
-    });
-  },
-};
+      search
+    })
+  }
+}
 
 export default routesApi

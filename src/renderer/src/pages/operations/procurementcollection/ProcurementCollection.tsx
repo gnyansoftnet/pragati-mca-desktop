@@ -52,35 +52,31 @@ interface PaginationState {
 }
 
 export const ProcurementCollection: React.FC = () => {
-  
   const [routes, setRoutes] = useState<Route[]>([])
   const [routeOptions, setRouteOptions] = useState<SelectOption[]>([])
   const [selectedRoute, setSelectedRoute] = useState<string>('')
   const [loadingRoutes, setLoadingRoutes] = useState<boolean>(false)
 
-  
   const [vendors, setVendors] = useState<Vendor[]>([])
   const [vendorOptions, setVendorOptions] = useState<SelectOption[]>([])
   const [selectedVendor, setSelectedVendor] = useState<string>('')
   const [loadingVendors, setLoadingVendors] = useState<boolean>(false)
 
-  
-  const [shift, setShift] = useState('');
-  const [plant, setPlant] = useState('1102');
-  const [weightSystem, setWeightSystem] = useState('');
-  const [cansType, setCansType] = useState('');
-  const [milkType, setMilkType] = useState('');
-  const [milkStatus, setMilkStatus] = useState('');
-  const [noOfCans, setNoOfCans] = useState('');
-  const [weightCans, setWeightCans] = useState('');
-  const [clrp, setClrp] = useState('2.4');
-  const [fatp, setFatp] = useState('24.5');
-  const [snfp, setSnfp] = useState('78.5');
+  const [shift, setShift] = useState('')
+  const [plant, setPlant] = useState('1102')
+  const [weightSystem, setWeightSystem] = useState('')
+  const [cansType, setCansType] = useState('')
+  const [milkType, setMilkType] = useState('')
+  const [milkStatus, setMilkStatus] = useState('')
+  const [noOfCans, setNoOfCans] = useState('')
+  const [weightCans, setWeightCans] = useState('')
+  const [clrp, setClrp] = useState('2.4')
+  const [fatp, setFatp] = useState('24.5')
+  const [snfp, setSnfp] = useState('78.5')
 
-  const userCode = "USR0001";
-  const entry = "MACHINE";
+  const userCode = 'USR0001'
+  const entry = 'MACHINE'
 
-  
   const [pagination, setPagination] = useState<PaginationState>({
     page: 1,
     limit: 10,
@@ -92,7 +88,6 @@ export const ProcurementCollection: React.FC = () => {
 
   const [entries, setEntries] = useState<MilkEntry[]>([])
 
-  
   const fetchRoutes = async () => {
     try {
       setLoadingRoutes(true)
@@ -100,7 +95,6 @@ export const ProcurementCollection: React.FC = () => {
       const response = await api.routes.getAll()
       setRoutes(response)
 
-      
       const options: SelectOption[] = response.map((route) => ({
         value: String(route.id),
         label: route.routeName
@@ -121,7 +115,6 @@ export const ProcurementCollection: React.FC = () => {
       const response = await api.vendors.getAll()
       setVendors(response)
 
-      
       const options: SelectOption[] = response.map((vendor) => ({
         value: String(vendor.id),
         label: vendor.vendorCode
@@ -135,7 +128,6 @@ export const ProcurementCollection: React.FC = () => {
     }
   }
 
-  
   const fetchCollections = async (page = 1): Promise<void> => {
     try {
       if (typeof window !== 'undefined') {
@@ -160,14 +152,12 @@ export const ProcurementCollection: React.FC = () => {
     }
   }
 
-  
   useEffect(() => {
     fetchRoutes()
     fetchVendors()
     fetchCollections(1)
   }, [])
 
-  
   const getCurrentLocalDate = (): string => {
     const today = new Date()
     const year = today.getFullYear()
@@ -176,7 +166,6 @@ export const ProcurementCollection: React.FC = () => {
     return `${year}-${month}-${day}`
   }
 
-  
   const getCurrentLocalDateTime = (): string => {
     const now = new Date()
     const hours = String(now.getHours()).padStart(2, '0')
@@ -204,7 +193,6 @@ export const ProcurementCollection: React.FC = () => {
     }
   }, [noOfCans])
 
-  
   const shifts = [
     { value: '1', label: 'Morning' },
     { value: '2', label: 'Evening' }
@@ -213,7 +201,7 @@ export const ProcurementCollection: React.FC = () => {
   const plantOptions = [
     { value: '1102', label: 'Raipur' },
     { value: '1103', label: 'Jagatpur' }
-  ];
+  ]
 
   const weights = [
     { value: 'WeightBowl', label: 'WeightBowl' },
@@ -237,7 +225,6 @@ export const ProcurementCollection: React.FC = () => {
     { value: 'best', label: 'Best' }
   ]
 
-  
   const handleSaveCollection = async () => {
     try {
       const currentRoute = routes.find(
@@ -258,10 +245,10 @@ export const ProcurementCollection: React.FC = () => {
       const selectedMilkStatus =
         mstatus.find((m) => m.value === milkStatus)?.label || milkStatus || ''
 
-      const weightNum = Number(weightCans) || 0;
+      const weightNum = Number(weightCans) || 0
 
       const payload = {
-        plant: plant ,
+        plant: plant,
         userCode: userCode,
         rootCode: rootCode,
         vendorCode: vendorCode,
@@ -285,20 +272,17 @@ export const ProcurementCollection: React.FC = () => {
         await (window as any).api.saveMilkCollection(payload)
       }
 
-      console.log("payload milk collection", payload);
+      console.log('payload milk collection', payload)
 
-      
-      toast.success('Milk collection saved successfully!');
+      toast.success('Milk collection saved successfully!')
 
-      
       await fetchCollections(1)
     } catch (error) {
-      console.error('Failed to save milk collection:', error);
-      toast.error('Failed to save milk collection. Please try again.');
+      console.error('Failed to save milk collection:', error)
+      toast.error('Failed to save milk collection. Please try again.')
     }
   }
 
-  
   const handleCancel = () => {
     setSelectedRoute('')
     setSelectedVendor('')
@@ -315,10 +299,7 @@ export const ProcurementCollection: React.FC = () => {
     <div className="space-y-4">
       {/* Breadcrumb Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb
-          title="Procurement Collection"
-          desc="Record real-time machine tipping"
-        />
+        <PageBreadcrumb title="Procurement Collection" desc="Record real-time machine tipping" />
       </div>
 
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">

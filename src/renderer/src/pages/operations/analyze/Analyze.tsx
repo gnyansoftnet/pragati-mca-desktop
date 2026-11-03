@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { Search } from 'lucide-react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from 'react'
+import { Search } from 'lucide-react'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb';
-import CustomForm from '@renderer/components/customform/CustomForm';
-import Button1 from '@renderer/components/buttons/Button1';
+import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
+import CustomForm from '@renderer/components/customform/CustomForm'
+import Button1 from '@renderer/components/buttons/Button1'
 
 interface AnalyzeArray {
-  id: number;
-  sampleNo: number;
-  port: string;
-  netWeight: string;
-  fatPercentage: number;
-  snfPercentage: number;
+  id: number
+  sampleNo: number
+  port: string
+  netWeight: string
+  fatPercentage: number
+  snfPercentage: number
 }
 
 const SAMPLE_REPORTS: AnalyzeArray[] = [
@@ -23,39 +23,39 @@ const SAMPLE_REPORTS: AnalyzeArray[] = [
     // port: '300',
     netWeight: '200.4',
     fatPercentage: 3,
-    snfPercentage: 3,
-  },
-];
+    snfPercentage: 3
+  }
+]
 
 export const Analyze: React.FC = () => {
-  const [shift, setShift] = useState('1');
-  const [plant, setPlant] = useState('1102');
-  const [reports] = useState<AnalyzeArray[]>(SAMPLE_REPORTS);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [shift, setShift] = useState('1')
+  const [plant, setPlant] = useState('1102')
+  const [reports] = useState<AnalyzeArray[]>(SAMPLE_REPORTS)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // Current Date
   const getCurrentLocalDate = (): string => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = String(today.getMonth() + 1).padStart(2, '0')
+    const day = String(today.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
 
   const shifts = [
     { value: '1', label: 'Morning' },
     { value: '2', label: 'Evening' }
-  ];
+  ]
 
   const plantOptions = [
     { value: '1102', label: 'Raipur' },
     { value: '1103', label: 'Jagatpur' }
-  ];
+  ]
 
   // Save Analysis on Click of "Find" Button
   const handleSaveAnalysis = async () => {
     try {
-      setLoading(true);
+      setLoading(true)
 
       const payload = {
         date: getCurrentLocalDate(),
@@ -68,26 +68,25 @@ export const Analyze: React.FC = () => {
           fat: Number(item.fatPercentage) || 0,
           snf: Number(item.snfPercentage) || 0
         }))
-      };
+      }
 
       if (typeof window !== 'undefined') {
         const updateFn =
-          (window as any).api?.updateMilkAnalysis ||
-          (window as any).api?.updateMilkAnalysis;
+          (window as any).api?.updateMilkAnalysis || (window as any).api?.updateMilkAnalysis
 
         if (updateFn) {
-          await updateFn(payload);
+          await updateFn(payload)
         }
       }
 
-      toast.success('Analysis data saved successfully!');
+      toast.success('Analysis data saved successfully!')
     } catch (error) {
-      console.error('Failed to update analysis:', error);
-      toast.error('Failed to save analysis. Please try again. ', error);
+      console.error('Failed to update analysis:', error)
+      toast.error('Failed to save analysis. Please try again. ', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="space-y-4">
@@ -106,10 +105,7 @@ export const Analyze: React.FC = () => {
       />
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb
-          title="Analyze"
-          desc="Connect you macine before collection"
-        />
+        <PageBreadcrumb title="Analyze" desc="Connect you macine before collection" />
       </div>
 
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
@@ -117,9 +113,7 @@ export const Analyze: React.FC = () => {
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2.5">
             {/* Date */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Date
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Date</label>
               <CustomForm.CustomTextField
                 name="date"
                 value={getCurrentLocalDate()}
@@ -129,9 +123,7 @@ export const Analyze: React.FC = () => {
 
             {/* Shift */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Select Shift
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Select Shift</label>
               <CustomForm.CustomSelectSearchField
                 name="shift"
                 value={shift}
@@ -142,9 +134,7 @@ export const Analyze: React.FC = () => {
 
             {/* Chilling Center */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Chilling Center
-              </label>
+              <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomSelectField
                 name="chilling"
                 value={plant}
@@ -183,21 +173,13 @@ export const Analyze: React.FC = () => {
             <tbody className="divide-y divide-slate-100 text-xs">
               {reports.map((item, index) => (
                 <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
-                  <td className="py-2 px-4 font-bold text-slate-900">
-                    {item.sampleNo}
-                  </td>
-                  <td className="py-2 px-4 font-semibold text-slate-800">
-                    {item.port}
-                  </td>
+                  <td className="py-2 px-4 font-bold text-slate-900">{item.sampleNo}</td>
+                  <td className="py-2 px-4 font-semibold text-slate-800">{item.port}</td>
                   <td className="py-2 px-4 font-semibold text-primary max-w-[150px] truncate">
                     {item.netWeight}
                   </td>
-                  <td className="py-2 px-4 font-semibold text-primary">
-                    {item.fatPercentage}
-                  </td>
-                  <td className="py-2 px-4 font-semibold text-primary">
-                    {item.snfPercentage}
-                  </td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.fatPercentage}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.snfPercentage}</td>
                 </tr>
               ))}
             </tbody>
@@ -205,7 +187,7 @@ export const Analyze: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Analyze;
+export default Analyze

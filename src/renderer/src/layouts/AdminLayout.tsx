@@ -40,18 +40,18 @@
 
 // export default AdminLayout
 
-import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import Sidebar from '@renderer/components/sidebar';
-import Topbar from '@renderer/components/topbar';
+import React, { useState } from 'react'
+import { Outlet } from 'react-router-dom'
+import Sidebar from '@renderer/components/sidebar'
+import Topbar from '@renderer/components/topbar'
 
 interface AdminLayoutProps {
-  children?: React.ReactNode;
+  children?: React.ReactNode
 }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
 
   return (
     <div className="h-screen max-h-screen bg-[#e2ebf3] flex antialiased overflow-hidden">
@@ -66,12 +66,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           onOpenMobileSidebar={() => setIsMobileOpen(true)}
         />
-        <main className="flex-1 p-2 sm:p-3 lg:p-4 overflow-y-auto">
-          {children || <Outlet />}
-        </main>
+        <main className="flex-1 p-2 sm:p-3 lg:p-4 overflow-y-auto">{children || <Outlet />}</main>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AdminLayout;
+export default AdminLayout

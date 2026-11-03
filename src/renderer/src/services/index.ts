@@ -6,7 +6,6 @@ const api = {
   routes: routesApi,
   vendors: vendorsApi,
   supervisors: supervisorsApi
-
 }
 
 export default api

@@ -1,36 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { RefreshCw } from 'lucide-react';
-import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb';
-import Button1 from '@renderer/components/buttons/Button1';
-import TableToolbar from '@renderer/components/table/TableToolbar';
-import TablePagination from '@renderer/components/table/TablePagination';
-import api from '@renderer/services';
-import type { Vendor } from '@renderer/types/vendors/vendors.types';
+import React, { useEffect, useState } from 'react'
+import { RefreshCw } from 'lucide-react'
+import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
+import Button1 from '@renderer/components/buttons/Button1'
+import TableToolbar from '@renderer/components/table/TableToolbar'
+import TablePagination from '@renderer/components/table/TablePagination'
+import api from '@renderer/services'
+import type { Vendor } from '@renderer/types/vendors/vendors.types'
 
 interface PaginationState {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
 }
 
 export const Vendors: React.FC = () => {
-  const [vendors, setVendors] = useState<Vendor[]>([]);
-  const [loadingVendors, setLoadingVendors] = useState<boolean>(false);
+  const [vendors, setVendors] = useState<Vendor[]>([])
+  const [loadingVendors, setLoadingVendors] = useState<boolean>(false)
 
   // Filter & Pagination States
-  const [pageSize, setPageSize] = useState<number | 'all'>(10);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [pageSize, setPageSize] = useState<number | 'all'>(10)
+  const [searchQuery, setSearchQuery] = useState<string>('')
   const [pagination, setPagination] = useState<PaginationState>({
     page: 1,
     limit: 10,
     total: 0,
     totalPages: 1,
     hasNextPage: false,
-    hasPrevPage: false,
-  });
+    hasPrevPage: false
+  })
 
   // Fetch paginated vendors using api.vendors.getPaginated
   const fetchPaginatedVendors = async (
@@ -39,72 +39,69 @@ export const Vendors: React.FC = () => {
     searchVal: string = searchQuery
   ) => {
     try {
-      setLoadingVendors(true);
+      setLoadingVendors(true)
 
       // When "all" is selected, send a high limit like 10000
-      const actualLimit = limitVal === 'all' ? 100000000000000 : limitVal;
+      const actualLimit = limitVal === 'all' ? 100000000000000 : limitVal
 
-      const response = await api.vendors.getPaginated(pageNo, actualLimit, searchVal.trim());
+      const response = await api.vendors.getPaginated(pageNo, actualLimit, searchVal.trim())
 
       if (response) {
         // Support both { data: [...] } and direct array response
         const dataList = Array.isArray(response.data)
           ? response.data
           : Array.isArray(response)
-          ? response
-          : [];
-        setVendors(dataList);
+            ? response
+            : []
+        setVendors(dataList)
 
         // Update pagination metadata
         if (response.pagination) {
-          setPagination(response.pagination);
+          setPagination(response.pagination)
         } else if ('totalPages' in (response as any)) {
-          const respAny = response as any;
+          const respAny = response as any
           setPagination({
             page: respAny.page || pageNo,
             limit: actualLimit,
             total: respAny.total || dataList.length,
             totalPages: respAny.totalPages || 1,
             hasNextPage: respAny.hasNextPage ?? pageNo < (respAny.totalPages || 1),
-            hasPrevPage: respAny.hasPrevPage ?? pageNo > 1,
-          });
+            hasPrevPage: respAny.hasPrevPage ?? pageNo > 1
+          })
         }
       }
     } catch (error) {
-      console.error('Failed to fetch paginated vendors:', error);
+      console.error('Failed to fetch paginated vendors:', error)
     } finally {
-      setLoadingVendors(false);
+      setLoadingVendors(false)
     }
-  };
+  }
 
   // Debounced search & limit change effect (resets to page 1)
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchPaginatedVendors(1, pageSize, searchQuery);
-    }, 300);
+      fetchPaginatedVendors(1, pageSize, searchQuery)
+    }, 300)
 
-    return () => clearTimeout(timer);
-  }, [searchQuery, pageSize]);
+    return () => clearTimeout(timer)
+  }, [searchQuery, pageSize])
 
   // Handle Entries Per Page Dropdown Change
   const handleLimitChange = (val: string) => {
-    const newLimit = val === 'all' ? 'all' : Number(val);
-    setPageSize(newLimit);
-  };
+    const newLimit = val === 'all' ? 'all' : Number(val)
+    setPageSize(newLimit)
+  }
 
   // Handle Next / Previous Page Navigation
   const handlePageChange = (newPage: number) => {
-    fetchPaginatedVendors(newPage, pageSize, searchQuery);
-  };
+    fetchPaginatedVendors(newPage, pageSize, searchQuery)
+  }
 
   return (
     <div className="space-y-4">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb
-          title="Vendors"
-          desc="Sync vendors with internet connection"
-        />
+        <PageBreadcrumb title="Vendors" desc="Sync vendors with internet connection" />
 
         <div className="flex items-center gap-2.5">
           <Button1
@@ -117,13 +114,13 @@ export const Vendors: React.FC = () => {
 
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
         {/* Top Toolbar */}
-          <TableToolbar
-            pageSize={pageSize}
-            onPageSizeChange={handleLimitChange}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            searchPlaceholder="Search vendor code or name..."
-          />
+        <TableToolbar
+          pageSize={pageSize}
+          onPageSizeChange={handleLimitChange}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Search vendor code or name..."
+        />
 
         {/* Data Table */}
         <div className="overflow-x-auto">
@@ -155,36 +152,35 @@ export const Vendors: React.FC = () => {
                 </tr>
               )}
               {vendors.map((item) => (
-                  <tr key={item.id} className="hover:bg-secondary/5 transition">
-                    <td className="py-2 px-4 font-semibold text-primary">{item.id}</td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.dskCode}</td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.dskName}</td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.mobileNumber}</td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.routeCode}</td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.supervisorEmpId}</td>
-                  </tr>
-                ))
-              }
+                <tr key={item.id} className="hover:bg-secondary/5 transition">
+                  <td className="py-2 px-4 font-semibold text-primary">{item.id}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.dskCode}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.dskName}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.mobileNumber}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.routeCode}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.supervisorEmpId}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
 
         {/* Pagination Footer */}
         <TablePagination
-            page={pagination.page}
-            totalPages={pagination.totalPages}
-            totalItems={pagination.total}
-            pageSize={pageSize}
-            hasNextPage={pagination.hasNextPage}
-            hasPrevPage={pagination.hasPrevPage}
-            loading={loadingVendors}
-            itemName="vendors"
-            onPageChange={handlePageChange}
-          />
+          page={pagination.page}
+          totalPages={pagination.totalPages}
+          totalItems={pagination.total}
+          pageSize={pageSize}
+          hasNextPage={pagination.hasNextPage}
+          hasPrevPage={pagination.hasPrevPage}
+          loading={loadingVendors}
+          itemName="vendors"
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Vendors;
+export default Vendors

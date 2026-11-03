@@ -14,9 +14,9 @@ const vendorsApi = {
     return window.api.getPaginatedVendors({
       page,
       limit,
-      search,
-    });
-  },
-};
+      search
+    })
+  }
+}
 
 export default vendorsApi

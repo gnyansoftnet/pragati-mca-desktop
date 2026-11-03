@@ -1,14 +1,14 @@
-import React from 'react';
-import { Search } from 'lucide-react';
+import React from 'react'
+import { Search } from 'lucide-react'
 
 export interface TableToolbarProps {
-  pageSize: number | 'all';
-  onPageSizeChange: (newLimit: string) => void;
-  searchQuery: string;
-  onSearchChange: (newQuery: string) => void;
-  searchPlaceholder?: string;
-  pageSizeOptions?: (number | 'all')[];
-  className?: string;
+  pageSize: number | 'all'
+  onPageSizeChange: (newLimit: string) => void
+  searchQuery: string
+  onSearchChange: (newQuery: string) => void
+  searchPlaceholder?: string
+  pageSizeOptions?: (number | 'all')[]
+  className?: string
 }
 
 export const TableToolbar: React.FC<TableToolbarProps> = ({
@@ -18,7 +18,7 @@ export const TableToolbar: React.FC<TableToolbarProps> = ({
   onSearchChange,
   searchPlaceholder = 'Search in table...',
   pageSizeOptions = [10, 20, 30, 'all'],
-  className = '',
+  className = ''
 }) => {
   return (
     <div
@@ -53,7 +53,7 @@ export const TableToolbar: React.FC<TableToolbarProps> = ({
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TableToolbar;
+export default TableToolbar

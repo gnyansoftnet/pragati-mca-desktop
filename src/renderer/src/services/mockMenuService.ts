@@ -140,7 +140,7 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     category: 'master',
     order_index: 50,
     badge: ''
-  },
+  }
 ]
 
 export async function fetchMenusForRole(role: UserRole): Promise<DynamicMenuItem[]> {
