@@ -1,6 +1,6 @@
 import { injectable, inject } from 'tsyringe'
 import { MilkAnalysisRepo } from '../repo/milk-analysis.repo'
-import { UpdateMilkCollectionDto } from '../dtos/milk-analysis-update.dto'
+import { UpdateMilkCollectionDto } from '../../../../shared/dtos/analysis/milk-analysis-update.dto'
 
 @injectable()
 export class MilkAnalysisService {

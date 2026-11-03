@@ -1,14 +1,18 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { PaginationRequestDto } from '../main/utils/pagination.dto'
-import { SaveMilkCollectionDto } from '../main/modules/milk_collection/dtos/milk-collection-save.dt'
-import { UpdateMilkCollectionDto } from '../main/modules/analysis/dtos/milk-analysis-update.dto'
-import { subscribe } from 'diagnostics_channel'
-import { MilkRejectionSaveDto } from '../main/modules/milk_rejection/dtos/milk-rejection.dto'
+import { PaginationRequestDto } from '../shared/dtos/pagination.dto'
+import { SaveMilkCollectionDto } from '../shared/dtos/milk-collection/milk-collection-save.dt'
+import { UpdateMilkCollectionDto } from '../shared/dtos/analysis/milk-analysis-update.dto'
+import { MilkRejectionSaveDto } from '../shared/dtos/milk-rejection/milk-rejection.dto'
+import { UserResponseDto } from '@shared/dtos/user/user.dto'
 
 // Custom APIs for renderer
 
 const api = {
+  // user
+  login: (userName: string, password: string): Promise<UserResponseDto> =>
+    ipcRenderer.invoke('user:login', userName, password),
+
   // routes
   getRoutes: () => ipcRenderer.invoke('route:getRoutes'),
   getPaginatedRoutes: (params: PaginationRequestDto) =>

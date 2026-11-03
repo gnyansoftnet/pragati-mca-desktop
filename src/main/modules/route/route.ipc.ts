@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron'
 import { container } from '../../core/di/container'
 import { RouteService } from './services/route.service'
-import { PaginationRequestDto } from '../../utils/pagination.dto'
+import { PaginationRequestDto } from '../../../shared/dtos/pagination.dto'
 
 const service = container.resolve(RouteService)
 

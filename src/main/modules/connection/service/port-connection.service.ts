@@ -4,7 +4,7 @@ import {
   CreatePortConnectionDto,
   PortConnectionDto,
   UpdatePortConnectionDto
-} from '../dtos/port-connection.dto'
+} from '../../../../shared/dtos/connection/port-connection.dto'
 
 @injectable()
 export class PortConnectionService {

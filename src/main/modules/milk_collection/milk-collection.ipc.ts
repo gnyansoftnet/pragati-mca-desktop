@@ -1,8 +1,8 @@
 import { ipcMain } from 'electron'
 import { container } from '../../core/di/container'
-import { PaginationRequestDto } from '../../utils/pagination.dto'
+import { PaginationRequestDto } from '../../../shared/dtos/pagination.dto'
 import { MilkCollectionService } from './services/milk-collection.service'
-import { SaveMilkCollectionDto } from './dtos/milk-collection-save.dt'
+import { SaveMilkCollectionDto } from '../../../shared/dtos/milk-collection/milk-collection-save.dt'
 
 const service = container.resolve(MilkCollectionService)
 
