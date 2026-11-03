@@ -32,7 +32,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         />
 
         {/* Scrollable Page Body */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">{children || <Outlet />}</main>
+        <main className="flex-1 p-2 sm:p-3 lg:p-4 overflow-y-auto">{children || <Outlet />}</main>
       </div>
     </div>
   )
