@@ -129,32 +129,33 @@ export const Vendors: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                <th className="py-3.5 px-4">ID</th>
-                <th className="py-3.5 px-4">DSK Code</th>
-                <th className="py-3.5 px-4">DSK Name</th>
-                <th className="py-3.5 px-4">Vendor Code</th>
-                <th className="py-3.5 px-4">Mobile No</th>
-                <th className="py-3.5 px-4">Route Code</th>
-                <th className="py-3.5 px-4">Supervisor EmpId</th>
+              <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
+                <th className="py-3 px-3">ID</th>
+                <th className="py-3 px-3">DSK Code</th>
+                <th className="py-3 px-3">DSK Name</th>
+                <th className="py-3 px-3">Vendor Code</th>
+                <th className="py-3 px-3">Mobile No</th>
+                <th className="py-3 px-3">Route Code</th>
+                <th className="py-3 px-3">Supervisor EmpId</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
-              {loadingVendors ? (
+              {loadingVendors && (
                 <tr>
                   <td colSpan={4} className="py-8 text-center text-slate-400 font-medium">
                     Loading vendors...
                   </td>
                 </tr>
-              ) : vendors.length === 0 ? (
+              )}
+              {vendors.length === 0 && (
                 <tr>
                   <td colSpan={4} className="py-8 text-center text-slate-400 font-medium">
                     No vendors found
                   </td>
                 </tr>
-              ) : (
-                vendors.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50/70 transition">
+              )}
+              {vendors.map((item) => (
+                  <tr key={item.id} className="hover:bg-secondary/5 transition">
                     <td className="py-2 px-4 font-semibold text-primary">{item.id}</td>
                     <td className="py-2 px-4 font-semibold text-primary">{item.dskCode}</td>
                     <td className="py-2 px-4 font-semibold text-primary">{item.dskName}</td>
@@ -164,7 +165,7 @@ export const Vendors: React.FC = () => {
                     <td className="py-2 px-4 font-semibold text-primary">{item.supervisorEmpId}</td>
                   </tr>
                 ))
-              )}
+              }
             </tbody>
           </table>
         </div>

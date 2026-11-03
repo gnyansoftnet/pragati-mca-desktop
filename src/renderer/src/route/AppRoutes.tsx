@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { LoginPage } from '../pages/auth/LoginPage'
 import { AdminLayout } from '../layouts/AdminLayout'
 import { DashboardPage } from '../pages/dashboard/DashboardPage'
+import { Rejection } from '../pages/operations/rejection/Rejection'
 import { MilkCollectionPage } from '../pages/operations/MilkCollectionPage'
 import { MacineConnection } from '../pages/operations/macineconnection/MacineConnection'
 import { ProcurementCollection } from '../pages/operations/procurementcollection/ProcurementCollection'
@@ -25,6 +26,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="rejection" element={<Rejection />} />
           <Route path="farmers" element={<DashboardPage />} />
           <Route path="collection" element={<MilkCollectionPage />} />
           <Route path="macine-connection" element={<MacineConnection />} />

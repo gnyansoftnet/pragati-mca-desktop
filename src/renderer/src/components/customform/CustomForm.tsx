@@ -4,7 +4,7 @@ import { Eye, EyeOff, ChevronDown } from 'lucide-react'
 
 // Enhanced base class with read-only & disabled styling
 const baseInputClass =
-  'w-full pl-5 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all duration-200 disabled:bg-slate-100 disabled:cursor-not-allowed read-only:bg-slate-50 read-only:text-slate-600 read-only:border-slate-200 read-only:focus:border-slate-200 read-only:focus:ring-0 read-only:cursor-default'
+  'w-full pl-5 pr-4 py-2 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all duration-200 disabled:bg-slate-100 disabled:cursor-not-allowed read-only:bg-slate-100 read-only:text-slate-600 read-only:border-slate-200 read-only:focus:bg-slate-0 read-only:focus:border-slate-200 read-only:focus:ring-0 read-only:cursor-default'
 
 export default function CustomForm(props) {
   return (
