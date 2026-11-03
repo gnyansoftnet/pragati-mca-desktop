@@ -16,7 +16,7 @@ export const Topbar: React.FC<TopbarProps> = ({
   onOpenMobileSidebar
 }) => {
   return (
-    <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-100/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 select-none">
+    <header className="h-20 backdrop-blur-lg backdrop-saturate-150 bg-white/80 border-b border-slate-100/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 select-none shadow-[0_4px_10px_rgba(15,23,42,0.10)]">
       {/* Left: Sidebar Toggle & Organisation Name */}
       <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4">
         <TopbarToggle

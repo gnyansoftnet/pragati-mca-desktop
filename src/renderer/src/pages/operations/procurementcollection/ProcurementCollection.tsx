@@ -6,6 +6,7 @@ import CustomForm from '@renderer/components/customform/CustomForm'
 import api from '@renderer/services'
 import type { Route } from '@renderer/types/routes/routes.types'
 import type { Vendor } from '@renderer/types/vendors/vendors.types'
+import { toast } from 'react-toastify'
 
 interface SelectOption {
   value: string
@@ -51,21 +52,21 @@ interface PaginationState {
 }
 
 export const ProcurementCollection: React.FC = () => {
-  // Routes State
+  
   const [routes, setRoutes] = useState<Route[]>([])
   const [routeOptions, setRouteOptions] = useState<SelectOption[]>([])
   const [selectedRoute, setSelectedRoute] = useState<string>('')
   const [loadingRoutes, setLoadingRoutes] = useState<boolean>(false)
 
-  // Vendor states
+  
   const [vendors, setVendors] = useState<Vendor[]>([])
   const [vendorOptions, setVendorOptions] = useState<SelectOption[]>([])
   const [selectedVendor, setSelectedVendor] = useState<string>('')
   const [loadingVendors, setLoadingVendors] = useState<boolean>(false)
 
-  // Other Form States
+  
   const [shift, setShift] = useState('');
-  const [plant, setPlant] = useState('1102'); // 👈 Set to '1102' (Raipur) by default
+  const [plant, setPlant] = useState('1102');
   const [weightSystem, setWeightSystem] = useState('');
   const [cansType, setCansType] = useState('');
   const [milkType, setMilkType] = useState('');
@@ -79,7 +80,7 @@ export const ProcurementCollection: React.FC = () => {
   const userCode = "USR0001";
   const entry = "MACHINE";
 
-  // Pagination State
+  
   const [pagination, setPagination] = useState<PaginationState>({
     page: 1,
     limit: 10,
@@ -91,7 +92,7 @@ export const ProcurementCollection: React.FC = () => {
 
   const [entries, setEntries] = useState<MilkEntry[]>([])
 
-  // Fetch routes from Electron Main Process via api service
+  
   const fetchRoutes = async () => {
     try {
       setLoadingRoutes(true)
@@ -99,7 +100,7 @@ export const ProcurementCollection: React.FC = () => {
       const response = await api.routes.getAll()
       setRoutes(response)
 
-      // Convert routes into { value, label } format for dropdown
+      
       const options: SelectOption[] = response.map((route) => ({
         value: String(route.id),
         label: route.routeName
@@ -120,7 +121,7 @@ export const ProcurementCollection: React.FC = () => {
       const response = await api.vendors.getAll()
       setVendors(response)
 
-      // Convert vendors into { value, label } format for dropdown
+      
       const options: SelectOption[] = response.map((vendor) => ({
         value: String(vendor.id),
         label: vendor.vendorCode
@@ -134,7 +135,7 @@ export const ProcurementCollection: React.FC = () => {
     }
   }
 
-  // Fetch paginated milk collection entries from Electron Main Process
+  
   const fetchCollections = async (page = 1): Promise<void> => {
     try {
       if (typeof window !== 'undefined') {
@@ -159,14 +160,14 @@ export const ProcurementCollection: React.FC = () => {
     }
   }
 
-  // Load routes, vendors, and table entries when component mounts
+  
   useEffect(() => {
     fetchRoutes()
     fetchVendors()
     fetchCollections(1)
   }, [])
 
-  // Current Date
+  
   const getCurrentLocalDate = (): string => {
     const today = new Date()
     const year = today.getFullYear()
@@ -175,7 +176,7 @@ export const ProcurementCollection: React.FC = () => {
     return `${year}-${month}-${day}`
   }
 
-  // Current Time
+  
   const getCurrentLocalDateTime = (): string => {
     const now = new Date()
     const hours = String(now.getHours()).padStart(2, '0')
@@ -203,7 +204,7 @@ export const ProcurementCollection: React.FC = () => {
     }
   }, [noOfCans])
 
-  // Static Dropdown Options
+  
   const shifts = [
     { value: '1', label: 'Morning' },
     { value: '2', label: 'Evening' }
@@ -236,17 +237,9 @@ export const ProcurementCollection: React.FC = () => {
     { value: 'best', label: 'Best' }
   ]
 
-  // Save Collection Handler
+  
   const handleSaveCollection = async () => {
     try {
-
-
-
-
-
-
-
-
       const currentRoute = routes.find(
         (r) => String(r.id) === selectedRoute || (r as any).routeCode === selectedRoute
       )
@@ -294,10 +287,10 @@ export const ProcurementCollection: React.FC = () => {
 
       console.log("payload milk collection", payload);
 
-      // Success Toast Alert
+      
       toast.success('Milk collection saved successfully!');
 
-      // Refresh table from page 1 immediately after save
+      
       await fetchCollections(1)
     } catch (error) {
       console.error('Failed to save milk collection:', error);
@@ -305,7 +298,7 @@ export const ProcurementCollection: React.FC = () => {
     }
   }
 
-  // Cancel Handler
+  
   const handleCancel = () => {
     setSelectedRoute('')
     setSelectedVendor('')
@@ -528,7 +521,7 @@ export const ProcurementCollection: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
                 <th className="py-3 px-2 whitespace-nowrap">Sample Code</th>
                 <th className="py-3 px-2 whitespace-nowrap">Shift</th>
                 <th className="py-3 px-2 whitespace-nowrap">Chilling Plant</th>

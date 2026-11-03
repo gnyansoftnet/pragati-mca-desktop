@@ -59,7 +59,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed, onCloseMo
   }
 
   return (
-    <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
+    <div className="flex-1 overflow-y-scroll px-3 py-4 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
       {menus.length === 0 ? (
         <div className="p-4 text-center text-xs text-slate-400">Loading menus...</div>
       ) : (
