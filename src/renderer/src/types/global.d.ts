@@ -38,6 +38,7 @@ declare global {
       getSerialPorts: () => Promise<{ path: string }[]>
       connectSerial: (params: SerialConnectDto) => Promise<SerialResultDto>
       disconnectSerial: () => Promise<void>
+      onSerialData: (cb: (text: string) => void) => () => void
     }
   }
 }

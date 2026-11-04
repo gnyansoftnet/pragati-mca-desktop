@@ -7,6 +7,7 @@ import { Rejection } from '../pages/operations/rejection/Rejection'
 import { MilkCollectionPage } from '../pages/operations/MilkCollectionPage'
 import { MacineConnection } from '../pages/operations/macineconnection/MacineConnection'
 import MacineConnection2 from '../pages/operations/macineconnection/gyana'
+import MachineConnectionRaw from '../pages/operations/macineconnection/AnalyzeMachine'
 import { ProcurementCollection } from '../pages/operations/procurementcollection/ProcurementCollection'
 import { PortConnection } from '../pages/operations/portconnection/PortConnection'
 import { Analyze } from '../pages/operations/analyze/Analyze'
@@ -33,6 +34,7 @@ export const AppRoutes: React.FC = () => {
           <Route path="macine-connection" element={<MacineConnection />} />
           <Route path="procurement-collection" element={<ProcurementCollection />} />
           <Route path="gyana" element={<MacineConnection2 />} />
+          <Route path="analyze-macine" element={<MachineConnectionRaw />} />
           <Route path="port-connection" element={<PortConnection />} />
           <Route path="analyze" element={<Analyze />} />
           <Route path="routes" element={<Rootes />} />

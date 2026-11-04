@@ -4,9 +4,14 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerIpcHandlers } from './core/ipc/register-ipc'
+import { container } from './core/di/container' // added
+import { SerialService } from './modules/connection/service/serial.service' // added
+
+let mainWindow: BrowserWindow | null = null // changed: moved out of createWindow
 
 function createWindow(): void {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
+    // changed: no "const"
     width: 900,
     height: 670,
     show: false,
@@ -21,7 +26,12 @@ function createWindow(): void {
   })
 
   mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
+    mainWindow?.show()
+  })
+
+  // added: clear the reference when the window closes
+  mainWindow.on('closed', () => {
+    mainWindow = null
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -43,10 +53,11 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // Register User CRUD IPC handlers once.
   registerIpcHandlers()
 
-  // Keep this only if you still need your existing ping test.
+  // added: tell the serial service which window to send data to
+  container.resolve(SerialService).setWindowGetter(() => mainWindow)
+
   ipcMain.on('ping', () => console.log('pong'))
 
   createWindow()
@@ -54,6 +65,11 @@ app.whenReady().then(() => {
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+})
+
+// added: release the COM port when the app quits
+app.on('before-quit', () => {
+  container.resolve(SerialService).disconnect()
 })
 
 app.on('window-all-closed', () => {
