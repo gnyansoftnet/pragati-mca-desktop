@@ -1,7 +1,21 @@
-node_modules
-dist
-out
-.DS_Store
-.eslintcache
-*.log*
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+out/
+
+# Environment variables
 .env
+.env.*
+
+# Logs
+*.log
+*.log.*
+
+# ESLint
+.eslintcache
+
+# OS files
+.DS_Store
+Thumbs.db
