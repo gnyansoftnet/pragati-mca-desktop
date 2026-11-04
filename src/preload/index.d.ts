@@ -13,7 +13,10 @@ import {
 } from '@shared/dtos/milk-rejection/milk-rejection.dto'
 import { PaginationRequestDto } from '@shared/dtos/pagination.dto'
 import { PaginatedRoutesDto, RouteResponseDto } from '@shared/dtos/route/route-response.dto'
-import { PaginatedSupervisorDto, SupervisorResponseDto } from '@shared/dtos/supervisor/supervisor.dto'
+import {
+  PaginatedSupervisorDto,
+  SupervisorResponseDto
+} from '@shared/dtos/supervisor/supervisor.dto'
 import { UserResponseDto } from '@shared/dtos/user/user.dto'
 import { PaginatedVendorsDto, VendoreDto } from '@shared/dtos/vendor/vendor.dto'
 
@@ -56,11 +59,12 @@ declare global {
       connectSerial: (params: {
         path: string
         baudRate: number
-        parity: string
+        parity: number
         dataBits: number
         stopBits: number
       }) => Promise<{ ok: boolean; error?: string }>
       disconnectSerial: () => Promise<void>
+      onSerialData: (cb: (text: string) => void) => () => void
     }
   }
 }

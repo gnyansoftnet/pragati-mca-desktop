@@ -4,7 +4,7 @@ export interface SerialConnectDto {
   // parity: 'none' | 'even' | 'odd' | 'mark' | 'space'
   // dataBits: 5 | 6 | 7 | 8
   // stopBits: 1 | 1.5 | 2
-  parity: string
+  parity: number
   dataBits: number
   stopBits: number
 }

@@ -51,11 +51,16 @@ const api = {
   connectSerial: (params: {
     path: string
     baudRate: number
-    parity: string
+    parity: number
     dataBits: number
     stopBits: number
   }) => ipcRenderer.invoke('serial:connect', params),
-  disconnectSerial: () => ipcRenderer.invoke('serial:disconnect')
+  disconnectSerial: () => ipcRenderer.invoke('serial:disconnect'),
+  onSerialData: (cb: (text: string) => void) => {
+    const handler = (_e: Electron.IpcRendererEvent, text: string) => cb(text)
+    ipcRenderer.on('serial:data', handler)
+    return () => ipcRenderer.removeListener('serial:data', handler)
+  }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
