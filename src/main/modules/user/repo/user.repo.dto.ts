@@ -6,6 +6,7 @@ interface UserRow extends RowDataPacket {
   id: number
   user_name: string
   user_code: string
+  password: string
   plant: string
   role: string
 }
@@ -13,7 +14,7 @@ interface UserRow extends RowDataPacket {
 export class UserRepo {
   async findByUserName(userName: string): Promise<UserRow | null> {
     const [rows] = await db.execute<UserRow[]>(
-      `SELECT id, user_name, user_code, plant, role,password
+      `SELECT *
        FROM user
        WHERE user_name = ?
        LIMIT 1`,

@@ -5,7 +5,8 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerIpcHandlers } from './core/ipc/register-ipc'
 import { container } from './core/di/container' // added
-import { SerialService } from './modules/connection/service/serial.service' // added
+import { SerialComPortService } from './modules/machine/service/serial-com-port.service'
+// import { SerialService } from './modules/connection/service/serial-com-port.service' // added
 
 let mainWindow: BrowserWindow | null = null // changed: moved out of createWindow
 
@@ -56,7 +57,7 @@ app.whenReady().then(() => {
   registerIpcHandlers()
 
   // added: tell the serial service which window to send data to
-  container.resolve(SerialService).setWindowGetter(() => mainWindow)
+  container.resolve(SerialComPortService).setWindowGetter(() => mainWindow)
 
   ipcMain.on('ping', () => console.log('pong'))
 
@@ -69,7 +70,7 @@ app.whenReady().then(() => {
 
 // added: release the COM port when the app quits
 app.on('before-quit', () => {
-  container.resolve(SerialService).disconnect()
+  container.resolve(SerialComPortService).disconnect()
 })
 
 app.on('window-all-closed', () => {
