@@ -5,6 +5,12 @@ import { SaveMilkCollectionDto } from '../shared/dtos/milk-collection/milk-colle
 import { UpdateMilkCollectionDto } from '../shared/dtos/analysis/milk-analysis-update.dto'
 import { MilkRejectionSaveDto } from '../shared/dtos/milk-rejection/milk-rejection.dto'
 import { UserResponseDto } from '@shared/dtos/user/user.dto'
+import {
+  PortConfig,
+  PortListItem,
+  SerialResult,
+  SerialSnapshot
+} from '@shared/dtos/connection/serial-com-port.dto'
 
 // Custom APIs for renderer
 
@@ -47,25 +53,21 @@ const api = {
     ipcRenderer.invoke('milk-rejection:saveMilkRejection', params),
 
   // serial port
-  getSerialPorts: () => ipcRenderer.invoke('serial:list'),
-  connectSerial: (params: {
-    path: string
-    baudRate: number
-    parity: number
-    dataBits: number
-    stopBits: number
-  }) => ipcRenderer.invoke('serial:connect', params),
-  disconnectSerial: () => ipcRenderer.invoke('serial:disconnect'),
-  onSerialData: (cb: (text: string) => void) => {
-    const handler = (_e: Electron.IpcRendererEvent, text: string) => cb(text)
-    ipcRenderer.on('serial:data', handler)
-    return () => ipcRenderer.removeListener('serial:data', handler)
+  getSerialPorts: (): Promise<PortListItem[]> => ipcRenderer.invoke('serial:list'),
+  connectSerial: (cfg: PortConfig): Promise<SerialResult> =>
+    ipcRenderer.invoke('serial:connect', cfg),
+  disconnectSerial: (path: string): Promise<SerialResult> =>
+    ipcRenderer.invoke('serial:disconnect', path),
+  getSnapshot: (): Promise<SerialSnapshot> => ipcRenderer.invoke('serial:snapshot'),
+  clearSerialReadings: (keys?: string[]): Promise<void> => ipcRenderer.invoke('serial:clear', keys),
+  // live updates; returns a function that stops listening
+  onSerialSnapshot: (cb: (s: SerialSnapshot) => void) => {
+    const handler = (_e: Electron.IpcRendererEvent, s: SerialSnapshot) => cb(s)
+    ipcRenderer.on('serial:snapshot', handler)
+    return () => ipcRenderer.removeListener('serial:snapshot', handler)
   }
 }
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)

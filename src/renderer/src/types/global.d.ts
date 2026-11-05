@@ -3,6 +3,7 @@ import type { Vendor } from './vendors.types'
 import type { Supervisor } from './supervisors.types'
 import type { PaginatedResponse } from './common.types'
 import { SerialConnectDto, SerialResultDto } from '@shared/dtos/connection/serial.dto'
+import { PortListItem, SerialSnapshot } from '@shared/dtos/connection/serial-com-port.dto'
 
 declare global {
   interface Window {
@@ -37,8 +38,14 @@ declare global {
       //gyana
       getSerialPorts: () => Promise<{ path: string }[]>
       connectSerial: (params: SerialConnectDto) => Promise<SerialResultDto>
-      disconnectSerial: () => Promise<void>
+      // disconnectSerial: () => Promise<void>
       onSerialData: (cb: (text: string) => void) => () => void
+
+      //get serial ports
+      getSerialPorts: () => Promise<PortListItem[]>
+      getSnapshot: () => Promise<SerialSnapshot>
+      onSerialSnapshot: (cb: (s: SerialSnapshot) => void) => () => void
+      disconnectSerial: (path: string) => Promise<SerialResult>
     }
   }
 }

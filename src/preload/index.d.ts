@@ -1,5 +1,11 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 import { UpdateMilkCollectionDto } from '@shared/dtos/analysis/milk-analysis-update.dto'
+import {
+  PortConfig,
+  PortListItem,
+  SerialResult,
+  SerialSnapshot
+} from '@shared/dtos/connection/serial-com-port.dto'
 import { SaveMilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection-save.dt'
 import {
   MilkCollectionDto,
@@ -44,7 +50,7 @@ declare global {
       saveMilkCollection: (params: SaveMilkCollectionDto) => Promise<MilkCollectionDto>
       getWeightSystems: () => Promise<WeightSystemDto>
 
-      //  milk collection
+      //  milk analysis
       updateMilkAnalysis: (params: UpdateMilkCollectionDto) => Promise<any>
 
       // milk rejection
@@ -54,17 +60,13 @@ declare global {
       ) => Promise<PaginatedMilkRejectionDto>
       saveMilkRejection: (params: MilkRejectionSaveDto) => Promise<MilkRejectionResponseDto>
 
-      //  port
-      getSerialPorts: () => Promise<{ path: string }[]>
-      connectSerial: (params: {
-        path: string
-        baudRate: number
-        parity: number
-        dataBits: number
-        stopBits: number
-      }) => Promise<{ ok: boolean; error?: string }>
-      disconnectSerial: () => Promise<void>
-      onSerialData: (cb: (text: string) => void) => () => void
+      // serial port
+      getSerialPorts: () => Promise<PortListItem[]>
+      connectSerial: (cfg: PortConfig) => Promise<SerialResult>
+      disconnectSerial: (path: string) => Promise<SerialResult>
+      getSnapshot: () => Promise<SerialSnapshot>
+      clearSerialReadings: (keys?: string[]) => Promise<void>
+      onSerialSnapshot: (cb: (s: SerialSnapshot) => void) => () => void
     }
   }
 }

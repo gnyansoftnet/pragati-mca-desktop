@@ -8,7 +8,6 @@ import { MilkCollectionRepo } from '../../modules/milk_collection/repositories/m
 import { MilkCollectionService } from '../../modules/milk_collection/services/milk-collection.service'
 import { MilkAnalysisRepo } from '../../modules/analysis/repo/milk-analysis.repo'
 import { MilkAnalysisService } from '../../modules/analysis/service/milk-analysis.service'
-
 import { SupervisorRepo } from '../../modules/supervisor/repo/supervisor.repo'
 import { SupervisorService } from '../../modules/supervisor/service/supervisor.service'
 import { MilkRejectionRepo } from '../../modules/milk_rejection/repo/milk-rejection.repo'
@@ -16,7 +15,7 @@ import { MilkRejectionService } from '../../modules/milk_rejection/service/milk-
 import { PasswordService } from '../../modules/user/service/password.service'
 import { UserRepo } from '../../modules/user/repo/user.repo.dto'
 import { UserService } from '../../modules/user/service/user.service'
-import { SerialComPortService } from '../../modules/machine/service/serial-com-port.service'
+import { SerialComPortService } from '../../modules/connection/service/serial-com-port.service'
 
 // route
 container.registerSingleton(RouteRepo)
@@ -50,5 +49,8 @@ container.registerSingleton(PasswordService)
 // user
 container.registerSingleton(UserRepo)
 container.registerSingleton(UserService)
+
+// serial port
+container.registerSingleton(SerialComPortService)
 
 export { container }
