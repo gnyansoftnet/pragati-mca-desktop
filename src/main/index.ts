@@ -1,18 +1,16 @@
 import 'dotenv/config'
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerIpcHandlers } from './core/ipc/register-ipc'
-import { container } from './core/di/container' // added
+import { container } from './core/di/container'
 import { SerialComPortService } from './modules/machine/service/serial-com-port.service'
-// import { SerialService } from './modules/connection/service/serial-com-port.service' // added
 
-let mainWindow: BrowserWindow | null = null // changed: moved out of createWindow
+let mainWindow: BrowserWindow | null = null
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
-    // changed: no "const"
     width: 900,
     height: 670,
     show: false,
@@ -30,7 +28,7 @@ function createWindow(): void {
     mainWindow?.show()
   })
 
-  // added: clear the reference when the window closes
+  // clear the reference when the window closes
   mainWindow.on('closed', () => {
     mainWindow = null
   })
@@ -54,12 +52,11 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  // this must call registerSerialIpc() inside (see step 6)
   registerIpcHandlers()
 
-  // added: tell the serial service which window to send data to
+  // tell the serial service which window to send data to
   container.resolve(SerialComPortService).setWindowGetter(() => mainWindow)
-
-  ipcMain.on('ping', () => console.log('pong'))
 
   createWindow()
 
@@ -68,9 +65,17 @@ app.whenReady().then(() => {
   })
 })
 
-// added: release the COM port when the app quits
-app.on('before-quit', () => {
-  container.resolve(SerialComPortService).disconnect()
+// release every COM port before the app really quits
+let quitting = false
+app.on('before-quit', (e) => {
+  if (quitting) return
+  e.preventDefault() // wait for the async close to finish
+  quitting = true
+  container
+    .resolve(SerialComPortService)
+    .shutdown()
+    .catch((err) => console.error('serial shutdown failed', err))
+    .finally(() => app.quit())
 })
 
 app.on('window-all-closed', () => {

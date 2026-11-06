@@ -15,7 +15,7 @@ import { MilkRejectionService } from '../../modules/milk_rejection/service/milk-
 import { PasswordService } from '../../modules/user/service/password.service'
 import { UserRepo } from '../../modules/user/repo/user.repo.dto'
 import { UserService } from '../../modules/user/service/user.service'
-import { SerialComPortService } from '../../modules/connection/service/serial-com-port.service'
+import { SerialComPortService } from '../../modules/machine/service/serial-com-port.service'
 
 // route
 container.registerSingleton(RouteRepo)

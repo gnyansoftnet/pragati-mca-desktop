@@ -1,25 +1,17 @@
 import { injectable } from 'tsyringe'
-import type { RowDataPacket } from 'mysql2'
 import { db } from '../../../core/config/database.config'
+import { UserRow } from './user.rows'
 
-interface UserRow extends RowDataPacket {
-  id: number
-  user_name: string
-  user_code: string
-  password: string
-  plant: string
-  role: string
-}
+const SQL_FIND_USER_BY_NAME = `
+  SELECT id, user_name, user_code, password, plant, role
+    FROM \`user\`
+   WHERE user_name = ?
+   LIMIT 1`
+
 @injectable()
 export class UserRepo {
-  async findByUserName(userName: string): Promise<UserRow | null> {
-    const [rows] = await db.execute<UserRow[]>(
-      `SELECT *
-       FROM user
-       WHERE user_name = ?
-       LIMIT 1`,
-      [userName]
-    )
-    return rows[0] ?? null
+  async findByUserName(userName: string): Promise<UserRow | undefined> {
+    const [rows] = await db.execute<UserRow[]>(SQL_FIND_USER_BY_NAME, [userName])
+    return rows[0]
   }
 }

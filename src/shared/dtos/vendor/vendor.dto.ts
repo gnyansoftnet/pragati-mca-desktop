@@ -1,6 +1,6 @@
 import { PaginatedResponseDto } from '../pagination.dto'
 
-export interface VendoreDto {
+export interface VendoreResponseDto {
   id: number
   dskName: string
   dskCode: string
@@ -10,4 +10,4 @@ export interface VendoreDto {
   supervisorEmpId?: string | null
 }
 
-export type PaginatedVendorsDto = PaginatedResponseDto<VendoreDto>
+export type PaginatedVendorsDto = PaginatedResponseDto<VendoreResponseDto>

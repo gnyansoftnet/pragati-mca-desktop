@@ -1,7 +1,8 @@
 import { inject, injectable } from 'tsyringe'
 import { PasswordService } from './password.service'
+import type { UserResponseDto } from '@shared/dtos/user/user.dto'
 import { UserRepo } from '../repo/user.repo.dto'
-import { UserResponseDto } from '@shared/dtos/user/user.dto'
+import { AppError, DatabaseError, ValidationError } from '../../../utils/app-errors'
 
 @injectable()
 export class UserService {
@@ -11,18 +12,27 @@ export class UserService {
   ) {}
 
   async login(userName: string, password: string): Promise<UserResponseDto> {
-    const user = await this.userRepo.findByUserName(userName)
+    // validation first, outside the try
+    if (!userName?.trim()) throw new ValidationError('User name is required')
+    if (!password) throw new ValidationError('Password is required')
 
-    if (!user || !(await this.passwordService.compare(password, user.password))) {
-      throw new Error('Invalid username or password')
-    }
+    try {
+      const user = await this.userRepo.findByUserName(userName.trim())
 
-    return {
-      id: user.id,
-      userName: user.user_name,
-      userCode: user.user_code,
-      plant: user.plant,
-      role: user.role
+      // same message for "no user" and "wrong password"
+      const valid = user ? await this.passwordService.compare(password, user.password) : false
+      if (!user || !valid) throw new ValidationError('Invalid username or password')
+
+      return {
+        id: user.id,
+        userName: user.user_name,
+        userCode: user.user_code,
+        plant: user.plant,
+        role: user.role
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to sign in', { cause: error })
     }
   }
 }
