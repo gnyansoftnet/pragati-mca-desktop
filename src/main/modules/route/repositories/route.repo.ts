@@ -1,81 +1,45 @@
 import { injectable } from 'tsyringe'
-import type { RowDataPacket } from 'mysql2'
 import { db } from '../../../core/config/database.config'
-import {
-  PaginatedRoutesDto,
-  RouteResponseDto
-} from '../../../../shared/dtos/route/route-response.dto'
-import { PaginationRequestDto } from '../../../../shared/dtos/pagination.dto'
+import { CountRow, PagedRouteRows, RouteRow } from './route.rows'
 
-interface RouteRow extends RowDataPacket {
-  id: number
-  route_name: string
-  route_code: string
-}
-
-interface CountRow extends RowDataPacket {
-  total: number
-}
+const SQL_GET_ROUTES = `
+  SELECT id, route_name, route_code
+    FROM route
+   ORDER BY id ASC`
 
 @injectable()
 export class RouteRepo {
-  async getRoutes(): Promise<RouteResponseDto[]> {
-    const [rows] = await db.execute<RouteRow[]>(
-      `SELECT id, route_name,route_code
-       FROM route
-       ORDER BY id ASC`
-    )
-    return rows.map((r) => ({
-      id: r.id,
-      routeName: r.route_name,
-      routeCode: r.route_code
-    }))
+  async getRoutes(): Promise<RouteRow[]> {
+    const [rows] = await db.execute<RouteRow[]>(SQL_GET_ROUTES)
+    return rows
   }
 
-  async getPaginatedRoutes(data: PaginationRequestDto): Promise<PaginatedRoutesDto> {
-    const page = Number(data.page)
-    const limit = Number(data.limit)
-    const offset = (page - 1) * limit
-
+  async getPaginatedRoutes(
+    search: string | undefined,
+    limit: number,
+    offset: number
+  ): Promise<PagedRouteRows> {
     let where = ''
-    const whereParams: string[] = []
+    const params: string[] = []
 
-    const term = data.search?.trim()
-    if (term) {
-      where = `WHERE (route_name LIKE ? OR route_code LIKE ?)`
-      const like = `%${term}%`
-      whereParams.push(like, like)
+    if (search) {
+      where = 'WHERE (route_name LIKE ? OR route_code LIKE ?)'
+      const like = `%${search}%`
+      params.push(like, like)
     }
-    const [countRows] = await db.query<CountRow[]>(
-      `SELECT COUNT(*) AS total FROM route ${where}`,
-      whereParams
-    )
-    const total = Number(countRows[0].total)
-    const totalPages = Math.ceil(total / limit)
 
-    const [rows] = await db.query<RouteRow[]>(
-      `SELECT id, route_name, route_code
-       FROM route
-       ${where}
-       ORDER BY id ASC
-       LIMIT ? OFFSET ?`,
-      [...whereParams, limit, offset]
-    )
+    const [[countRows], [rows]] = await Promise.all([
+      db.query<CountRow[]>(`SELECT COUNT(*) AS total FROM route ${where}`, params),
+      db.query<RouteRow[]>(
+        `SELECT id, route_name, route_code
+           FROM route
+           ${where}
+          ORDER BY id ASC
+          LIMIT ? OFFSET ?`,
+        [...params, limit, offset]
+      )
+    ])
 
-    return {
-      data: rows.map((r) => ({
-        id: r.id,
-        routeName: r.route_name,
-        routeCode: r.route_code
-      })),
-      pagination: {
-        total,
-        page,
-        limit,
-        totalPages,
-        hasNextPage: page < totalPages,
-        hasPrevPage: page > 1
-      }
-    }
+    return { rows, total: Number(countRows[0].total) }
   }
 }

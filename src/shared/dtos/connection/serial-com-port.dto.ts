@@ -39,5 +39,3 @@ export interface SerialSnapshot {
   readings: Record<string, { value: string | number; at: number }>
   ports: PortState[]
 }
-
-

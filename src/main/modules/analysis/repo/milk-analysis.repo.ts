@@ -1,40 +1,41 @@
 import { injectable } from 'tsyringe'
 import { db } from '../../../core/config/database.config'
-import { UpdateMilkCollectionDto } from '../../../../shared/dtos/analysis/milk-analysis-update.dto'
-import { RowDataPacket } from 'mysql2'
+import { MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
+import { MilkSampleRow } from './milk-analysis.row'
 
-export interface UpdateAnalysisResultDto {
-  total: number
-  updated: number
-  notFound: (string | number)[]
-}
+const SQL_GET_MILK_SAMPLES = `
+  SELECT id, trans_code, plant, shift, sample_date, sample_code,
+         net_weight, fat, snf, is_analyse
+    FROM milk_collection_details
+   WHERE sample_date = ?
+     AND shift = ?
+     AND plant = ?
+     AND is_analyse = 0
+     AND d_flag = 0
+   ORDER BY sample_code ASC`
 
-interface UpdateAnalysisRow extends RowDataPacket {
-  success: number
-  message: string
-  data: UpdateAnalysisResultDto | string | null
-}
+const USP_M_MILK_SAMPLE_UPDATE = 'CALL USP_M_MILK_SAMPLE_UPDATE(?,?,?,?,?,?)'
 
 @injectable()
 export class MilkAnalysisRepo {
-  async updateMilkAnalysis(data: UpdateMilkCollectionDto): Promise<UpdateAnalysisResultDto> {
-    const [result] = await db.query<UpdateAnalysisRow[][]>(
-      'CALL USP_M_MILK_COLLECTION_UPDATE_ANALYSIS(?,?,?,?)',
-      [data.date, data.shift, data.plant, JSON.stringify(data.samples)]
-    )
-    const row = result[0]?.[0]
-    if (!row) {
-      throw new Error('No response from procedure')
-    }
-    if (row.success === 0) {
-      throw new Error(String(row.message))
-    }
-    const payload = typeof row.data === 'string' ? JSON.parse(row.data) : row.data
+  async getMilkSamples(sampleDate: string, shift: number, plant: string): Promise<MilkSampleRow[]> {
+    const [rows] = await db.execute<MilkSampleRow[]>(SQL_GET_MILK_SAMPLES, [
+      sampleDate,
+      shift,
+      plant
+    ])
+    return rows
+  }
 
-    return {
-      total: payload?.total ?? 0,
-      updated: payload?.updated ?? 0,
-      notFound: payload?.notFound ?? []
-    }
+  async updateMilkSample(data: MilkSampleUpdateDto): Promise<MilkSampleRow> {
+    const [result] = await db.query<MilkSampleRow[]>(USP_M_MILK_SAMPLE_UPDATE, [
+      data.sampleDate,
+      data.shift,
+      data.plant,
+      data.sampleCode,
+      data.fat ?? null,
+      data.snf ?? null
+    ])
+    return result[0]?.[0]
   }
 }

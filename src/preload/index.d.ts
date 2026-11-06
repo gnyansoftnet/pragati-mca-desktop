@@ -1,5 +1,5 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { UpdateMilkCollectionDto } from '@shared/dtos/analysis/milk-analysis-update.dto'
+import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
 import {
   PortConfig,
   PortListItem,
@@ -15,16 +15,17 @@ import { WeightSystemDto } from '@shared/dtos/milk-collection/weight-system.dto'
 import {
   MilkRejectionResponseDto,
   MilkRejectionSaveDto,
+  PaginatedMilkRejectionDto, // FIX: was used but never imported (check the exact name in your dto file)
   ReasonDto
-} from '@shared/dtos/milk-rejection/milk-rejection.dto'
+} from '@shared/dtos/milk-collection/milk-rejection.dto'
 import { PaginationRequestDto } from '@shared/dtos/pagination.dto'
-import { PaginatedRoutesDto, RouteResponseDto } from '@shared/dtos/route/route-response.dto'
+import { PaginatedRoutesDto, RouteResponseDto } from '@shared/dtos/route/route.dto'
 import {
   PaginatedSupervisorDto,
   SupervisorResponseDto
 } from '@shared/dtos/supervisor/supervisor.dto'
 import { UserResponseDto } from '@shared/dtos/user/user.dto'
-import { PaginatedVendorsDto, VendoreDto } from '@shared/dtos/vendor/vendor.dto'
+import { PaginatedVendorsDto, VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
 
 declare global {
   interface Window {
@@ -36,11 +37,13 @@ declare global {
       // routes
       getRoutes: () => Promise<RouteResponseDto[]>
       getPaginatedRoutes: (params: PaginationRequestDto) => Promise<PaginatedRoutesDto>
+
       // supervisor
       getSupervisors: () => Promise<SupervisorResponseDto[]>
       getPaginatedSupervisors: (params: PaginationRequestDto) => Promise<PaginatedSupervisorDto>
-      //  vendor
-      getVendors: () => Promise<VendoreDto[]>
+
+      // vendor
+      getVendors: () => Promise<VendoreResponseDto[]>
       getPaginatedVendors: (params: PaginationRequestDto) => Promise<PaginatedVendorsDto>
 
       // milk collection
@@ -48,10 +51,11 @@ declare global {
         params: PaginationRequestDto
       ) => Promise<PaginatedMilkCollectionDto>
       saveMilkCollection: (params: SaveMilkCollectionDto) => Promise<MilkCollectionDto>
-      getWeightSystems: () => Promise<WeightSystemDto>
+      getWeightSystems: () => Promise<WeightSystemDto[]> // FIX: plural name -> array (verify)
 
-      //  milk analysis
-      updateMilkAnalysis: (params: UpdateMilkCollectionDto) => Promise<any>
+      // milk analysis
+      updateMilkSample: (params: MilkSampleUpdateDto) => Promise<MilkSampleDto>
+      getMilkSamples: (sampleDate: string, shift: number, plant: string) => Promise<MilkSampleDto[]>
 
       // milk rejection
       getReasons: () => Promise<ReasonDto[]>

@@ -1,9 +1,11 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { PaginationRequestDto } from '../shared/dtos/pagination.dto'
-import { SaveMilkCollectionDto } from '../shared/dtos/milk-collection/milk-collection-save.dt'
-import { UpdateMilkCollectionDto } from '../shared/dtos/analysis/milk-analysis-update.dto'
-import { MilkRejectionSaveDto } from '../shared/dtos/milk-rejection/milk-rejection.dto'
+import {
+  MilkRejectionResponseDto,
+  MilkRejectionSaveDto,
+  PaginatedMilkRejectionDto
+} from '../shared/dtos/milk-collection/milk-rejection.dto'
 import { UserResponseDto } from '@shared/dtos/user/user.dto'
 import {
   PortConfig,
@@ -11,6 +13,19 @@ import {
   SerialResult,
   SerialSnapshot
 } from '@shared/dtos/connection/serial-com-port.dto'
+import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
+import { PaginatedRoutesDto, RouteResponseDto } from '@shared/dtos/route/route.dto'
+import { PaginatedVendorsDto, VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
+import {
+  PaginatedSupervisorDto,
+  SupervisorResponseDto
+} from '@shared/dtos/supervisor/supervisor.dto'
+import {
+  MilkCollectionDto,
+  PaginatedMilkCollectionDto,
+  SaveMilkCollectionDto
+} from '@shared/dtos/milk-collection/milk-collection.dto'
+import { WeightSystemDto } from '@shared/dtos/milk-collection/weight-system.dto'
 
 // Custom APIs for renderer
 
@@ -20,36 +35,41 @@ const api = {
     ipcRenderer.invoke('user:login', userName, password),
 
   // routes
-  getRoutes: () => ipcRenderer.invoke('route:getRoutes'),
-  getPaginatedRoutes: (params: PaginationRequestDto) =>
+  getRoutes: (): Promise<RouteResponseDto[]> => ipcRenderer.invoke('route:getRoutes'),
+  getPaginatedRoutes: (params: PaginationRequestDto): Promise<PaginatedRoutesDto> =>
     ipcRenderer.invoke('route:getPaginatedRoutes', params),
 
-  getSupervisors: () => ipcRenderer.invoke('supervisor:getSupervisors'),
-  getPaginatedSupervisors: (params: PaginationRequestDto) =>
+  // vendor
+  getVendors: (): Promise<VendoreResponseDto[]> => ipcRenderer.invoke('vendor:getVendors'),
+  getPaginatedVendors: (params: PaginationRequestDto): Promise<PaginatedVendorsDto> =>
+    ipcRenderer.invoke('vendor:getPaginatedVendors', params),
+
+  getSupervisors: (): Promise<SupervisorResponseDto[]> =>
+    ipcRenderer.invoke('supervisor:getSupervisors'),
+  getPaginatedSupervisors: (params: PaginationRequestDto): Promise<PaginatedSupervisorDto> =>
     ipcRenderer.invoke('supervisor:getPaginatedSupervisors', params),
 
   // milk
-  getPaginatedMilkCollctions: (params: PaginationRequestDto) =>
+  getPaginatedMilkCollctions: (params: PaginationRequestDto): Promise<PaginatedMilkCollectionDto> =>
     ipcRenderer.invoke('milk-collection:getPaginatedMilkCollctions', params),
-  saveMilkCollection: (params: SaveMilkCollectionDto) =>
+  saveMilkCollection: (params: SaveMilkCollectionDto): Promise<MilkCollectionDto> =>
     ipcRenderer.invoke('milk-collection:saveMilkCollection', params),
-  getWeightSystems: () => ipcRenderer.invoke('milk-collection:getWeightSystems'),
+  getWeightSystems: (): Promise<WeightSystemDto[]> =>
+    ipcRenderer.invoke('milk-collection:getWeightSystems'),
 
   // milk analysis
-  updateMilkAnalysis: (params: UpdateMilkCollectionDto) =>
-    ipcRenderer.invoke('milk-analysis:updateMilkAnalysis', params),
+  getMilkSamples: (sampleDate: string, shift: number, plant: string): Promise<MilkSampleDto[]> =>
+    ipcRenderer.invoke('milk-analysis:getMilkSamples', sampleDate, shift, plant),
 
-  // vendor
-  getVendors: () => ipcRenderer.invoke('vendor:getVendors'),
-  getPaginatedVendors: (params: PaginationRequestDto) =>
-    ipcRenderer.invoke('vendor:getPaginatedVendors', params),
+  updateMilkSample: (params: MilkSampleUpdateDto): Promise<MilkSampleDto> =>
+    ipcRenderer.invoke('milk-analysis:updateMilkSample', params),
 
   // milk rejection
-  getReasons: () => ipcRenderer.invoke('milk-rejection:getReasons'),
-  getPaginatedMilkRejections: (params: PaginationRequestDto) =>
+  getReasons: (): Promise<MilkRejectionResponseDto[]> =>
+    ipcRenderer.invoke('milk-rejection:getReasons'),
+  getPaginatedMilkRejections: (params: PaginationRequestDto): Promise<PaginatedMilkRejectionDto> =>
     ipcRenderer.invoke('milk-rejection:getPaginatedMilkRejections', params),
-
-  saveMilkRejection: (params: MilkRejectionSaveDto) =>
+  saveMilkRejection: (params: MilkRejectionSaveDto): Promise<MilkRejectionResponseDto> =>
     ipcRenderer.invoke('milk-rejection:saveMilkRejection', params),
 
   // serial port
@@ -60,11 +80,12 @@ const api = {
     ipcRenderer.invoke('serial:disconnect', path),
   getSnapshot: (): Promise<SerialSnapshot> => ipcRenderer.invoke('serial:snapshot'),
   clearSerialReadings: (keys?: string[]): Promise<void> => ipcRenderer.invoke('serial:clear', keys),
-  // live updates; returns a function that stops listening
+
+  // live updates (main pushes on 'serial:update'); returns a function that stops listening
   onSerialSnapshot: (cb: (s: SerialSnapshot) => void) => {
     const handler = (_e: Electron.IpcRendererEvent, s: SerialSnapshot) => cb(s)
-    ipcRenderer.on('serial:snapshot', handler)
-    return () => ipcRenderer.removeListener('serial:snapshot', handler)
+    ipcRenderer.on('serial:update', handler)
+    return () => ipcRenderer.removeListener('serial:update', handler)
   }
 }
 

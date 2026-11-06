@@ -1,5 +1,5 @@
 import { registerMilkAnalysisIpc } from '../../modules/analysis/milk-analysis.ipc'
-import { registerSerialIpc } from '../../modules/connection/serial.ipc'
+import { registerSerialIpc } from '../../modules/machine/serial-com-port.ipc'
 import { registerMilkCollectionIpc } from '../../modules/milk_collection/milk-collection.ipc'
 import { registerMilkRejectionIpc } from '../../modules/milk_rejection/milk-rejection.ipc'
 import { registerRouteIpc } from '../../modules/route/route.ipc'
