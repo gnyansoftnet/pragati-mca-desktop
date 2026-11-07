@@ -1,4 +1,5 @@
-export type ErrorCode = 'VALIDATION' | 'NOT_FOUND' | 'DATABASE' | 'UNKNOWN'
+export type ErrorCode =
+  'VALIDATION' | 'NOT_FOUND' | 'DATABASE' | 'EXTERNAL_API' | 'UNAUTHORIZED' | 'UNKNOWN'
 
 export class AppError extends Error {
   constructor(
@@ -29,5 +30,14 @@ export class DatabaseError extends AppError {
   }
 }
 
-export type IpcResult<T> =
-  { ok: true; data: T } | { ok: false; error: { code: ErrorCode; message: string } }
+export class UnauthorizedError extends AppError {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, 'UNAUTHORIZED', options)
+  }
+}
+
+export class ExternalApiError extends AppError {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, 'EXTERNAL_API', options)
+  }
+}

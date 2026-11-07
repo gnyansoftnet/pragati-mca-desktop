@@ -1,13 +1,18 @@
 import { injectable, inject } from 'tsyringe'
-
 import type { PaginationRequestDto } from '@shared/dtos/pagination.dto'
 import type { PaginatedRoutesDto, RouteResponseDto } from '@shared/dtos/route/route.dto'
 import { RouteRepo } from '../repositories/route.repo'
 import { AppError, DatabaseError } from '../../../utils/app-errors'
+import { RouteSyncService } from './route-sync.service'
+import { SyncRoute } from '../repositories/route.rows'
 
 @injectable()
 export class RouteService {
-  constructor(@inject(RouteRepo) private readonly routeRepo: RouteRepo) {}
+  constructor(
+    @inject(RouteRepo) private readonly routeRepo: RouteRepo,
+    @inject(RouteSyncService)
+    private readonly routeApi: RouteSyncService
+  ) {}
 
   async getRoutes(): Promise<RouteResponseDto[]> {
     try {
@@ -51,6 +56,20 @@ export class RouteService {
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new DatabaseError('Failed to fetch routes', { cause: error })
+    }
+  }
+  async saveRoutes(plant: string, org: string, branch: string): Promise<SyncRoute> {
+    try {
+      const routes = await this.routeApi.syncDownRoutes(plant, org, branch)
+      const row = await this.routeRepo.saveRoutes(routes)
+      return {
+        success: Number(row.success),
+        message: row.message,
+        total: Number(row.total)
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to save routes', { cause: error })
     }
   }
 }

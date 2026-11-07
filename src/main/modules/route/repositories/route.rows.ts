@@ -14,3 +14,14 @@ export interface PagedRouteRows {
   rows: RouteRow[]
   total: number
 }
+
+export interface SyncRouteRow extends RowDataPacket {
+  success: number
+  message: string
+  total: number
+}
+export interface SyncRoute {
+  success: number
+  message: string
+  total: number
+}
