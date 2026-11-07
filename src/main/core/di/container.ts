@@ -16,6 +16,9 @@ import { PasswordService } from '../../modules/user/service/password.service'
 import { UserRepo } from '../../modules/user/repo/user.repo.dto'
 import { UserService } from '../../modules/user/service/user.service'
 import { SerialComPortService } from '../../modules/machine/service/serial-com-port.service'
+import { ApiService } from '../../utils/api-service'
+import { VendorSyncService } from '../../modules/vendor/services/vendor-sync.service'
+import { RouteSyncService } from '../../modules/route/services/route-sync.service'
 
 // route
 container.registerSingleton(RouteRepo)
@@ -52,5 +55,11 @@ container.registerSingleton(UserService)
 
 // serial port
 container.registerSingleton(SerialComPortService)
+// api client
+container.registerSingleton(ApiService)
+// vendor api aync
+container.registerSingleton(VendorSyncService)
+// rout api sync
+container.registerSingleton(RouteSyncService)
 
 export { container }

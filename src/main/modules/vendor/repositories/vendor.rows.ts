@@ -20,3 +20,9 @@ export interface PagedVendorRows {
   rows: VendorRow[]
   total: number
 }
+
+export interface SyncVendorRow extends RowDataPacket {
+  success: number
+  message: string
+  total: number
+}
