@@ -1,15 +1,17 @@
 import { inject, injectable } from 'tsyringe'
 import { PasswordService } from './password.service'
 import type { UserResponseDto } from '@shared/dtos/user/user.dto'
-import { UserRepo } from '../repo/user.repo.dto'
+import { UserRepo } from '../repo/user.repo'
 import { AppError, DatabaseError, ValidationError } from '../../../utils/app-errors'
+import { UserSyncService } from './user-sync.service'
+import { SyncUser } from '../repo/user.rows'
 
 @injectable()
 export class UserService {
   constructor(
     @inject(UserRepo) private readonly userRepo: UserRepo,
-    @inject(PasswordService) private readonly passwordService: PasswordService
-    // @inject(TokenService) private readonly tokenService: TokenService
+    @inject(PasswordService) private readonly passwordService: PasswordService,
+    @inject(UserSyncService) private readonly userApi: UserSyncService
   ) {}
 
   async login(userName: string, password: string): Promise<UserResponseDto> {
@@ -51,6 +53,21 @@ export class UserService {
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new DatabaseError('Failed to sign in', { cause: error })
+    }
+  }
+
+  async saveRoutes(plant: string): Promise<SyncUser> {
+    try {
+      const users = await this.userApi.syncDownUsers(plant)
+      const row = await this.userRepo.saveUsers(users)
+      return {
+        success: Number(row.success),
+        message: row.message,
+        total: Number(row.total)
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to save users', { cause: error })
     }
   }
 }

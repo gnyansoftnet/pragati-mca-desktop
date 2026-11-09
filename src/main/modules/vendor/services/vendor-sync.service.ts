@@ -9,7 +9,7 @@ export class VendorSyncService {
   constructor(private readonly api: ApiService) {}
 
   async syncDownVendors(plant: string, org: string, branch: string): Promise<Vendor[]> {
-    const { data } = await this.api.http.get<VendorListResponse>(Url.vendorDetails, {
+    const { data } = await this.api.http.get<VendorListResponse>(Url.vendor, {
       params: {
         orgCode: org,
         branchCode: branch,

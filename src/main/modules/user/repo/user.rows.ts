@@ -14,3 +14,14 @@ export interface UserRow extends RowDataPacket {
   role_id: number
   user_id: number
 }
+
+export interface SyncUserRow extends RowDataPacket {
+  success: number
+  message: string
+  total: number
+}
+export interface SyncUser {
+  success: number
+  message: string
+  total: number
+}

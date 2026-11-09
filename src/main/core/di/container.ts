@@ -13,13 +13,14 @@ import { SupervisorService } from '../../modules/supervisor/service/supervisor.s
 import { MilkRejectionRepo } from '../../modules/milk_rejection/repo/milk-rejection.repo'
 import { MilkRejectionService } from '../../modules/milk_rejection/service/milk-rejection.service'
 import { PasswordService } from '../../modules/user/service/password.service'
-import { UserRepo } from '../../modules/user/repo/user.repo.dto'
+import { UserRepo } from '../../modules/user/repo/user.repo'
 import { UserService } from '../../modules/user/service/user.service'
 import { SerialComPortService } from '../../modules/machine/service/serial-com-port.service'
 import { ApiService } from '../../utils/api-service'
 import { VendorSyncService } from '../../modules/vendor/services/vendor-sync.service'
 import { RouteSyncService } from '../../modules/route/services/route-sync.service'
 import { TokenService } from '../../modules/user/service/token.service'
+import { UserSyncService } from '../../modules/user/service/user-sync.service'
 
 // route
 container.registerSingleton(RouteRepo)
@@ -64,5 +65,7 @@ container.registerSingleton(VendorSyncService)
 container.registerSingleton(RouteSyncService)
 // token
 container.registerSingleton(TokenService)
+// user sync
+container.registerSingleton(UserSyncService)
 
 export { container }
