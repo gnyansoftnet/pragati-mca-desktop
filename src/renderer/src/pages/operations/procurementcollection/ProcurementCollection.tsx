@@ -62,17 +62,14 @@ export const ProcurementCollection: React.FC = () => {
   const [selectedVendor, setSelectedVendor] = useState<string>('')
   const [loadingVendors, setLoadingVendors] = useState<boolean>(false)
 
-  const [shift, setShift] = useState('')
+  const [shift, setShift] = useState('1')
   const [plant, setPlant] = useState('1102')
-  const [weightSystem, setWeightSystem] = useState('')
-  const [cansType, setCansType] = useState('')
-  const [milkType, setMilkType] = useState('')
-  const [milkStatus, setMilkStatus] = useState('')
+  const [weightSystem, setWeightSystem] = useState('WeightBowl')
+  const [cansType, setCansType] = useState('Aluminium')
+  const [milkType, setMilkType] = useState('cow')
+  const [milkStatus, setMilkStatus] = useState('good')
   const [noOfCans, setNoOfCans] = useState('')
   const [weightCans, setWeightCans] = useState('')
-  const [clrp, setClrp] = useState('2.4')
-  const [fatp, setFatp] = useState('24.5')
-  const [snfp, setSnfp] = useState('78.5')
 
   const userCode = 'USR0001'
   const entry = 'MACHINE'
@@ -185,13 +182,13 @@ export const ProcurementCollection: React.FC = () => {
     return () => clearInterval(interval)
   }, [])
 
-  useEffect(() => {
-    if (noOfCans !== '') {
-      setWeightCans(String(Number(noOfCans) * 20))
-    } else {
-      setWeightCans('')
-    }
-  }, [noOfCans])
+  // useEffect(() => {
+  //   if (noOfCans !== '') {
+  //     setWeightCans(String(Number(noOfCans) * 20))
+  //   } else {
+  //     setWeightCans('')
+  //   }
+  // }, [noOfCans])
 
   const shifts = [
     { value: '1', label: 'Morning' },
@@ -262,9 +259,9 @@ export const ProcurementCollection: React.FC = () => {
         grossWeight: weightNum,
         netWeight: weightNum,
         netLtr: weightNum,
-        fat: Number(fatp) || 0,
-        snf: Number(snfp) || 0,
-        clr: Number(clrp) || 0,
+        fat: 0,
+        snf: 0,
+        clr: 0,
         entry: entry
       }
 
@@ -348,23 +345,6 @@ export const ProcurementCollection: React.FC = () => {
                 options={weights}
               />
             </div>
-
-            {/* Dynamic Routes Dropdown */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Routes{' '}
-                {loadingRoutes && <span className="text-slate-400 font-normal">(Loading...)</span>}
-              </label>
-              <CustomForm.CustomSelectSearchField
-                name="route"
-                placeholder={loadingRoutes ? 'Loading routes...' : 'Select & search route...'}
-                value={selectedRoute}
-                onChange={(e: any) => setSelectedRoute(e.target.value)}
-                options={routeOptions}
-                disabled={loadingRoutes}
-              />
-            </div>
-
             {/* Cans Type */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Cans Type</label>
@@ -407,6 +387,21 @@ export const ProcurementCollection: React.FC = () => {
                 readOnly={true}
               />
             </div>
+            {/* Dynamic Routes Dropdown */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700">
+                Routes{' '}
+                {loadingRoutes && <span className="text-slate-400 font-normal">(Loading...)</span>}
+              </label>
+              <CustomForm.CustomSelectSearchField
+                name="route"
+                placeholder={loadingRoutes ? 'Loading routes...' : 'Select & search route...'}
+                value={selectedRoute}
+                onChange={(e: any) => setSelectedRoute(e.target.value)}
+                options={routeOptions}
+                disabled={loadingRoutes}
+              />
+            </div>
 
             {/* Vendor Name */}
             <div className="space-y-1.5">
@@ -433,6 +428,7 @@ export const ProcurementCollection: React.FC = () => {
                 onChange={(e: any) => setNoOfCans(e.target.value)}
                 placeholder="e.g. 4"
               />
+              <p className="text-xs font-semibold text-slate-700">Total no. cans: <span>20</span></p>
             </div>
 
             {/* Weight */}
@@ -443,39 +439,7 @@ export const ProcurementCollection: React.FC = () => {
                 value={weightCans}
                 onChange={(e: any) => setWeightCans(e.target.value)}
                 placeholder="e.g. 80"
-              />
-            </div>
-
-            {/* CLR Percentage */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">CLR Percentage (%)</label>
-              <CustomForm.CustomTextField
-                name="clr"
-                value={clrp}
-                onChange={(e: any) => setClrp(e.target.value)}
-                readOnly={true}
-              />
-            </div>
-
-            {/* FAT Percentage */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">FAT Percentage (%)</label>
-              <CustomForm.CustomTextField
-                name="fat"
-                value={fatp}
-                onChange={(e: any) => setFatp(e.target.value)}
-                readOnly={true}
-              />
-            </div>
-
-            {/* SNF Percentage */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">SNF Percentage (%)</label>
-              <CustomForm.CustomTextField
-                name="snf"
-                value={snfp}
-                onChange={(e: any) => setSnfp(e.target.value)}
-                readOnly={true}
+                
               />
             </div>
           </div>
@@ -516,9 +480,6 @@ export const ProcurementCollection: React.FC = () => {
                 <th className="py-3 px-2 whitespace-nowrap">Vendor Name</th>
                 <th className="py-3 px-2 whitespace-nowrap">No. of Cans</th>
                 <th className="py-3 px-2 whitespace-nowrap">Net Weight</th>
-                <th className="py-3 px-2 whitespace-nowrap">CLR(%)</th>
-                <th className="py-3 px-2 whitespace-nowrap">FAT(%)</th>
-                <th className="py-3 px-2 whitespace-nowrap">SNF(%)</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -582,15 +543,6 @@ export const ProcurementCollection: React.FC = () => {
                   <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
                   <td className="py-2 px-4 font-semibold text-primary">{item.noOfCans}</td>
                   <td className="py-2 px-4 font-bold text-emerald-600">{item.netWeight}</td>
-                  <td className="py-2 px-4 text-slate-700">
-                    {item.clr !== undefined ? item.clr : item.clrPercent}%
-                  </td>
-                  <td className="py-2 px-4 text-slate-700">
-                    {item.fat !== undefined ? item.fat : item.fatPercent}%
-                  </td>
-                  <td className="py-2 px-4 text-slate-700">
-                    {item.snf !== undefined ? item.snf : item.snfPercent}%
-                  </td>
                 </tr>
               ))}
             </tbody>

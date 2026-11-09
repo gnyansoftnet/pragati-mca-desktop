@@ -294,11 +294,11 @@ export const MacineConnection: React.FC = () => {
       value: p.path
     }))
 
-  // ---------- actions ----------
+    
 
   const onMachineChange = (value: string) => {
     setMachine(value as Machine | '')
-    if (value) setSettings(loadSettings(value)) // that machine's last used settings
+    if (value) setSettings(loadSettings(value))
   }
 
   async function handleConnect() {
