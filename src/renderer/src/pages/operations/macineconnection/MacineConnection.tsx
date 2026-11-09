@@ -1,186 +1,10 @@
-// import React, { useState, useEffect, useCallback } from 'react'
-// import Button1 from '../../../components/buttons/Button1'
-// import PageBreadcrumb from '../../../components/breadcrumbs/PageBreadcrumb'
-// import CustomForm from '../../../components/customform/CustomForm'
-// import { Cable } from 'lucide-react'
-// import type { PortListItem, SerialConnectDto } from '@shared/dtos/connection/serial-com-port.dto'
-// import { useSerialSnapshot } from '@renderer/hooks/useSerial'
-
-// // const BAUD_OPTIONS = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]
-// // const DATA_BITS_OPTIONS: SerialConnectDto['dataBits'][] = [5, 6, 7, 8]
-// // const STOP_BITS_OPTIONS: SerialConnectDto['stopBits'][] = [1, 1.5, 2]
-
-// export const MacineConnection: React.FC = () => {
-//   const [port, setPort] = useState<string>('')
-//   const [machine, setMachine] = useState<string>('')
-//   const [baudRate, setBaudRate] = useState<number>(9600)
-//   const [parity, setParity] = useState<SerialConnectDto['parity']>('none')
-//   const [dataBits, setDataBits] = useState<SerialConnectDto['dataBits']>(8)
-//   const [stopBits, setStopBits] = useState<SerialConnectDto['stopBits']>(1)
-
-//   const snap = useSerialSnapshot()
-//   const [available, setAvailable] = useState<PortListItem[]>([])
-
-//   const refreshPorts = useCallback(async () => {
-//     try {
-//       const ports = await window.api.getSerialPorts()
-//       setAvailable(ports)
-
-//       console.log('Available ports:', ports)
-//     } catch (error) {
-//       console.error('Could not read the port list:', error)
-//     }
-//   }, [])
-
-//   useEffect(() => {
-//     refreshPorts()
-//   }, [refreshPorts])
-
-//   const machineOptions = [
-//     { value: 'm1', label: 'Weight Scale' },
-//     { value: 'm2', label: 'Milk Analyzer' }
-//   ]
-
-//   const PARITY_OPTIONS: SerialConnectDto['parity'][] = ['none', 'even', 'odd', 'mark', 'space']
-
-//   const paritySelectOptions = PARITY_OPTIONS.map((item) => ({
-//     label: item.charAt(0).toUpperCase() + item.slice(1),
-//     value: item
-//   }))
-
-//   const BAUD_OPTIONS: SerialConnectDto['baudRate'][] = [
-//     1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200
-//   ]
-//   const baudSelectOptions = BAUD_OPTIONS.map((item) => ({
-//     label: String(item),
-//     value: item
-//   }))
-
-//   const DATA_BITS_OPTIONS: SerialConnectDto['dataBits'][] = [5, 6, 7, 8]
-//   const databitsSelectOptions = DATA_BITS_OPTIONS.map((item) => ({
-//     label: String(item),
-//     value: item
-//   }))
-
-//   const STOP_BITS_OPTIONS: SerialConnectDto['stopBits'][] = [1, 1.5, 2]
-//   const stopBitsSelectOptions = STOP_BITS_OPTIONS.map((item) => ({
-//     label: String(item),
-//     value: item
-//   }))
-
-//   const used = new Set(snap.ports.map((p) => p.path))
-//   const freePorts = available.filter((p) => !used.has(p.path))
-
-//   const portSelectOptions = freePorts.map((p) => ({
-//     label: p.friendlyName ? `${p.path} - ${p.friendlyName}` : p.path,
-//     value: p.path
-//   }))
-
-//   console.log('portSelectOptions', portSelectOptions)
-
-//   return (
-//     <div className="space-y-4">
-//       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-//         <PageBreadcrumb title="Macine Connection" desc="Connect you macine before collection" />
-//       </div>
-
-//       <div className="mt-2">
-//         <CustomForm
-//           onSubmit={(e) => e.preventDefault()}
-//           className="w-full p-3 bg-white rounded-2xl border border-slate-100"
-//         >
-//           <div className="grid lg:grid-cols-6 md:grid-cols-2 grid-cols-1 gap-4">
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">Select Machine</label>
-//               <CustomForm.CustomSelectField
-//                 name="center"
-//                 value={machine}
-//                 onChange={(e: any) => setMachine(e.target.value)}
-//                 options={machineOptions}
-//                 placeholder="Selct a machine"
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">Select Port Name</label>
-//               <CustomForm.CustomSelectField
-//                 name="port"
-//                 value={port}
-//                 onChange={(e: any) => setPort(e.target.value)}
-//                 options={portSelectOptions}
-//                 placeholder="Select port..."
-//               />
-//               {/* <select value={ports} onChange={(e) => setPorts('path', e.target.value)}>
-//                 <option value="">Select port...</option>
-//                 {freePorts.map((p) => (
-//                   <option key={p.path} value={p.path}>
-//                     {p.path}
-//                     {p.friendlyName ? ` - ${p.friendlyName}` : ''}
-//                   </option>
-//                 ))}
-//               </select> */}
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">
-//                 Parity <span className="text-rose-500">*</span>
-//               </label>
-//               <CustomForm.CustomSelectField
-//                 name="parity"
-//                 value={parity}
-//                 onChange={(e: any) => setParity(e.target.value)}
-//                 options={paritySelectOptions}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">Braude Rate</label>
-//               <CustomForm.CustomSelectField
-//                 name="baudRate"
-//                 value={baudRate}
-//                 onChange={(e: any) => setBaudRate(Number(e.target.value))}
-//                 options={baudSelectOptions}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">Data Bits</label>
-//               <CustomForm.CustomSelectField
-//                 name="dataBits"
-//                 value={dataBits}
-//                 onChange={(e: any) => setDataBits(e.target.value)}
-//                 options={databitsSelectOptions}
-//               />
-//             </div>
-//             <div className="space-y-1.5">
-//               <label className="text-xs font-semibold text-slate-700 mb-2">Stop Bits</label>
-//               <CustomForm.CustomSelectField
-//                 name="stopBits"
-//                 value={stopBits}
-//                 onChange={(e: any) => setStopBits(e.target.value)}
-//                 options={stopBitsSelectOptions}
-//               />
-//             </div>
-//           </div>
-
-//           <div className="flex justify-end items-center gap-2.5 mt-3">
-//             <div className="">
-//               <Button1
-//                 variant="primary"
-//                 icon={<Cable className="w-3.5 h-3.5 text-white" />}
-//                 label="Connect"
-//               />
-//             </div>
-//           </div>
-//         </CustomForm>
-//       </div>
-//     </div>
-//   )
-// }
-
 import React, { useState, useEffect, useCallback } from 'react'
 import { Cable, RefreshCw } from 'lucide-react'
 import Button1 from '../../../components/buttons/Button1'
 import PageBreadcrumb from '../../../components/breadcrumbs/PageBreadcrumb'
 import CustomForm from '../../../components/customform/CustomForm'
-import type { PortConfig, PortListItem } from '@shared/dtos/connection/serial-com-port.dto'
-import { useSerialSnapshot } from '@renderer/hooks/useSerial'
+import type { PortConfig, PortListItem, PortState, SerialSnapshot } from '@shared/dtos/connection/serial-com-port.dto'
+import { useSerialSnapshot, refreshSerialSnapshot } from '@renderer/hooks/useSerial'
 
 type Parity = 'none' | 'odd' | 'even' | 'mark' | 'space'
 type Machine = 'weight' | 'milkAnalyzer'
@@ -197,30 +21,24 @@ const MACHINES: { value: Machine; label: string }[] = [
   { value: 'milkAnalyzer', label: 'Milk Analyzer' }
 ]
 
-// the service expects a number for parity
 const PARITY_CODE: Record<Parity, number> = { none: 0, odd: 1, even: 2, mark: 3, space: 4 }
 
 const PARITY_OPTIONS = (Object.keys(PARITY_CODE) as Parity[]).map((p) => ({
   label: p.charAt(0).toUpperCase() + p.slice(1),
   value: p
 }))
+
 const BAUD_OPTIONS = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200].map((n) => ({
   label: String(n),
   value: n
 }))
+
 const DATA_BITS_OPTIONS = [5, 6, 7, 8].map((n) => ({ label: String(n), value: n }))
 const STOP_BITS_OPTIONS = [1, 1.5, 2].map((n) => ({ label: String(n), value: n }))
 
-const LIVE_VALUES = [
-  { key: 'weight', label: 'Weight (LTR)' },
-  { key: 'clr', label: 'CLR (%)' },
-  { key: 'fat', label: 'FAT (%)' },
-  { key: 'snf', label: 'SNF (%)' }
-]
-
 const DEFAULT_SETTINGS: Settings = { baudRate: 9600, parity: 'none', dataBits: 8, stopBits: 1 }
 
-// Remember the settings of each machine, so the operator doesn't retype them after every restart
+// Remember the settings of each machine in localStorage
 const storeKey = (machine: string) => `serial-settings:${machine}`
 
 function loadSettings(machine: string): Settings {
@@ -235,11 +53,9 @@ function saveSettings(machine: string, settings: Settings) {
   try {
     localStorage.setItem(storeKey(machine), JSON.stringify(settings))
   } catch {
-    /* storage not available: ignore */
+    /* ignore */
   }
 }
-
-const machineLabel = (value: string) => MACHINES.find((m) => m.value === value)?.label ?? value
 
 const dotColor = (status: string) =>
   status === 'connected'
@@ -257,36 +73,42 @@ export const MacineConnection: React.FC = () => {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
 
-  // connected ports + latest values, live from the main process
+  // Live snapshot from serial hook + local snapshot for instant updates
   const snap = useSerialSnapshot()
+  const [localSnap, setLocalSnap] = useState<SerialSnapshot | null>(null)
+
+  // Use localSnap if freshly updated, otherwise use live hook snap
+  const activeSnap = localSnap || snap
+
+  // Clear local override once the live hook catches up
+  useEffect(() => {
+    setLocalSnap(null)
+  }, [snap])
 
   const patchSettings = (patch: Partial<Settings>) => setSettings((s) => ({ ...s, ...patch }))
 
-  // ---------- port list ----------
-
+  // ---------- Port Listing ----------
   const refreshPorts = useCallback(async () => {
     try {
-      setAvailable(await window.api.getSerialPorts())
+      const ports = await window.api.getSerialPorts()
+      setAvailable(ports)
     } catch {
       setError('Could not read the port list')
     }
   }, [])
 
-  // load once, and again whenever the window gets focus (after plugging in a cable)
   useEffect(() => {
     refreshPorts()
     window.addEventListener('focus', refreshPorts)
     return () => window.removeEventListener('focus', refreshPorts)
   }, [refreshPorts])
 
-  // ---------- dropdown options ----------
+  // ---------- Dropdown Options ----------
+  // Machines are ALWAYS selectable (multiple scales/analyzers allowed)
+  const machineOptions = MACHINES
 
-  // a machine that is already connected can't be chosen again
-  const connectedRoles = new Set(snap.ports.map((p) => p.parserType))
-  const machineOptions = MACHINES.filter((m) => !connectedRoles.has(m.value))
-
-  // a port that is already used can't be chosen again
-  const usedPaths = new Set(snap.ports.map((p) => p.path))
+  // Only ports currently in use cannot be reselected
+  const usedPaths = new Set(activeSnap.ports.map((p) => p.path))
   const portOptions = available
     .filter((p) => !usedPaths.has(p.path))
     .map((p) => ({
@@ -294,18 +116,30 @@ export const MacineConnection: React.FC = () => {
       value: p.path
     }))
 
-    
-
   const onMachineChange = (value: string) => {
     setMachine(value as Machine | '')
     if (value) setSettings(loadSettings(value))
   }
 
+  // Label generator: "Weight Scale 1", "Weight Scale 2", etc.
+  const getMachineDisplayTitle = (portItem: PortState, allPorts: PortState[]) => {
+    const sameTypePorts = allPorts.filter((p) => p.parserType === portItem.parserType)
+    const baseLabel = MACHINES.find((m) => m.value === portItem.parserType)?.label ?? portItem.parserType
+
+    if (sameTypePorts.length > 1) {
+      const index = sameTypePorts.findIndex((p) => p.path === portItem.path) + 1
+      return `${baseLabel} ${index}`
+    }
+    return `${baseLabel} 1`
+  }
+
+  // ---------- Connect Action ----------
   async function handleConnect() {
     if (!machine || !port || busy) return
     setBusy(true)
     setError('')
     setMessage('')
+
     try {
       const cfg: PortConfig = {
         path: port,
@@ -315,12 +149,17 @@ export const MacineConnection: React.FC = () => {
         stopBits: settings.stopBits as PortConfig['stopBits'],
         parserType: machine
       }
+
       const res = await window.api.connectSerial(cfg)
+
       if (res.ok) {
         saveSettings(machine, settings)
-        setMessage(`${machineLabel(machine)} connected on ${port}`)
+        setMessage(`Connected on ${port}`)
         setMachine('')
         setPort('')
+
+        // Instantly fetch snapshot so UI updates with zero delay
+        refreshSerialSnapshot()
       } else {
         setError(res.error ?? 'Could not connect')
       }
@@ -332,42 +171,50 @@ export const MacineConnection: React.FC = () => {
     }
   }
 
+  // ---------- Disconnect Action ----------
   async function handleDisconnect(path: string) {
     setError('')
     setMessage('')
     try {
       await window.api.disconnectSerial(path)
+
+      // Instantly fetch snapshot so UI updates immediately
+      refreshSerialSnapshot()
     } catch (e) {
       setError((e as Error).message)
     }
     refreshPorts()
   }
 
-  const connectedCount = snap.ports.filter((p) => p.status === 'connected').length
+  const connectedCount = activeSnap.ports.filter((p) => p.status === 'connected').length
   const canConnect = !!machine && !!port && !busy
 
   return (
     <div className="space-y-4">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Machine Connection" desc="Connect your machine before collection" />
+        <PageBreadcrumb title="Machine Connection" desc="Connect your machines before milk collection" />
         <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700">
           <span
             className={`h-2.5 w-2.5 rounded-full ${connectedCount > 0 ? 'bg-emerald-500' : 'bg-slate-400'}`}
           />
-          {connectedCount > 0 ? `${connectedCount} machine connected` : 'Disconnected'}
+          {connectedCount > 0
+            ? `${connectedCount} ${connectedCount === 1 ? 'machine' : 'machines'} connected`
+            : 'Disconnected'}
         </span>
       </div>
 
-      {/* ---------- connect form ---------- */}
+      {/* Connect Form */}
       <div className="mt-2">
         <CustomForm
           onSubmit={(e) => {
             e.preventDefault()
             handleConnect()
           }}
-          className="w-full p-3 bg-white rounded-2xl border border-slate-100"
+          className="w-full p-4 bg-white rounded-2xl border border-slate-100 shadow-xs"
         >
           <div className="grid lg:grid-cols-6 md:grid-cols-2 grid-cols-1 gap-4">
+            {/* Machine Type */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 mb-2">
                 Select Machine <span className="text-rose-500">*</span>
@@ -377,10 +224,11 @@ export const MacineConnection: React.FC = () => {
                 value={machine}
                 onChange={(e: any) => onMachineChange(e.target.value)}
                 options={machineOptions}
-                placeholder={machineOptions.length ? 'Select a machine' : 'All machines connected'}
+                placeholder="Select machine type"
               />
             </div>
 
+            {/* Port Selection with refresh button */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 mb-2">
                 Select Port Name <span className="text-rose-500">*</span>
@@ -392,20 +240,21 @@ export const MacineConnection: React.FC = () => {
                     value={port}
                     onChange={(e: any) => setPort(e.target.value)}
                     options={portOptions}
-                    placeholder="Select port..."
+                    placeholder={portOptions.length > 0 ? 'Select port...' : 'No free ports'}
                   />
                 </div>
                 <button
                   type="button"
                   title="Refresh ports"
                   onClick={refreshPorts}
-                  className="h-9 w-9 shrink-0 inline-flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100"
+                  className="h-9 w-9 shrink-0 inline-flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition"
                 >
                   <RefreshCw className="w-4 h-4 text-slate-600" />
                 </button>
               </div>
             </div>
 
+            {/* Baud Rate */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 mb-2">Baud Rate</label>
               <CustomForm.CustomSelectField
@@ -416,6 +265,7 @@ export const MacineConnection: React.FC = () => {
               />
             </div>
 
+            {/* Parity */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 mb-2">Parity</label>
               <CustomForm.CustomSelectField
@@ -426,6 +276,7 @@ export const MacineConnection: React.FC = () => {
               />
             </div>
 
+            {/* Data Bits */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 mb-2">Data Bits</label>
               <CustomForm.CustomSelectField
@@ -436,6 +287,7 @@ export const MacineConnection: React.FC = () => {
               />
             </div>
 
+            {/* Stop Bits */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 mb-2">Stop Bits</label>
               <CustomForm.CustomSelectField
@@ -454,7 +306,7 @@ export const MacineConnection: React.FC = () => {
           )}
           {message && <p className="mt-3 text-xs font-medium text-emerald-600">{message}</p>}
 
-          <div className="flex justify-end items-center gap-2.5 mt-3">
+          <div className="flex justify-end items-center gap-2.5 mt-4 pt-2 border-t border-slate-100">
             <Button1
               variant="primary"
               icon={<Cable className="w-3.5 h-3.5 text-white" />}
@@ -466,71 +318,66 @@ export const MacineConnection: React.FC = () => {
         </CustomForm>
       </div>
 
-      {/* ---------- connected machines ---------- */}
-      <div className="p-3 bg-white rounded-2xl border border-slate-100">
-        <h2 className="text-sm font-semibold text-slate-800 mb-2">Connected machines</h2>
+      {/* Connected Machines List with Dynamic Numbers (e.g. Weight Scale 1, Weight Scale 2) */}
+      <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
+        <h2 className="text-sm font-semibold text-slate-800 mb-3">Connected Machines</h2>
 
-        {snap.ports.length === 0 && <p className="text-xs text-slate-500">No machine connected</p>}
+        {activeSnap.ports.length === 0 && (
+          <p className="text-xs text-slate-500 py-3">No machine connected yet.</p>
+        )}
 
-        {snap.ports.map((p) => (
-          <div
-            key={p.path}
-            className="flex items-center justify-between gap-4 py-3 border-b border-slate-100 last:border-0"
-          >
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
-                <span className={`h-2.5 w-2.5 rounded-full ${dotColor(p.status)}`} />
-                {machineLabel(p.parserType)}
-                <span className="font-normal text-slate-500">({p.path})</span>
-                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">
-                  {p.status}
-                </span>
-              </div>
+        {activeSnap.ports.map((p) => {
+          const displayTitle = getMachineDisplayTitle(p, activeSnap.ports)
 
-              {p.error && <p className="mt-1 text-xs text-amber-600">{p.error}</p>}
-
-              {p.lastLine && (
-                <p className="mt-1 text-xs text-slate-500">
-                  Last line from machine:{' '}
-                  <code className="rounded bg-slate-100 px-1.5 py-0.5">{p.lastLine}</code>
-                  {p.lastLineParsed === false && (
-                    <span className="text-amber-600"> · parser did not understand this line</span>
-                  )}
-                </p>
-              )}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => handleDisconnect(p.path)}
-              className="shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+          return (
+            <div
+              key={p.path}
+              className="flex items-center justify-between gap-4 py-3 border-b border-slate-100 last:border-0"
             >
-              {p.status === 'connected' ? 'Disconnect' : 'Remove'}
-            </button>
-          </div>
-        ))}
-      </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+                  <span className={`h-2.5 w-2.5 rounded-full ${dotColor(p.status)}`} />
+                  <span>{displayTitle}</span>
+                  <span className="font-normal text-slate-500 font-mono text-xs">({p.path})</span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                      p.status === 'connected'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                        : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    {p.status}
+                  </span>
+                </div>
 
-      {/* ---------- live values (check before going to collection) ---------- */}
-      {/* <div className="p-3 bg-white rounded-2xl border border-slate-100">
-        <h2 className="text-sm font-semibold text-slate-800 mb-2">Latest values received</h2>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {LIVE_VALUES.map(({ key, label }) => {
-            const r = snap.readings[key]
-            return (
-              <div key={key} className="rounded-xl bg-slate-50 px-4 py-3">
-                <div className="text-xs text-slate-500">{label}</div>
-                <div className="text-lg font-semibold text-slate-800">
-                  {r ? String(r.value) : '--'}
-                </div>
-                <div className="text-[11px] text-slate-400">
-                  {r ? new Date(r.at).toLocaleTimeString() : 'no data yet'}
-                </div>
+                {p.error && <p className="mt-1 text-xs text-rose-600">{p.error}</p>}
+
+                {p.lastLine && (
+                  <p className="mt-1 text-xs text-slate-500">
+                    Last raw reading:{' '}
+                    <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-slate-700">
+                      {p.lastLine}
+                    </code>
+                    {p.lastLineParsed === false && (
+                      <span className="text-amber-600 ml-1">· (Unparsed noise)</span>
+                    )}
+                  </p>
+                )}
               </div>
-            )
-          })}
-        </div>
-      </div> */}
+
+              <button
+                type="button"
+                onClick={() => handleDisconnect(p.path)}
+                className="shrink-0 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 px-3 py-1.5 text-xs font-semibold cursor-pointer transition"
+              >
+                {p.status === 'connected' ? 'Disconnect' : 'Remove'}
+              </button>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
+
+export default MacineConnection
