@@ -7,6 +7,9 @@ const service = container.resolve(VendorService)
 
 export function registerVendorIpc(): void {
   ipcMain.handle('vendor:getVendors', () => service.getVendors())
+  ipcMain.handle('vendor:getVendorsByRoute', (_event, routeCode: string) =>
+    service.getVendorsByRoute(routeCode)
+  )
   ipcMain.handle('vendor:getPaginatedVendors', (_event, params: PaginationRequestDto) =>
     service.getPaginatedVendors(params)
   )

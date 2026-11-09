@@ -44,6 +44,7 @@ declare global {
 
       // vendor
       getVendors: () => Promise<VendoreResponseDto[]>
+      getVendorsByRoute: (routeCode: string) => Promise<VendoreResponseDto[]>
       getPaginatedVendors: (params: PaginationRequestDto) => Promise<PaginatedVendorsDto>
 
       // milk collection
