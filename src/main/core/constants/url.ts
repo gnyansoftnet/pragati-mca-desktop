@@ -1,7 +1,8 @@
 export const Url = {
   plantDetails: '/sap/opu/odata/sap/zrmrd_int_srv/plant_detailsSet',
-  route: '/api/root/getRoutesByPlant',
-  vendorDetails: '/api/vendor/getVendorsByPlant',
+  route: '/api/desktop/getRoutesByPlant',
+  vendor: '/api/desktop/getVendorsByPlant',
   transport: '/sap/opu/odata/SAP/ZRMRD_INT_SRV/TruckSheetHeaderSet',
-  supervisior: '/api/supervisor/getSupervisorsByPlant'
+  supervisior: '/api/desktop/getSupervisorsByPlant',
+  user: '/api/desktop/getUsersByPlant'
 } as const
