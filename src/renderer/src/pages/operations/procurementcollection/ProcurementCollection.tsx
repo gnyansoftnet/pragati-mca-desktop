@@ -124,23 +124,79 @@ export const ProcurementCollection: React.FC = () => {
   }
 
   // Fetch vendors from master
-  const fetchVendors = async (): Promise<void> => {
-    try {
-      setLoadingVendors(true)
-      const response = await api.vendors.getAll()
-      setVendors(response)
+  // const fetchVendors = async (): Promise<void> => {
+  //   try {
+  //     setLoadingVendors(true)
+  //     const response = await api.vendors.getAll()
+  //     setVendors(response)
 
-      const options: SelectOption[] = response.map((vendor) => ({
-        value: String(vendor.id),
-        label: vendor.vendorCode
-      }))
-      setVendorOptions(options)
-    } catch (error) {
-      console.error('Failed to fetch vendors:', error)
-    } finally {
-      setLoadingVendors(false)
+  //     const options: SelectOption[] = response.map((vendor) => ({
+  //       value: String(vendor.id),
+  //       label: vendor.vendorCode
+  //     }))
+  //     setVendorOptions(options)
+  //   } catch (error) {
+  //     console.error('Failed to fetch vendors:', error)
+  //   } finally {
+  //     setLoadingVendors(false)
+  //   }
+  // }
+  // Fetch vendors whenever the selected route changes
+  useEffect(() => {
+    // If no route is selected, clear vendor list and selection
+    if (!selectedRoute) {
+      setVendors([])
+      setVendorOptions([])
+      setSelectedVendor('')
+      return
     }
-  }
+
+    // Find the routeCode (e.g. "1102001") corresponding to the selected route
+    const currentRoute = routes.find(
+      (r) => String(r.id) === selectedRoute || r.routeCode === selectedRoute
+    )
+    const routeCode = currentRoute?.routeCode || selectedRoute
+
+    const fetchVendorsBySelectedRoute = async () => {
+      try {
+        setLoadingVendors(true)
+        setSelectedVendor('') // Reset vendor selection for the new route
+
+        let response: any = null
+
+        // Call the backend IPC via window.api
+        if (typeof window !== 'undefined' && (window as any).api?.getVendorsByRoute) {
+          response = await (window as any).api.getVendorsByRoute(routeCode)
+        }
+
+        // Support both direct array and { data: [...] } responses
+        const vendorList: Vendor[] = Array.isArray(response)
+          ? response
+          : Array.isArray(response?.data)
+            ? response.data
+            : []
+
+        setVendors(vendorList)
+
+        // Map to dropdown options: show Vendor Code + DSK Name if available
+        const options: SelectOption[] = vendorList.map((vendor: any) => ({
+          value: vendor.dskCode,
+          label: `${vendor.dskCode} - ${vendor.dskName}`
+        }))
+
+        setVendorOptions(options)
+      } catch (error) {
+        console.error('Failed to fetch vendors by route:', error)
+        toast.error('Failed to load vendors for the selected route.')
+        setVendors([])
+        setVendorOptions([])
+      } finally {
+        setLoadingVendors(false)
+      }
+    }
+
+    fetchVendorsBySelectedRoute()
+  }, [selectedRoute, routes])
 
   // Fetch paginated collection records
   const fetchCollections = async (page = 1): Promise<void> => {
@@ -169,7 +225,7 @@ export const ProcurementCollection: React.FC = () => {
 
   useEffect(() => {
     fetchRoutes()
-    fetchVendors()
+    // fetchVendors()
     fetchCollections(1)
   }, [])
 
@@ -560,11 +616,19 @@ export const ProcurementCollection: React.FC = () => {
               </label>
               <CustomForm.CustomSelectSearchField
                 name="vendor"
-                placeholder={loadingVendors ? 'Loading vendors...' : 'Select & search vendor...'}
+                placeholder={
+                  !selectedRoute
+                    ? 'Please select a route first...'
+                    : loadingVendors
+                      ? 'Loading vendors...'
+                      : vendorOptions.length === 0
+                        ? 'No vendors found for this route'
+                        : 'Select & search vendor...'
+                }
                 value={selectedVendor}
                 onChange={(e: any) => setSelectedVendor(e.target.value)}
                 options={vendorOptions}
-                disabled={loadingVendors}
+                disabled={loadingVendors || !selectedRoute}
                 tabIndex={7}
               />
             </div>
