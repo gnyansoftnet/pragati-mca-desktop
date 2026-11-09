@@ -59,6 +59,9 @@ const api = {
   getWeightSystems: (): Promise<WeightSystemDto[]> =>
     ipcRenderer.invoke('milk-collection:getWeightSystems'),
 
+  getMilkCollections: (): Promise<MilkCollectionDto[]> =>
+    ipcRenderer.invoke('milk-collection:getMilkCollections'),
+
   // milk analysis
   getMilkSamples: (sampleDate: string, shift: number, plant: string): Promise<MilkSampleDto[]> =>
     ipcRenderer.invoke('milk-analysis:getMilkSamples', sampleDate, shift, plant),

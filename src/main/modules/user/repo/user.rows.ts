@@ -5,6 +5,12 @@ export interface UserRow extends RowDataPacket {
   user_name: string
   user_code: string
   password: string
+  branch_code: string
+  org_code: string
   plant: string
   role: string
+  org_id: number
+  branch_id: number
+  role_id: number
+  user_id: number
 }

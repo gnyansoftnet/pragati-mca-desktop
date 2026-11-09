@@ -19,6 +19,7 @@ import { SerialComPortService } from '../../modules/machine/service/serial-com-p
 import { ApiService } from '../../utils/api-service'
 import { VendorSyncService } from '../../modules/vendor/services/vendor-sync.service'
 import { RouteSyncService } from '../../modules/route/services/route-sync.service'
+import { TokenService } from '../../modules/user/service/token.service'
 
 // route
 container.registerSingleton(RouteRepo)
@@ -61,5 +62,7 @@ container.registerSingleton(ApiService)
 container.registerSingleton(VendorSyncService)
 // rout api sync
 container.registerSingleton(RouteSyncService)
+// token
+container.registerSingleton(TokenService)
 
 export { container }

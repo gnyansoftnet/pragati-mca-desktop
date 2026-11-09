@@ -9,6 +9,7 @@ export class UserService {
   constructor(
     @inject(UserRepo) private readonly userRepo: UserRepo,
     @inject(PasswordService) private readonly passwordService: PasswordService
+    // @inject(TokenService) private readonly tokenService: TokenService
   ) {}
 
   async login(userName: string, password: string): Promise<UserResponseDto> {
@@ -23,12 +24,29 @@ export class UserService {
       const valid = user ? await this.passwordService.compare(password, user.password) : false
       if (!user || !valid) throw new ValidationError('Invalid username or password')
 
+      // const payLoad = {
+      //   userCode: user.userCode,
+      //   userId: user.user_id,
+      //   orgId: user.org_id,
+      //   branchId: user.branch_id,
+      //   roleId: user.role_id
+      // }
+
+      // const accessToken = this.tokenService.generateAccessToken(payLoad)
+      // const refreshToken = this.tokenService.generateRefreshToken(payLoad)
+
       return {
         id: user.id,
         userName: user.user_name,
         userCode: user.user_code,
         plant: user.plant,
-        role: user.role
+        role: user.role,
+        orgCode: user.org_code,
+        branchCode: user.branch_code,
+        branchId: user.branch_id,
+        orgId: user.org_id,
+        roleId: user.role_id,
+        userId: user.user_id
       }
     } catch (error) {
       if (error instanceof AppError) throw error

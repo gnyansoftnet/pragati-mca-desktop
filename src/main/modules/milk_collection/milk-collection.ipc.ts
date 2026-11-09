@@ -14,6 +14,8 @@ export function registerMilkCollectionIpc(): void {
 
   ipcMain.handle('milk-collection:getWeightSystems', () => service.getWeightSystems())
 
+  ipcMain.handle('milk-collection:getMilkCollections', () => service.getMilkCollections())
+
   ipcMain.handle('milk-collection:saveMilkCollection', (_event, params: SaveMilkCollectionDto) =>
     service.saveMilkCollection(params)
   )

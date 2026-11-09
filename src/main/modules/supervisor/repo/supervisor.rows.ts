@@ -17,3 +17,14 @@ export interface PagedSupervisorRows {
   rows: SupervisorRow[]
   total: number
 }
+
+export interface SyncSupervisorRow extends RowDataPacket {
+  success: number
+  message: string
+  total: number
+}
+export interface SyncSupervisor {
+  success: number
+  message: string
+  total: number
+}
