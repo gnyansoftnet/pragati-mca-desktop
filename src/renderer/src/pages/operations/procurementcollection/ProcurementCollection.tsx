@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Bookmark, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
+import { Bookmark, X, ChevronLeft, ChevronRight, Scale, WifiOff } from 'lucide-react'
 import Button1 from '@renderer/components/buttons/Button1'
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
 import CustomForm from '@renderer/components/customform/CustomForm'
@@ -7,6 +7,7 @@ import api from '@renderer/services'
 import type { Route } from '@renderer/types/routes/routes.types'
 import type { Vendor } from '@renderer/types/vendors/vendors.types'
 import { toast } from 'react-toastify'
+import { useSerialSnapshot } from '@renderer/hooks/useSerial'
 
 interface SelectOption {
   value: string
@@ -51,17 +52,24 @@ interface PaginationState {
   hasPrevPage: boolean
 }
 
+// Set to true while testing; set to false in production with real hardware
+const IS_TEST_MODE = true
+const DEFAULT_TEST_WEIGHT = '25.5' // Your default test weight
+
 export const ProcurementCollection: React.FC = () => {
+  // Routes state
   const [routes, setRoutes] = useState<Route[]>([])
   const [routeOptions, setRouteOptions] = useState<SelectOption[]>([])
   const [selectedRoute, setSelectedRoute] = useState<string>('')
   const [loadingRoutes, setLoadingRoutes] = useState<boolean>(false)
 
+  // Vendors state
   const [vendors, setVendors] = useState<Vendor[]>([])
   const [vendorOptions, setVendorOptions] = useState<SelectOption[]>([])
   const [selectedVendor, setSelectedVendor] = useState<string>('')
   const [loadingVendors, setLoadingVendors] = useState<boolean>(false)
 
+  // Collection metadata fields
   const [shift, setShift] = useState('1')
   const [plant, setPlant] = useState('1102')
   const [weightSystem, setWeightSystem] = useState('WeightBowl')
@@ -74,6 +82,18 @@ export const ProcurementCollection: React.FC = () => {
   const userCode = 'USR0001'
   const entry = 'MACHINE'
 
+  // Ref for the Save button (for auto-focus when cans are entered)
+  const saveButtonRef = useRef<HTMLButtonElement | null>(null)
+
+  // Hardware machine serial snapshot (Live Machine Connection)
+  const snap = useSerialSnapshot()
+  // const isScaleConnected = snap.ports.some(
+  //   (p) => p.parserType === 'weight' && p.status === 'connected'
+  // )
+  const isScaleConnected =
+    IS_TEST_MODE || snap.ports.some((p) => p.parserType === 'weight' && p.status === 'connected')
+
+  // Pagination and entries state
   const [pagination, setPagination] = useState<PaginationState>({
     page: 1,
     limit: 10,
@@ -82,13 +102,12 @@ export const ProcurementCollection: React.FC = () => {
     hasNextPage: false,
     hasPrevPage: false
   })
-
   const [entries, setEntries] = useState<MilkEntry[]>([])
 
+  // Fetch routes from master
   const fetchRoutes = async (): Promise<void> => {
     try {
       setLoadingRoutes(true)
-
       const response = await api.routes.getAll()
       setRoutes(response)
 
@@ -96,7 +115,6 @@ export const ProcurementCollection: React.FC = () => {
         value: String(route.id),
         label: route.routeName
       }))
-
       setRouteOptions(options)
     } catch (error) {
       console.error('Failed to fetch routes:', error)
@@ -105,10 +123,10 @@ export const ProcurementCollection: React.FC = () => {
     }
   }
 
+  // Fetch vendors from master
   const fetchVendors = async (): Promise<void> => {
     try {
       setLoadingVendors(true)
-
       const response = await api.vendors.getAll()
       setVendors(response)
 
@@ -116,7 +134,6 @@ export const ProcurementCollection: React.FC = () => {
         value: String(vendor.id),
         label: vendor.vendorCode
       }))
-
       setVendorOptions(options)
     } catch (error) {
       console.error('Failed to fetch vendors:', error)
@@ -125,6 +142,7 @@ export const ProcurementCollection: React.FC = () => {
     }
   }
 
+  // Fetch paginated collection records
   const fetchCollections = async (page = 1): Promise<void> => {
     try {
       if (typeof window !== 'undefined') {
@@ -155,6 +173,32 @@ export const ProcurementCollection: React.FC = () => {
     fetchCollections(1)
   }, [])
 
+  // Auto-capture live weight from connected machine scale (Zero manual input)
+  // useEffect(() => {
+  //   if (isScaleConnected && snap.readings.weight?.value !== undefined) {
+  //     const scaleValue = String(snap.readings.weight.value)
+  //     if (scaleValue && scaleValue !== '0') {
+  //       setWeightCans(scaleValue)
+  //     }
+  //   }
+  // }, [snap.readings.weight, isScaleConnected])
+  useEffect(() => {
+    if (IS_TEST_MODE) {
+      // In test mode, always keep the default test weight loaded
+      if (!weightCans) {
+        setWeightCans(DEFAULT_TEST_WEIGHT)
+      }
+      return
+    }
+
+    if (isScaleConnected && snap.readings.weight?.value !== undefined) {
+      const scaleValue = String(snap.readings.weight.value)
+      if (scaleValue && scaleValue !== '0') {
+        setWeightCans(scaleValue)
+      }
+    }
+  }, [snap.readings.weight, isScaleConnected, weightCans])
+
   const getCurrentLocalDate = (): string => {
     const today = new Date()
     const year = today.getFullYear()
@@ -168,7 +212,6 @@ export const ProcurementCollection: React.FC = () => {
     const hours = String(now.getHours()).padStart(2, '0')
     const minutes = String(now.getMinutes()).padStart(2, '0')
     const seconds = String(now.getSeconds()).padStart(2, '0')
-
     return `${hours}:${minutes}:${seconds}`
   }
 
@@ -178,18 +221,10 @@ export const ProcurementCollection: React.FC = () => {
     const interval = setInterval(() => {
       setCurrentTime(getCurrentLocalDateTime())
     }, 1000)
-
     return () => clearInterval(interval)
   }, [])
 
-  // useEffect(() => {
-  //   if (noOfCans !== '') {
-  //     setWeightCans(String(Number(noOfCans) * 20))
-  //   } else {
-  //     setWeightCans('')
-  //   }
-  // }, [noOfCans])
-
+  // Options configuration
   const shifts = [
     { value: '1', label: 'Morning' },
     { value: '2', label: 'Evening' }
@@ -222,7 +257,72 @@ export const ProcurementCollection: React.FC = () => {
     { value: 'best', label: 'Best' }
   ]
 
+  // Requirement 6: Compute Total no. of cans for the active route until route is changed
+  const routeTotalCans = useMemo(() => {
+    if (!selectedRoute) return 0
+
+    const currentRoute = routes.find(
+      (r) => String(r.id) === selectedRoute || (r as any).routeCode === selectedRoute
+    )
+    const currentCode = (currentRoute as any)?.routeCode || currentRoute?.routeName || selectedRoute
+
+    return entries
+      .filter((item) => {
+        const itemRoute = item.rootCode || item.routes
+        return (
+          itemRoute === currentCode ||
+          itemRoute === currentRoute?.routeName ||
+          String(item.routes) === String(selectedRoute)
+        )
+      })
+      .reduce((sum, item) => sum + (Number(item.noOfCans) || 0), 0)
+  }, [selectedRoute, entries, routes])
+
+  // Save Collection
   const handleSaveCollection = async () => {
+    // Requirement 5: All fields are required
+    if (!shift) {
+      toast.warn('Please select Shift.')
+      return
+    }
+    if (!plant) {
+      toast.warn('Please select Chilling Center.')
+      return
+    }
+    if (!weightSystem) {
+      toast.warn('Please select Weight System.')
+      return
+    }
+    if (!cansType) {
+      toast.warn('Please select Cans Type.')
+      return
+    }
+    if (!milkType) {
+      toast.warn('Please select Milk Type.')
+      return
+    }
+    if (!milkStatus) {
+      toast.warn('Please select Milk Status.')
+      return
+    }
+    if (!selectedRoute) {
+      toast.warn('Please select Route Name.')
+      return
+    }
+    if (!selectedVendor) {
+      toast.warn('Please select Vendor Name.')
+      return
+    }
+    if (!noOfCans || Number(noOfCans) <= 0) {
+      toast.warn('Please enter valid No. of Cans (greater than 0).')
+      return
+    }
+    // Machine weight check: Must be calculated by the scale
+    if (!weightCans || Number(weightCans) <= 0) {
+      toast.error('No weight received from scale! Please wait for scale machine reading.')
+      return
+    }
+
     try {
       const currentRoute = routes.find(
         (r) => String(r.id) === selectedRoute || (r as any).routeCode === selectedRoute
@@ -243,6 +343,7 @@ export const ProcurementCollection: React.FC = () => {
         mstatus.find((m) => m.value === milkStatus)?.label || milkStatus || ''
 
       const weightNum = Number(weightCans) || 0
+      const cansNum = Number(noOfCans) || 0
 
       const payload = {
         plant: plant,
@@ -255,7 +356,7 @@ export const ProcurementCollection: React.FC = () => {
         milkType: selectedMilkType,
         milkStatus: selectedMilkStatus,
         tipingTime: currentTime,
-        noOfCans: Number(noOfCans) || 0,
+        noOfCans: cansNum,
         grossWeight: weightNum,
         netWeight: weightNum,
         netLtr: weightNum,
@@ -269,14 +370,41 @@ export const ProcurementCollection: React.FC = () => {
         await (window as any).api.saveMilkCollection(payload)
       }
 
-      console.log('payload milk collection', payload)
-
       toast.success('Milk collection saved successfully!')
+
+      // Requirement 1: DO NOT clear selectedRoute. Only clear vendor name, cans, and weight.
+      setSelectedVendor('')
+      setNoOfCans('')
+      // setWeightCans('')
+      setWeightCans(IS_TEST_MODE ? DEFAULT_TEST_WEIGHT : '')
+
+      // Clear the captured weight reading in serial service so new reading arrives fresh
+      if (typeof window !== 'undefined' && (window as any).api?.clearSerialReadings) {
+        await (window as any).api.clearSerialReadings(['weight'])
+      }
 
       await fetchCollections(1)
     } catch (error) {
       console.error('Failed to save milk collection:', error)
       toast.error('Failed to save milk collection. Please try again.')
+    }
+  }
+
+  // Requirement 4: On Enter key in "No. of Cans" field
+  const handleNoOfCansKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      // If scale weight is already received from the machine, trigger save immediately!
+      if (weightCans && Number(weightCans) > 0) {
+        handleSaveCollection()
+      } else {
+        toast.info('Waiting for scale machine reading...')
+        // Focus the save button
+        const saveBtn = document.querySelector<HTMLButtonElement>(
+          'button[data-action="save-collection"]'
+        )
+        saveBtn?.focus()
+      }
     }
   }
 
@@ -302,18 +430,21 @@ export const ProcurementCollection: React.FC = () => {
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
         <CustomForm onSubmit={(e) => e.preventDefault()} className="w-full">
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2.5">
-            {/* Shift */}
+            {/* Shift (tabIndex: 1) */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Select Shift</label>
+              <label className="text-xs font-semibold text-slate-700">
+                Select Shift <span className="text-rose-500">*</span>
+              </label>
               <CustomForm.CustomSelectSearchField
                 name="shift"
                 value={shift}
                 onChange={(e: any) => setShift(e.target.value)}
                 options={shifts}
+                tabIndex={1}
               />
             </div>
 
-            {/* Chilling Center */}
+            {/* Chilling Center (Read-only, skipped in Tab order) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomSelectField
@@ -322,75 +453,92 @@ export const ProcurementCollection: React.FC = () => {
                 onChange={(e: any) => setPlant(e.target.value)}
                 options={plantOptions}
                 readOnly={true}
+                tabIndex={-1}
               />
             </div>
 
-            {/* Date */}
+            {/* Date (Read-only, skipped in Tab order) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Date</label>
               <CustomForm.CustomTextField
                 name="date"
                 value={getCurrentLocalDate()}
                 readOnly={true}
+                tabIndex={-1}
               />
             </div>
 
-            {/* Weight System */}
+            {/* Weight System (tabIndex: 2) */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Weight System</label>
+              <label className="text-xs font-semibold text-slate-700">
+                Weight System <span className="text-rose-500">*</span>
+              </label>
               <CustomForm.CustomSelectSearchField
                 name="weight"
                 value={weightSystem}
                 onChange={(e: any) => setWeightSystem(e.target.value)}
                 options={weights}
+                tabIndex={2}
               />
             </div>
-            {/* Cans Type */}
+
+            {/* Cans Type (tabIndex: 3) */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Cans Type</label>
+              <label className="text-xs font-semibold text-slate-700">
+                Cans Type <span className="text-rose-500">*</span>
+              </label>
               <CustomForm.CustomSelectSearchField
                 name="cans"
                 value={cansType}
                 onChange={(e: any) => setCansType(e.target.value)}
                 options={cans}
+                tabIndex={3}
               />
             </div>
 
-            {/* Milk Type */}
+            {/* Milk Type (tabIndex: 4) */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Milk Type</label>
+              <label className="text-xs font-semibold text-slate-700">
+                Milk Type <span className="text-rose-500">*</span>
+              </label>
               <CustomForm.CustomSelectSearchField
                 name="milktype"
                 value={milkType}
                 onChange={(e: any) => setMilkType(e.target.value)}
                 options={mtype}
+                tabIndex={4}
               />
             </div>
 
-            {/* Milk Status */}
+            {/* Milk Status (tabIndex: 5) */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Milk Status</label>
+              <label className="text-xs font-semibold text-slate-700">
+                Milk Status <span className="text-rose-500">*</span>
+              </label>
               <CustomForm.CustomSelectSearchField
                 name="milkstatus"
                 value={milkStatus}
                 onChange={(e: any) => setMilkStatus(e.target.value)}
                 options={mstatus}
+                tabIndex={5}
               />
             </div>
 
-            {/* Tipping Time */}
+            {/* Tipping Time (Read-only, skipped in Tab order) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Tipping Time</label>
               <CustomForm.CustomTextField
                 name="time"
-                value={getCurrentLocalDateTime()}
+                value={currentTime}
                 readOnly={true}
+                tabIndex={-1}
               />
             </div>
-            {/* Dynamic Routes Dropdown */}
+
+            {/* Dynamic Routes Dropdown (tabIndex: 6) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Routes{' '}
+                Routes <span className="text-rose-500">*</span>{' '}
                 {loadingRoutes && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
@@ -400,13 +548,14 @@ export const ProcurementCollection: React.FC = () => {
                 onChange={(e: any) => setSelectedRoute(e.target.value)}
                 options={routeOptions}
                 disabled={loadingRoutes}
+                tabIndex={6}
               />
             </div>
 
-            {/* Vendor Name */}
+            {/* Vendor Name (tabIndex: 7) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Vendor Name
+                Vendor Name <span className="text-rose-500">*</span>{' '}
                 {loadingVendors && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
@@ -416,52 +565,81 @@ export const ProcurementCollection: React.FC = () => {
                 onChange={(e: any) => setSelectedVendor(e.target.value)}
                 options={vendorOptions}
                 disabled={loadingVendors}
+                tabIndex={7}
               />
             </div>
 
-            {/* Number of Cans */}
+            {/* Number of Cans (tabIndex: 8) with Enter handler and Route Total Cans counter */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">No. of Cans</label>
+              <label className="text-xs font-semibold text-slate-700">
+                No. of Cans <span className="text-rose-500">*</span>
+              </label>
               <CustomForm.CustomNumberField
                 name="noOfCans"
                 value={noOfCans}
                 onChange={(e: any) => setNoOfCans(e.target.value)}
+                onKeyDown={handleNoOfCansKeyDown}
                 placeholder="e.g. 4"
+                tabIndex={8}
               />
-              <p className="text-xs font-semibold text-slate-700">Total no. cans: <span>20</span></p>
+              <p className="text-xs font-semibold text-slate-700">
+                Total no. cans: <span className="text-primary font-bold">{routeTotalCans}</span>
+              </p>
             </div>
 
-            {/* Weight */}
+            {/* Weight (LTR) - Strictly Machine-Calculated & Read-only */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Weight (LTR)</label>
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-slate-700">
+                  Weight (LTR) <span className="text-rose-500">*</span>
+                </label>
+                {isScaleConnected ? (
+                  <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Scale Connected
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-rose-500 font-semibold flex items-center gap-1">
+                    <WifiOff className="w-3 h-3 text-rose-500" />
+                    Scale Disconnected
+                  </span>
+                )}
+              </div>
               <CustomForm.CustomTextField
                 name="weight"
                 value={weightCans}
-                onChange={(e: any) => setWeightCans(e.target.value)}
-                placeholder="e.g. 80"
-                
+                readOnly={true}
+                tabIndex={-1}
+                placeholder={
+                  isScaleConnected ? 'Waiting for scale reading...' : 'Scale not connected'
+                }
+                className="bg-slate-100 font-bold text-slate-800 cursor-not-allowed select-none"
               />
             </div>
           </div>
 
-          {/* Action Buttons */}
+          {/* Action Buttons (tabIndex: 9 & 10) */}
           <div className="flex justify-end items-center gap-2.5 mt-3 pt-2 border-t border-slate-100">
             <Button1
               variant="outline"
               icon={<X className="w-3.5 h-3.5 text-primary" />}
               label="Cancel"
               onClick={handleCancel}
+              tabIndex={9}
             />
             <Button1
+              data-action="save-collection"
               variant="primary"
               icon={<Bookmark className="w-3.5 h-3.5 text-white" />}
               label="Save Collection"
               onClick={handleSaveCollection}
+              tabIndex={10}
             />
           </div>
         </CustomForm>
       </div>
 
+      {/* Collection Records Table */}
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -519,7 +697,7 @@ export const ProcurementCollection: React.FC = () => {
                   <td className="py-2 px-4 font-bold text-slate-900">
                     {item.weightSystem || item.grossWeight}
                   </td>
-                  <td className="py-2 px-4 font-semibold text-primary max-w-[150px] truncate">
+                  <td className="py-2 px-4 font-semibold text-primary max-w-40 truncate">
                     {item.rootCode || item.routes}
                   </td>
                   <td className="py-2 px-4 font-semibold text-primary">{item.canType}</td>
@@ -549,7 +727,7 @@ export const ProcurementCollection: React.FC = () => {
           </table>
         </div>
 
-        {/* Pagination */}
+        {/* Pagination Controls */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500">
           <div>
             Showing page <span className="font-semibold text-slate-700">{pagination.page}</span> of{' '}
