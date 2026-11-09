@@ -29,6 +29,21 @@ export class VendorService {
     }
   }
 
+  async getVendorsByRoute(routeCode: string): Promise<VendoreResponseDto[]> {
+    try {
+      const rows = await this.vendorRepo.getVendorsByRoute(routeCode)
+      return rows.map((r) => ({
+        id: r.id,
+        dskCode: r.dsk_code,
+        dskName: r.dsk_name,
+        vendorCode: r.vendor_code
+      }))
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to fetch vendors', { cause: error })
+    }
+  }
+
   async getPaginatedVendors(data: PaginationRequestDto): Promise<PaginatedVendorsDto> {
     const page = Math.max(1, Math.trunc(Number(data.page)) || 1)
     const limit = Math.max(1, Math.trunc(Number(data.limit)) || 10)

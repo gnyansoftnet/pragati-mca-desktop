@@ -75,7 +75,7 @@ export class MilkCollectionRepo {
       data.clr,
       data.entry
     ])
-    return result[0]?.[0]
+    return result[0]
   }
 
   async getWeightSystems(): Promise<WeightSystemRow[]> {

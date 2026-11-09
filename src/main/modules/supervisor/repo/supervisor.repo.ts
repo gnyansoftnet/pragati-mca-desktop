@@ -15,7 +15,6 @@ export class SupervisorRepo {
     const [rows] = await db.execute<SupervisorRow[]>(SQL_GET_SUPERVISORS)
     return rows
   }
-
   async getPaginatedSupervisors(
     search: string | undefined,
     limit: number,

@@ -26,6 +26,17 @@ export class VendorRepo {
     return rows
   }
 
+  async getVendorsByRoute(routeCode: string): Promise<(VendorListRow & RowDataPacket)[]> {
+    const [rows] = await db.execute<(VendorListRow & RowDataPacket)[]>(
+      `SELECT id, dsk_code, dsk_name, vendor_code
+     FROM vendor
+     WHERE route_code = ?
+     ORDER BY id ASC`,
+      [routeCode]
+    )
+    return rows
+  }
+
   async getPaginatedVendors(
     search: string | undefined,
     limit: number,

@@ -36,6 +36,6 @@ export class MilkAnalysisRepo {
       data.fat ?? null,
       data.snf ?? null
     ])
-    return result[0]?.[0]
+    return result[0]
   }
 }

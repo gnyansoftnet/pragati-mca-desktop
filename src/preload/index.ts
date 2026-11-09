@@ -41,6 +41,8 @@ const api = {
 
   // vendor
   getVendors: (): Promise<VendoreResponseDto[]> => ipcRenderer.invoke('vendor:getVendors'),
+  getVendorsByRoute: (routeCode: String): Promise<VendoreResponseDto[]> =>
+    ipcRenderer.invoke('vendor:getVendorsByRoute', routeCode),
   getPaginatedVendors: (params: PaginationRequestDto): Promise<PaginatedVendorsDto> =>
     ipcRenderer.invoke('vendor:getPaginatedVendors', params),
 
