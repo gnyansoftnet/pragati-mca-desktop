@@ -1,6 +1,14 @@
 import { injectable } from 'tsyringe'
 import { db } from '../../../core/config/database.config'
-import type { SupervisorRow, CountRow, PagedSupervisorRows } from './supervisor.rows'
+import type {
+  SupervisorRow,
+  CountRow,
+  PagedSupervisorRows,
+  SyncSupervisorRow
+} from './supervisor.rows'
+import { DatabaseError } from '../../../utils/app-errors'
+import { OperationAction } from '../../../core/constants/operation-action.enum'
+import { Supervisor } from '../dto/supervisor-api-response'
 
 const SUPERVISOR_COLUMNS = `id, employee_id, first_name, last_name, contact_no, plant`
 
@@ -42,5 +50,17 @@ export class SupervisorRepo {
     ])
 
     return { rows, total: Number(countRows[0].total) }
+  }
+
+  async saveSupervisor(items: Supervisor[]): Promise<SyncSupervisorRow> {
+    const [result] = await db.query<SyncSupervisorRow[][]>('CALL USP_M_VENDOR_SYNC(?, ?)', [
+      OperationAction.SYNCDOWN,
+      JSON.stringify(items)
+    ])
+
+    const row = result?.[0]?.[0]
+    if (!row) throw new DatabaseError('Supervisor sync returned no result')
+    if (!row.success) throw new DatabaseError(row.message)
+    return row
   }
 }

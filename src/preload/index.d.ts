@@ -52,7 +52,8 @@ declare global {
         params: PaginationRequestDto
       ) => Promise<PaginatedMilkCollectionDto>
       saveMilkCollection: (params: SaveMilkCollectionDto) => Promise<MilkCollectionDto>
-      getWeightSystems: () => Promise<WeightSystemDto[]> // FIX: plural name -> array (verify)
+      getWeightSystems: () => Promise<WeightSystemDto[]>
+      getMilkCollections: () => Promise<MilkCollectionDto[]>
 
       // milk analysis
       updateMilkSample: (params: MilkSampleUpdateDto) => Promise<MilkSampleDto>

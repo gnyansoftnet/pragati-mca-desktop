@@ -4,4 +4,10 @@ export interface UserResponseDto {
   userCode: string
   plant: string
   role: string
+  userId: number
+  orgId: number
+  branchId: number
+  roleId: number
+  orgCode: string
+  branchCode: string
 }

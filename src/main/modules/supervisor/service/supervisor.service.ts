@@ -6,10 +6,15 @@ import type {
   SupervisorResponseDto
 } from '@shared/dtos/supervisor/supervisor.dto'
 import { AppError, DatabaseError } from '../../../utils/app-errors'
+import { SupervisorSyncService } from './supervisor-sync.service'
+import { SyncSupervisor } from '../repo/supervisor.rows'
 
 @injectable()
 export class SupervisorService {
-  constructor(@inject(SupervisorRepo) private readonly supervisorRepo: SupervisorRepo) {}
+  constructor(
+    @inject(SupervisorRepo) private readonly supervisorRepo: SupervisorRepo,
+    @inject(SupervisorSyncService) private readonly supervisorApi: SupervisorSyncService
+  ) {}
 
   async getSupervisors(): Promise<SupervisorResponseDto[]> {
     try {
@@ -63,6 +68,21 @@ export class SupervisorService {
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new DatabaseError('Failed to fetch supervisors', { cause: error })
+    }
+  }
+
+  async saveSupervisor(plant: string, org: string, branch: string): Promise<SyncSupervisor> {
+    try {
+      const supervisors = await this.supervisorApi.syncDownSupervisor(plant, org, branch)
+      const row = await this.supervisorRepo.saveSupervisor(supervisors)
+      return {
+        success: Number(row.success),
+        message: row.message,
+        total: Number(row.total)
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to save routes', { cause: error })
     }
   }
 }

@@ -20,6 +20,17 @@ const SQL_GET_WEIGHT_SYSTEMS = `
 
 @injectable()
 export class MilkCollectionRepo {
+  async getMilkCollections(): Promise<MilkCollectionRow[]> {
+    const [rows] = await db.query<MilkCollectionRow[]>(
+      `SELECT ${SQL_MILK_COLLECTION_COLUMNS}
+       FROM milk_collection_details
+      WHERE sample_date = CURDATE()
+        AND d_flag = 0
+      ORDER BY id DESC`
+    )
+    return rows
+  }
+
   async getPaginatedMilkCollections(
     search: string | undefined,
     limit: number,
