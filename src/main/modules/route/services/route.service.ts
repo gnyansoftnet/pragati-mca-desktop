@@ -4,7 +4,6 @@ import type { PaginatedRoutesDto, RouteResponseDto } from '@shared/dtos/route/ro
 import { RouteRepo } from '../repositories/route.repo'
 import { AppError, DatabaseError } from '../../../utils/app-errors'
 import { RouteSyncService } from './route-sync.service'
-import { SyncRoute } from '../repositories/route.rows'
 import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
 @injectable()

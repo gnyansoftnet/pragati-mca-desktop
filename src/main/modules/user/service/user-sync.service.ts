@@ -14,7 +14,7 @@ export class UserSyncService {
         plant: plant
       }
     })
-
+    console.log(data.data)
     if (!data.success) {
       throw new ExternalApiError(`User API failed: ${data.message}`)
     }
@@ -27,6 +27,7 @@ export class UserSyncService {
       status: u.status,
       fullName: u.fullName,
       email: u.email,
+      password: u.password,
       phoneNumber: u.phoneNumber,
       dFlag: u.dFlag,
       modifiedDate: u.modifiedDate,

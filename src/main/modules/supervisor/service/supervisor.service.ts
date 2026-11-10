@@ -7,7 +7,6 @@ import type {
 } from '@shared/dtos/supervisor/supervisor.dto'
 import { AppError, DatabaseError } from '../../../utils/app-errors'
 import { SupervisorSyncService } from './supervisor-sync.service'
-import { SyncSupervisor } from '../repo/supervisor.rows'
 import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
 @injectable()
