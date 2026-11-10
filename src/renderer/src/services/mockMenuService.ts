@@ -75,7 +75,7 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     id: 3,
     title: 'Macine Connection',
     path: '/macine-connection',
-    icon: 'Package',
+    icon: 'MonitorSpeaker',
     roles: ['admin', 'staff', 'farmer'],
     category: 'operations',
     order_index: 50,
@@ -91,16 +91,16 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     order_index: 50,
     badge: ''
   },
-  {
-    id: 5,
-    title: 'PortConnection',
-    path: '/port-connection',
-    icon: 'MonitorSpeaker',
-    roles: ['admin', 'staff', 'farmer'],
-    category: 'operations',
-    order_index: 50,
-    badge: ''
-  },
+  // {
+  //   id: 5,
+  //   title: 'PortConnection',
+  //   path: '/port-connection',
+  //   icon: 'MonitorSpeaker',
+  //   roles: ['admin', 'staff', 'farmer'],
+  //   category: 'operations',
+  //   order_index: 50,
+  //   badge: ''
+  // },
   {
     id: 6,
     title: 'Analyze',
