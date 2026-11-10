@@ -18,6 +18,8 @@ const SQL_GET_WEIGHT_SYSTEMS = `
     FROM weight_system_list
    ORDER BY id ASC`
 
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
+
 @injectable()
 export class MilkCollectionRepo {
   async getMilkCollections(): Promise<MilkCollectionRow[]> {
@@ -34,11 +36,31 @@ export class MilkCollectionRepo {
   async getPaginatedMilkCollections(
     search: string | undefined,
     limit: number,
-    offset: number
+    offset: number,
+    fromDate?: string,
+    toDate?: string
   ): Promise<MilkCollectionPagedRows> {
     let where = 'WHERE d_flag = 0'
-    const params: string[] = []
+    const params: (string | number)[] = []
 
+    // ---- date filter ----
+    if (fromDate || toDate) {
+      let from = (fromDate ?? toDate) as string
+      let to = (toDate ?? fromDate) as string
+
+      if (!DATE_RE.test(from) || !DATE_RE.test(to)) {
+        throw new Error('Invalid date format. Use YYYY-MM-DD.')
+      }
+      if (from > to) [from, to] = [to, from]
+
+      where += ` AND created_at >= ? AND created_at < DATE_ADD(?, INTERVAL 1 DAY)`
+      params.push(from, to)
+    } else {
+      // default: today's data
+      where += ` AND created_at >= CURDATE() AND created_at < CURDATE() + INTERVAL 1 DAY`
+    }
+
+    // ---- search filter ----
     if (search) {
       where += ` AND (trans_code LIKE ? OR user_code LIKE ? OR root_code LIKE ? OR vendor_code LIKE ?)`
       const like = `%${search}%`
@@ -52,10 +74,10 @@ export class MilkCollectionRepo {
       ),
       db.query<MilkCollectionRow[]>(
         `SELECT ${SQL_MILK_COLLECTION_COLUMNS}
-         FROM milk_collection_details
-         ${where}
-        ORDER BY id ASC
-        LIMIT ? OFFSET ?`,
+       FROM milk_collection_details
+       ${where}
+       ORDER BY id ASC
+       LIMIT ? OFFSET ?`,
         [...params, limit, offset]
       )
     ])

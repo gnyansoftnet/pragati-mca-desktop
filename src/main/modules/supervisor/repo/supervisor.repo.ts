@@ -32,7 +32,7 @@ export class SupervisorRepo {
     const params: string[] = []
 
     if (search) {
-      where = 'WHERE (contact_no LIKE ? OR first_name LIKE ? OR emp_id LIKE ?)'
+      where = 'WHERE (contact_no LIKE ? OR first_name LIKE ? OR employee_id LIKE ?)'
       const like = `%${search}%`
       params.push(like, like, like)
     }

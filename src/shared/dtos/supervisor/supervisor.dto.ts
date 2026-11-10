@@ -2,7 +2,7 @@ import { PaginatedResponseDto } from '../pagination.dto'
 
 export interface SupervisorResponseDto {
   id: number
-  empId: string
+  employeeId: string
   firstName: string
   lastName: string
   plant: string

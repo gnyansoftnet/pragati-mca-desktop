@@ -61,8 +61,12 @@ const api = {
     ipcRenderer.invoke('supervisor:getPaginatedSupervisors', params),
 
   // milk
-  getPaginatedMilkCollctions: (params: PaginationRequestDto): Promise<PaginatedMilkCollectionDto> =>
-    ipcRenderer.invoke('milk-collection:getPaginatedMilkCollctions', params),
+  getPaginatedMilkCollctions: (
+    params: PaginationRequestDto,
+    fromDate?: string,
+    toDate?: string
+  ): Promise<PaginatedMilkCollectionDto> =>
+    ipcRenderer.invoke('milk-collection:getPaginatedMilkCollctions', params, fromDate, toDate),
   saveMilkCollection: (params: SaveMilkCollectionDto): Promise<MilkCollectionDto> =>
     ipcRenderer.invoke('milk-collection:saveMilkCollection', params),
   getWeightSystems: (): Promise<WeightSystemDto[]> =>

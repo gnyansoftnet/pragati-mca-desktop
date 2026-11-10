@@ -54,7 +54,9 @@ declare global {
 
       // milk collection
       getPaginatedMilkCollctions: (
-        params: PaginationRequestDto
+        params: PaginationRequestDto,
+        fromDate?: string,
+        toDate?: string
       ) => Promise<PaginatedMilkCollectionDto>
       saveMilkCollection: (params: SaveMilkCollectionDto) => Promise<MilkCollectionDto>
       getWeightSystems: () => Promise<WeightSystemDto[]>
