@@ -5,6 +5,7 @@ import { RouteRepo } from '../repositories/route.repo'
 import { AppError, DatabaseError } from '../../../utils/app-errors'
 import { RouteSyncService } from './route-sync.service'
 import { SyncRoute } from '../repositories/route.rows'
+import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
 @injectable()
 export class RouteService {
@@ -58,7 +59,7 @@ export class RouteService {
       throw new DatabaseError('Failed to fetch routes', { cause: error })
     }
   }
-  async saveRoutes(plant: string, org: string, branch: string): Promise<SyncRoute> {
+  async saveRoutes(plant: string, org: string, branch: string): Promise<SyncSucess> {
     try {
       const routes = await this.routeApi.syncDownRoutes(plant, org, branch)
       const row = await this.routeRepo.saveRoutes(routes)

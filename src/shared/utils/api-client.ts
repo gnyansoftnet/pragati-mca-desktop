@@ -9,23 +9,26 @@ import {
 
 export const apiClient = (): AxiosInstance => {
   const baseURL = process.env.EXTERNAL_API_BASE_URL
-  if (!baseURL) throw new Error('Missing EXTERNAL_API_BASE_URL')
+  const username = process.env.EXTERNAL_API_USERNAME
+  const password = process.env.EXTERNAL_API_PASSWORD
+
+  // fail at startup instead of sending an empty Basic auth header
+  if (!baseURL || !username || !password) {
+    throw new Error(
+      'Missing EXTERNAL_API_BASE_URL / EXTERNAL_API_USERNAME / EXTERNAL_API_PASSWORD. ' +
+        'Check that dotenv is loaded before bootstrapContainer().'
+    )
+  }
 
   const client = axios.create({
     baseURL,
     timeout: 60_000,
-    headers: { Accept: 'application/json' }
+    headers: { Accept: 'application/json' },
+    // Basic auth: axios builds the "Authorization: Basic base64(user:pass)" header
+    auth: { username, password }
   })
 
-  // Add Bearer token to every request
-  client.interceptors.request.use((config) => {
-    const token = process.env.EXTERNAL_API_TOKEN // replace later with your login flow
-    if (!token) throw new UnauthorizedError('No access token available')
-    config.headers.set('Authorization', `Bearer ${token}`)
-    return config
-  })
-
-  // Retry on network errors and 429
+  // Retry on network errors, 5xx on idempotent requests, and 429
   axiosRetry(client, {
     retries: 3,
     retryDelay: axiosRetry.exponentialDelay,

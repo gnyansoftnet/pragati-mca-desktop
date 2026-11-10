@@ -20,8 +20,4 @@ export interface SyncUserRow extends RowDataPacket {
   message: string
   total: number
 }
-export interface SyncUser {
-  success: number
-  message: string
-  total: number
-}
+

@@ -8,6 +8,7 @@ import type {
 import { AppError, DatabaseError } from '../../../utils/app-errors'
 import { SupervisorSyncService } from './supervisor-sync.service'
 import { SyncSupervisor } from '../repo/supervisor.rows'
+import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
 @injectable()
 export class SupervisorService {
@@ -71,7 +72,7 @@ export class SupervisorService {
     }
   }
 
-  async saveSupervisor(plant: string, org: string, branch: string): Promise<SyncSupervisor> {
+  async saveSupervisor(plant: string, org: string, branch: string): Promise<SyncSucess> {
     try {
       const supervisors = await this.supervisorApi.syncDownSupervisor(plant, org, branch)
       const row = await this.supervisorRepo.saveSupervisor(supervisors)
