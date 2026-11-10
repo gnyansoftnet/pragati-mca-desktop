@@ -6,6 +6,7 @@ import type { PaginatedResponse } from './common.types'
 import { SerialConnectDto, SerialResultDto } from '@shared/dtos/connection/serial.dto'
 import { PortListItem, SerialSnapshot } from '@shared/dtos/connection/serial-com-port.dto'
 import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
+import { MilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
 
 declare global {
   interface Window {
@@ -52,6 +53,9 @@ declare global {
       // Milk Samples & Analysis
       getMilkSamples: (date: string, shift: number, plant: string) => Promise<MilkSampleDto[]>
       updateMilkSample: (payload: MilkSampleUpdateDto) => Promise<MilkSampleDto>
+
+      //milk collection
+      getMilkCollections: () => Promise<MilkCollectionDto[]>
     }
   }
 }

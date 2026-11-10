@@ -43,14 +43,14 @@ interface MilkEntry {
   weightSystem?: string
 }
 
-interface PaginationState {
-  page: number
-  limit: number
-  total: number
-  totalPages: number
-  hasNextPage: boolean
-  hasPrevPage: boolean
-}
+// interface PaginationState {
+//   page: number
+//   limit: number
+//   total: number
+//   totalPages: number
+//   hasNextPage: boolean
+//   hasPrevPage: boolean
+// }
 
 // Set to true while testing; set to false in production with real hardware
 const IS_TEST_MODE = true
@@ -94,14 +94,14 @@ export const ProcurementCollection: React.FC = () => {
     IS_TEST_MODE || snap.ports.some((p) => p.parserType === 'weight' && p.status === 'connected')
 
   // Pagination and entries state
-  const [pagination, setPagination] = useState<PaginationState>({
-    page: 1,
-    limit: 10,
-    total: 0,
-    totalPages: 1,
-    hasNextPage: false,
-    hasPrevPage: false
-  })
+  // const [pagination, setPagination] = useState<PaginationState>({
+  //   page: 1,
+  //   limit: 10,
+  //   total: 0,
+  //   totalPages: 1,
+  //   hasNextPage: false,
+  //   hasPrevPage: false
+  // })
   const [entries, setEntries] = useState<MilkEntry[]>([])
 
   // Fetch routes from master
@@ -160,16 +160,14 @@ export const ProcurementCollection: React.FC = () => {
     const fetchVendorsBySelectedRoute = async () => {
       try {
         setLoadingVendors(true)
-        setSelectedVendor('') // Reset vendor selection for the new route
+        setSelectedVendor('')
 
         let response: any = null
 
-        // Call the backend IPC via window.api
         if (typeof window !== 'undefined' && (window as any).api?.getVendorsByRoute) {
           response = await (window as any).api.getVendorsByRoute(routeCode)
         }
 
-        // Support both direct array and { data: [...] } responses
         const vendorList: Vendor[] = Array.isArray(response)
           ? response
           : Array.isArray(response?.data)
@@ -198,24 +196,12 @@ export const ProcurementCollection: React.FC = () => {
     fetchVendorsBySelectedRoute()
   }, [selectedRoute, routes])
 
-  // Fetch paginated collection records
   const fetchCollections = async (page = 1): Promise<void> => {
     try {
-      if (typeof window !== 'undefined') {
-        const getFn =
-          (window as any).api?.getPaginatedMilkCollctions ||
-          (window as any).api?.getPaginatedMilkCollections
-
-        if (getFn) {
-          const response = await getFn({ page, limit: 10 })
-          if (response) {
-            if (response.data) {
-              setEntries(response.data)
-            }
-            if (response.pagination) {
-              setPagination(response.pagination)
-            }
-          }
+      const response = await api.collection.getMilkCollections()
+      if (response) {
+        if (response) {
+          setEntries(response)
         }
       }
     } catch (error) {
@@ -791,34 +777,6 @@ export const ProcurementCollection: React.FC = () => {
           </table>
         </div>
 
-        {/* Pagination Controls */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500">
-          <div>
-            Showing page <span className="font-semibold text-slate-700">{pagination.page}</span> of{' '}
-            <span className="font-semibold text-slate-700">{pagination.totalPages || 1}</span> (
-            {pagination.total || entries.length} items)
-          </div>
-          <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              disabled={!pagination.hasPrevPage}
-              onClick={() => fetchCollections(pagination.page - 1)}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition flex items-center gap-1"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              <span>Previous</span>
-            </button>
-            <button
-              type="button"
-              disabled={!pagination.hasNextPage}
-              onClick={() => fetchCollections(pagination.page + 1)}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition flex items-center gap-1"
-            >
-              <span>Next</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   )
