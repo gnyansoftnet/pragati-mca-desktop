@@ -21,7 +21,7 @@ export class SupervisorService {
       const rows = await this.supervisorRepo.getSupervisors()
       return rows.map((r) => ({
         id: r.id,
-        empId: r.employee_id,
+        employeeId: r.employee_id,
         firstName: r.first_name,
         lastName: r.last_name,
         plant: r.plant,
@@ -50,7 +50,7 @@ export class SupervisorService {
       return {
         data: rows.map((r) => ({
           id: r.id,
-          empId: r.emp_id,
+          employeeId: r.emp_id,
           firstName: r.first_name,
           lastName: r.last_name,
           plant: r.plant,

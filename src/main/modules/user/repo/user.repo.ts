@@ -6,7 +6,7 @@ import { User } from '../dto/user-api-response'
 import { DatabaseError } from '../../../utils/app-errors'
 
 const SQL_FIND_USER_BY_NAME = `
-  SELECT id, user_name, user_code, password, plant, role
+  SELECT *
     FROM \`user\`
    WHERE user_name = ?
    LIMIT 1`

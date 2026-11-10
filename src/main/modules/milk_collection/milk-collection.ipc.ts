@@ -9,7 +9,8 @@ const service = container.resolve(MilkCollectionService)
 export function registerMilkCollectionIpc(): void {
   ipcMain.handle(
     'milk-collection:getPaginatedMilkCollctions',
-    (_event, params: PaginationRequestDto) => service.getPaginatedMilkCollections(params)
+    (_event, params: PaginationRequestDto, fromDate?: string, toDate?: string) =>
+      service.getPaginatedMilkCollections(params, fromDate, toDate)
   )
 
   ipcMain.handle('milk-collection:getWeightSystems', () => service.getWeightSystems())

@@ -21,6 +21,7 @@ import { VendorSyncService } from '../../modules/vendor/services/vendor-sync.ser
 import { RouteSyncService } from '../../modules/route/services/route-sync.service'
 import { TokenService } from '../../modules/user/service/token.service'
 import { UserSyncService } from '../../modules/user/service/user-sync.service'
+import { MilkCollectionBackupRepo } from '../../modules/backup/repo/milk-collection-backup.repo'
 
 // route
 container.registerSingleton(RouteRepo)
@@ -67,5 +68,6 @@ container.registerSingleton(RouteSyncService)
 container.registerSingleton(TokenService)
 // user sync
 container.registerSingleton(UserSyncService)
+container.registerSingleton(MilkCollectionBackupRepo)
 
 export { container }
