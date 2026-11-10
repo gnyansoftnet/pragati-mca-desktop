@@ -11,6 +11,8 @@ import { MilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.
 declare global {
   interface Window {
     api: {
+      //LOGIN
+      syncUser: (plant: string) => Promise<{ success: number; message: string; total?: number }>
       // Routes
       getRoutes: () => Promise<Route[]>
 
