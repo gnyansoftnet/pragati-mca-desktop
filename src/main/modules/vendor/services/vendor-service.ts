@@ -4,7 +4,6 @@ import type { PaginatedVendorsDto, VendoreResponseDto } from '@shared/dtos/vendo
 import { VendorRepo } from '../repositories/vendor.repo'
 import { AppError, DatabaseError } from '../../../utils/app-errors'
 import { VendorSyncService } from './vendor-sync.service'
-import { SyncVendor } from '../dto/vendor-api-response'
 import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
 @injectable()

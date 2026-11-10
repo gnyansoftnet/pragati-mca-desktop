@@ -100,6 +100,7 @@ export interface User {
   email: string | null
   phoneNumber: string | null
   dFlag: boolean
+  password: string
   modifiedDate: string
   assignments: UserAssignment[]
 }
@@ -115,6 +116,7 @@ export function toUser(api: ApiUser): User {
     email: api.email,
     phoneNumber: api.phoneNumber,
     dFlag: api.dFlag,
+    password: api.password,
     modifiedDate: api.modifiedDate,
     assignments: api.userOrgBranches.map((uob) => ({
       id: uob.id,
