@@ -9,7 +9,7 @@ const MilkDropsBackground: React.FC<MilkDropsBackgroundProps> = () => {
 
   useEffect(() => {
     const container = containerRef.current
-    if (!container) return
+    if (!container) return () => {} 
 
     // Helper: Create a single milk drop ripple at (x, y)
     const spawnDrop = (
