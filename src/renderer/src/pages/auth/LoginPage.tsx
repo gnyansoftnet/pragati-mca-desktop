@@ -11,20 +11,25 @@ import {
   X,
   AlertTriangle,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Wifi,
+  WifiOff
 } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { useAuth } from '../../context/AuthContext'
+import { useNetwork } from '../../hooks/useNetwork'
 import MilkDropsBackground from './MilkDropsBackground'
 import Logo from '../../assets/images/logo/pragati-logo.jpg'
 import softnet from '../../assets/images/s-powered-black.png'
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate()
+  const { isOnline, verifyConnection } = useNetwork()
   const { login } = useAuth()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
 
   // Plant Sync States
   const [showSyncInput, setShowSyncInput] = useState<boolean>(false)
@@ -34,13 +39,6 @@ export const LoginPage: React.FC = () => {
   const [syncStatus, setSyncStatus] = useState<{ type: 'success' | 'error'; text: string } | null>(
     null
   )
-
-  // Directly navigate to admin panel without any validation
-  const handleLogin = (e?: React.FormEvent): void => {
-    if (e) e.preventDefault()
-    login('admin', username || 'admin@pragatimilk.com')
-    navigate('/admin')
-  }
 
   // 1. Triggered on "Submit" click: Opens Confirmation Popup
   const handleOpenConfirm = () => {
@@ -56,25 +54,22 @@ export const LoginPage: React.FC = () => {
   // 2. Triggered when user confirms sync in the popup
   const handleConfirmSync = async () => {
     const trimmedPlant = plantCode.trim()
-
-    // Internet check
-    if (typeof navigator !== 'undefined' && !navigator.onLine) {
-      toast.error('No internet connection! Please check your network to sync plant users.')
+    // 1. Double check real internet reachability before initiating sync
+    const hasNet = await verifyConnection()
+    if (!hasNet) {
+      toast.error('Cannot sync: No internet connection! Please check your network.')
       setShowConfirmModal(false)
       setSyncStatus({
         type: 'error',
-        text: 'No internet connection detected.'
+        text: 'Offline: Internet connection is required to sync plant data.'
       })
       return
     }
-
+    // 2. Internet is OK -> proceed with sync
     try {
       setIsSyncing(true)
-      setSyncStatus(null)
-
-      // Call API
+      
       const res = await (window as any).api?.syncUser(trimmedPlant)
-
       if (res && res.success === 1) {
         const successMsg = res.message || 'User batch sync completed successfully'
         toast.success(successMsg)
@@ -82,8 +77,6 @@ export const LoginPage: React.FC = () => {
           type: 'success',
           text: `${successMsg}${res.total !== undefined ? ` (Total: ${res.total})` : ''}`
         })
-
-        // Clear the plant code input field after submission
         setPlantCode('')
         setShowConfirmModal(false)
 
@@ -93,22 +86,37 @@ export const LoginPage: React.FC = () => {
           setSyncStatus(null)
         }, 3000)
       } else {
-        const errorMsg = res?.message || 'Failed to sync plant users from server.'
-        toast.error(errorMsg)
-        setSyncStatus({ type: 'error', text: errorMsg })
+        toast.error(res?.message || 'Sync failed from server.')
         setShowConfirmModal(false)
       }
-    } catch (error: any) {
-      console.error('Failed to sync plant users:', error)
-      const errorMsg = error?.message || 'An error occurred while syncing users.'
-      toast.error(errorMsg)
-      setSyncStatus({ type: 'error', text: errorMsg })
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to sync users.')
       setShowConfirmModal(false)
     } finally {
       setIsSyncing(false)
     }
   }
-
+  //3
+  // Real login authentication
+  const handleLogin = async (e?: React.FormEvent): Promise<void> => {
+    if (e) e.preventDefault()
+    const trimmedUser = username.trim()
+    if (!trimmedUser || !password) {
+      toast.warn('Please enter Username and Password.')
+      return
+    }
+    try {
+      setIsLoggingIn(true)
+      const loggedUser = await login(trimmedUser, password)
+      toast.success(`Welcome back, ${loggedUser.userName}!`)
+      navigate('/admin')
+    } catch (error: any) {
+      console.error('Login failed:', error)
+      toast.error(error?.message || 'Invalid username or password. Please try again.')
+    } finally {
+      setIsLoggingIn(false)
+    }
+  }
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center p-4 sm:p-6 overflow-hidden select-none">
       <MilkDropsBackground />
@@ -294,10 +302,20 @@ export const LoginPage: React.FC = () => {
           {/* Primary Action Button */}
           <button
             type="submit"
-            className="w-full bg-[#1e2025] hover:bg-[#111215] active:scale-[0.99] text-white py-3.5 px-6 rounded-xl font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer mt-2"
+            disabled={isLoggingIn}
+            className="w-full bg-[#1e2025] hover:bg-[#111215] active:scale-[0.99] text-white py-3.5 px-6 rounded-xl font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:bg-slate-700 disabled:cursor-not-allowed"
           >
-            <span>Login</span>
-            <ArrowRight className="w-4 h-4 opacity-80" />
+            {isLoggingIn ? (
+              <>
+                <RefreshCw className="w-4 h-4 animate-spin text-white" />
+                <span>Logging in...</span>
+              </>
+            ) : (
+              <>
+                <span>Login</span>
+                <ArrowRight className="w-4 h-4 opacity-80" />
+              </>
+            )}
           </button>
         </form>
 

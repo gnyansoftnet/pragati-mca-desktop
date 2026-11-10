@@ -36,21 +36,17 @@ export const TopbarUserProfile: React.FC = () => {
         className="flex items-center gap-2.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-2xl hover:bg-slate-100/80 border border-transparent hover:border-slate-200/60 transition cursor-pointer group"
       >
         <div className="w-9 h-9 rounded-full bg-linear-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xs shadow-xs group-hover:scale-105 transition-transform">
-          {user?.avatar || 'DH'}
+          {user?.avatar || 'RA'}
         </div>
         <div className="hidden md:block text-left">
           <div className="flex items-center gap-1.5">
             <h4 className="text-xs font-bold text-slate-800 leading-tight">
-              {user?.name || 'Dhruv Halbe'}
+              {user?.userName || 'User'}
             </h4>
-            <ChevronDown
-              className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
-                isOpen ? 'rotate-180' : 'rotate-0'
-              }`}
-            />
+            <ChevronDown className={`w-3.5 h-3.5 text-slate-400 ...`} />
           </div>
           <p className="text-[10px] text-slate-400 font-medium">
-            {user?.roleLabel || 'Super Admin'}
+             Plant {user?.plant || '1102'}
           </p>
         </div>
       </button>

@@ -16,6 +16,10 @@ const routesApi = {
       limit,
       search
     })
+  },
+
+  syncRoutes: (plant: string, org: string, branch: string) => {
+    return window.api.syncRoutes(plant, org, branch)
   }
 }
 

@@ -7,15 +7,18 @@ import { SerialConnectDto, SerialResultDto } from '@shared/dtos/connection/seria
 import { PortListItem, SerialSnapshot } from '@shared/dtos/connection/serial-com-port.dto'
 import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
 import { MilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
+import { UserResponseDto } from '@shared/dtos/user/user.dto'
+import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
 declare global {
   interface Window {
     api: {
       //LOGIN
-      syncUser: (plant: string) => Promise<{ success: number; message: string; total?: number }>
+      login: (userName: string, password: string) => Promise<UserResponseDto>
+      syncUser: (plant: string) => Promise<SyncSucess>
       // Routes
       getRoutes: () => Promise<Route[]>
-
+      syncRoutes: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       getPaginatedRoutes: (params: {
         page: number
         limit: number

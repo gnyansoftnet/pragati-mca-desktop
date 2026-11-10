@@ -1,41 +1,41 @@
 import { UserProfile, UserRole } from '../types/auth'
 import { DynamicMenuItem } from '../types/menu'
 
-export const MOCK_USERS: Record<UserRole, UserProfile> = {
-  admin: {
-    id: 'USR-001',
-    name: 'Dhruv Halbe',
-    email: 'admin@pragatimilk.com',
-    role: 'admin',
-    roleLabel: 'Super Admin',
-    avatar: 'DH',
-    centerCode: 'HQ-01',
-    centerName: 'Central Dairy Hub',
-    mobile: '9876543210'
-  },
-  staff: {
-    id: 'USR-002',
-    name: 'Ramesh Patil',
-    email: 'operator@pragatimilk.com',
-    role: 'staff',
-    roleLabel: 'Dairy Operator',
-    avatar: 'RP',
-    centerCode: 'CTR-04',
-    centerName: 'North Village Milk Center',
-    mobile: '9876501042'
-  },
-  farmer: {
-    id: 'FAR-1043',
-    name: 'Biren Dhal',
-    email: 'farmer@pragatimilk.com',
-    role: 'farmer',
-    roleLabel: 'Milk Producer',
-    avatar: 'BD',
-    centerCode: 'CTR-04',
-    centerName: 'North Village Milk Center',
-    mobile: '9583722800'
-  }
-}
+// export const MOCK_USERS: Record<UserRole, UserProfile> = {
+//   admin: {
+//     id: 'USR-001',
+//     name: 'Dhruv Halbe',
+//     email: 'admin@pragatimilk.com',
+//     role: 'admin',
+//     roleLabel: 'Super Admin',
+//     avatar: 'DH',
+//     centerCode: 'HQ-01',
+//     centerName: 'Central Dairy Hub',
+//     mobile: '9876543210'
+//   },
+//   staff: {
+//     id: 'USR-002',
+//     name: 'Ramesh Patil',
+//     email: 'operator@pragatimilk.com',
+//     role: 'staff',
+//     roleLabel: 'Dairy Operator',
+//     avatar: 'RP',
+//     centerCode: 'CTR-04',
+//     centerName: 'North Village Milk Center',
+//     mobile: '9876501042'
+//   },
+//   farmer: {
+//     id: '3',
+//     name: 'Biren Dhal',
+//     email: 'farmer@pragatimilk.com',
+//     role: 'farmer',
+//     roleLabel: 'Milk Producer',
+//     avatar: 'BD',
+//     centerCode: 'CTR-04',
+//     centerName: 'North Village Milk Center',
+//     mobile: '9583722800'
+//   }
+// }
 
 export const DYNAMIC_MENUS: DynamicMenuItem[] = [
   {
