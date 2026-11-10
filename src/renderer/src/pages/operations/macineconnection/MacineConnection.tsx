@@ -53,7 +53,7 @@ function saveSettings(machine: string, settings: Settings) {
   try {
     localStorage.setItem(storeKey(machine), JSON.stringify(settings))
   } catch {
-    /* ignore */
+    
   }
 }
 
