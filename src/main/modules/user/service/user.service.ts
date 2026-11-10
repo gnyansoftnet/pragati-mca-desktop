@@ -4,7 +4,7 @@ import type { UserResponseDto } from '@shared/dtos/user/user.dto'
 import { UserRepo } from '../repo/user.repo'
 import { AppError, DatabaseError, ValidationError } from '../../../utils/app-errors'
 import { UserSyncService } from './user-sync.service'
-import { SyncUser } from '../repo/user.rows'
+import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
 @injectable()
 export class UserService {
@@ -56,7 +56,7 @@ export class UserService {
     }
   }
 
-  async saveRoutes(plant: string): Promise<SyncUser> {
+  async saveUsers(plant: string): Promise<SyncSucess> {
     try {
       const users = await this.userApi.syncDownUsers(plant)
       const row = await this.userRepo.saveUsers(users)

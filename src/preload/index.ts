@@ -26,6 +26,7 @@ import {
   SaveMilkCollectionDto
 } from '@shared/dtos/milk-collection/milk-collection.dto'
 import { WeightSystemDto } from '@shared/dtos/milk-collection/weight-system.dto'
+import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
 // Custom APIs for renderer
 
@@ -34,13 +35,19 @@ const api = {
   login: (userName: string, password: string): Promise<UserResponseDto> =>
     ipcRenderer.invoke('user:login', userName, password),
 
+  syncUser: (plant: string): Promise<SyncSucess> => ipcRenderer.invoke('user:syncUser', plant),
+
   // routes
   getRoutes: (): Promise<RouteResponseDto[]> => ipcRenderer.invoke('route:getRoutes'),
+  syncRoutes: (plant: string, org: string, branch: string): Promise<SyncSucess> =>
+    ipcRenderer.invoke('route:syncRoutes', plant, org, branch),
   getPaginatedRoutes: (params: PaginationRequestDto): Promise<PaginatedRoutesDto> =>
     ipcRenderer.invoke('route:getPaginatedRoutes', params),
 
   // vendor
   getVendors: (): Promise<VendoreResponseDto[]> => ipcRenderer.invoke('vendor:getVendors'),
+  syncVendors: (plant: string, org: string, branch: string): Promise<SyncSucess> =>
+    ipcRenderer.invoke('vendor:syncVendors', plant, org, branch),
   getVendorsByRoute: (routeCode: String): Promise<VendoreResponseDto[]> =>
     ipcRenderer.invoke('vendor:getVendorsByRoute', routeCode),
   getPaginatedVendors: (params: PaginationRequestDto): Promise<PaginatedVendorsDto> =>
@@ -48,6 +55,8 @@ const api = {
 
   getSupervisors: (): Promise<SupervisorResponseDto[]> =>
     ipcRenderer.invoke('supervisor:getSupervisors'),
+  syncSupervisors: (plant: string, org: string, branch: string): Promise<SyncSucess> =>
+    ipcRenderer.invoke('supervisor:syncSupervisors', plant, org, branch),
   getPaginatedSupervisors: (params: PaginationRequestDto): Promise<PaginatedSupervisorDto> =>
     ipcRenderer.invoke('supervisor:getPaginatedSupervisors', params),
 

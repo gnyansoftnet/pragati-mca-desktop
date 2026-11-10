@@ -3,6 +3,8 @@ import { db } from '../../../core/config/database.config'
 import { MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
 import { MilkSampleRow } from './milk-analysis.row'
 
+//  AND is_analyse = 0
+
 const SQL_GET_MILK_SAMPLES = `
   SELECT id, trans_code, plant, shift, sample_date, sample_code,
          net_weight, fat, snf, is_analyse
@@ -10,7 +12,6 @@ const SQL_GET_MILK_SAMPLES = `
    WHERE sample_date = ?
      AND shift = ?
      AND plant = ?
-     AND is_analyse = 0
      AND d_flag = 0
    ORDER BY sample_code ASC`
 

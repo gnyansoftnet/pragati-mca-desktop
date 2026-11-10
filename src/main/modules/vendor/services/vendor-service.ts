@@ -5,6 +5,7 @@ import { VendorRepo } from '../repositories/vendor.repo'
 import { AppError, DatabaseError } from '../../../utils/app-errors'
 import { VendorSyncService } from './vendor-sync.service'
 import { SyncVendor } from '../dto/vendor-api-response'
+import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
 @injectable()
 export class VendorService {
@@ -79,7 +80,7 @@ export class VendorService {
     }
   }
 
-  async saveVendors(plant: string, org: string, branch: string): Promise<SyncVendor> {
+  async saveVendors(plant: string, org: string, branch: string): Promise<SyncSucess> {
     try {
       const vendors = await this.vendorApi.syncDownVendors(plant, org, branch)
       const row = await this.vendorRepo.saveVendors(vendors)

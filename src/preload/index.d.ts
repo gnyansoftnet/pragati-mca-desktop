@@ -26,6 +26,7 @@ import {
 } from '@shared/dtos/supervisor/supervisor.dto'
 import { UserResponseDto } from '@shared/dtos/user/user.dto'
 import { PaginatedVendorsDto, VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
+import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
 declare global {
   interface Window {
@@ -33,17 +34,21 @@ declare global {
     api: {
       // user
       login: (userName: string, password: string) => Promise<UserResponseDto>
+      syncUser: (plant: string) => Promise<SyncSucess>
 
       // routes
       getRoutes: () => Promise<RouteResponseDto[]>
+      syncRoutes: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       getPaginatedRoutes: (params: PaginationRequestDto) => Promise<PaginatedRoutesDto>
 
       // supervisor
       getSupervisors: () => Promise<SupervisorResponseDto[]>
+      syncSupervisors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       getPaginatedSupervisors: (params: PaginationRequestDto) => Promise<PaginatedSupervisorDto>
 
       // vendor
       getVendors: () => Promise<VendoreResponseDto[]>
+      syncVendors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       getVendorsByRoute: (routeCode: string) => Promise<VendoreResponseDto[]>
       getPaginatedVendors: (params: PaginationRequestDto) => Promise<PaginatedVendorsDto>
 
