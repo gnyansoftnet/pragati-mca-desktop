@@ -14,7 +14,7 @@ export function registerMilkRejectionIpc(): void {
 
   ipcMain.handle('milk-rejection:getReasons', () => service.getReasons())
 
-  ipcMain.handle('milk-collection:saveMilkRejection', (_event, params: MilkRejectionSaveDto) =>
+  ipcMain.handle('milk-rejection:saveMilkRejection', (_event, params: MilkRejectionSaveDto) =>
     service.saveMilkRejection(params)
   )
 }
