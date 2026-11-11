@@ -17,7 +17,7 @@ export const TopbarMachineBadges: React.FC = () => {
       {scalePorts.length === 0 ? (
         <button
           type="button"
-          onClick={() => navigate('/admin/macine-connection')}
+          onClick={() => navigate('/admin/machine-connection')}
           title="Click to connect Weight Scale"
           className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold bg-slate-100 text-slate-500 border border-slate-200 hover:bg-slate-200/70 transition cursor-pointer"
         >
@@ -32,7 +32,7 @@ export const TopbarMachineBadges: React.FC = () => {
             <button
               key={port.path}
               type="button"
-              onClick={() => navigate('/admin/macine-connection')}
+              onClick={() => navigate('/admin/machine-connection')}
               title={`Port: ${port.path} (${port.status})`}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold border transition cursor-pointer ${
                 isOn
@@ -61,7 +61,7 @@ export const TopbarMachineBadges: React.FC = () => {
       {analyzerPorts.length === 0 ? (
         <button
           type="button"
-          onClick={() => navigate('/admin/macine-connection')}
+          onClick={() => navigate('/admin/machine-connection')}
           title="Click to connect Milk Analyzer"
           className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold bg-slate-100 text-slate-500 border border-slate-200 hover:bg-slate-200/70 transition cursor-pointer"
         >
@@ -76,7 +76,7 @@ export const TopbarMachineBadges: React.FC = () => {
             <button
               key={port.path}
               type="button"
-              onClick={() => navigate('/admin/macine-connection')}
+              onClick={() => navigate('/admin/machine-connection')}
               title={`Port: ${port.path} (${port.status})`}
               className={`hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold border transition cursor-pointer ${
                 isOn

@@ -135,6 +135,7 @@ export const Supervisors: React.FC = () => {
     }, 300)
 
     return () => clearTimeout(timer)
+     console.log("supervisors" , supervisors);
   }, [searchQuery, pageSize])
 
   // Handle Entries Per Page Dropdown Change
@@ -147,6 +148,8 @@ export const Supervisors: React.FC = () => {
   const handlePageChange = (newPage: number) => {
     fetchPaginatedSupervisors(newPage, pageSize, searchQuery)
   }
+
+ 
 
   return (
     <div className="space-y-4">
@@ -252,7 +255,7 @@ export const Supervisors: React.FC = () => {
               {supervisors.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-50/70 transition">
                   <td className="py-2 px-4 font-semibold text-primary">{item.id}</td>
-                  <td className="py-2 px-4 font-semibold text-primary">{item.empId}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.employeeId}</td>
                   <td className="py-2 px-4 font-semibold text-slate-800">
                     {`${item.firstName} ${item.lastName}`}
                   </td>
