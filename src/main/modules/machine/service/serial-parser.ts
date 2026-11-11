@@ -111,4 +111,11 @@ const milkAnalyzer = makeParser(BRACKET_END, (frame) => {
   return Object.keys(out).length ? out : null
 })
 
-export const PARSERS: Record<ParserType, SerialParser> = { raw, weight, milkAnalyzer }
+export const PARSERS: Record<ParserType, SerialParser> = {
+  raw,
+  weight,
+  'analyzer-1': milkAnalyzer,
+  'analyzer-2': milkAnalyzer,
+  'analyzer-3': milkAnalyzer,
+  'analyzer-4': milkAnalyzer
+}
