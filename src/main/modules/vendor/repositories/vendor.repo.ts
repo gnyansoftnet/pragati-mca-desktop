@@ -1,6 +1,5 @@
 import { injectable } from 'tsyringe'
 import { db } from '../../../core/config/database.config'
-import type { RowDataPacket } from 'mysql2'
 import type {
   VendorRow,
   VendorListRow,
@@ -12,26 +11,27 @@ import { OperationAction } from '../../../core/constants/operation-action.enum'
 import { Vendor } from '../dto/vendor-api-response'
 import { DatabaseError } from '../../../utils/app-errors'
 
-const SQL_GET_VENDORS = `
-  SELECT id, dsk_code, dsk_name, vendor_code
-    FROM vendor
-   ORDER BY id ASC`
-
 const SQL_VENDOR_COLUMNS = `id, dsk_name, dsk_code, vendor_code, mobile_number, route_code, supervisor_emp_id`
+
+const escapeLike = (value: string): string => value.replace(/[\\%_]/g, '\\$&')
 
 @injectable()
 export class VendorRepo {
-  async getVendors(): Promise<(VendorListRow & RowDataPacket)[]> {
-    const [rows] = await db.execute<(VendorListRow & RowDataPacket)[]>(SQL_GET_VENDORS)
+  async getVendors(): Promise<VendorListRow[]> {
+    const [rows] = await db.query<VendorListRow[]>(
+      `SELECT ${SQL_VENDOR_COLUMNS}
+         FROM vendor
+        ORDER BY id ASC`
+    )
     return rows
   }
 
-  async getVendorsByRoute(routeCode: string): Promise<(VendorListRow & RowDataPacket)[]> {
-    const [rows] = await db.execute<(VendorListRow & RowDataPacket)[]>(
-      `SELECT id, dsk_code, dsk_name, vendor_code
-     FROM vendor
-     WHERE route_code = ?
-     ORDER BY id ASC`,
+  async getVendorsByRoute(routeCode: string): Promise<VendorListRow[]> {
+    const [rows] = await db.query<VendorListRow[]>(
+      `SELECT ${SQL_VENDOR_COLUMNS}
+         FROM vendor
+        WHERE route_code = ?
+        ORDER BY id ASC`,
       [routeCode]
     )
     return rows
@@ -43,11 +43,11 @@ export class VendorRepo {
     offset: number
   ): Promise<PagedVendorRows> {
     let where = ''
-    const params: string[] = []
+    const params: (string | number)[] = []
 
     if (search) {
       where = 'WHERE (mobile_number LIKE ? OR dsk_name LIKE ? OR dsk_code LIKE ?)'
-      const like = `%${search}%`
+      const like = `%${escapeLike(search)}%`
       params.push(like, like, like)
     }
 
