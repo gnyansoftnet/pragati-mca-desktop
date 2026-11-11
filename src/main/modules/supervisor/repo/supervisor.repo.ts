@@ -53,7 +53,7 @@ export class SupervisorRepo {
   }
 
   async saveSupervisor(items: Supervisor[]): Promise<SyncSupervisorRow> {
-    const [result] = await db.query<SyncSupervisorRow[][]>('CALL USP_M_VENDOR_SYNC(?, ?)', [
+    const [result] = await db.query<SyncSupervisorRow[][]>('CALL USP_M_SUPERVISOR_SYNC(?, ?)', [
       OperationAction.SYNCDOWN,
       JSON.stringify(items)
     ])
