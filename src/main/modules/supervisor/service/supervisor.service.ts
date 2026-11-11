@@ -50,7 +50,7 @@ export class SupervisorService {
       return {
         data: rows.map((r) => ({
           id: r.id,
-          employeeId: r.emp_id,
+          employeeId: r.employee_id,
           firstName: r.first_name,
           lastName: r.last_name,
           plant: r.plant,
