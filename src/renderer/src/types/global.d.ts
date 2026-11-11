@@ -4,13 +4,17 @@ import type { MilkSample, UpdateMilkSamplePayload } from './analysis/milk-analys
 import type { Supervisor } from './supervisors.types'
 import type { PaginatedResponse } from './common.types'
 import { SerialConnectDto, SerialResultDto } from '@shared/dtos/connection/serial.dto'
-import {  ReasonDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
+import { ReasonDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
 import { PortListItem, SerialSnapshot } from '@shared/dtos/connection/serial-com-port.dto'
 import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
 import { MilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
 import { UserResponseDto } from '@shared/dtos/user/user.dto'
 import { SyncSucess } from '@shared/dtos/sync-success.dto'
-import { PaginatedMilkRejectionDto } from '@shared/dtos/milk-rejection/milk-rejection.dto'
+import {
+  MilkRejectionResponseDto,
+  MilkRejectionSaveDto,
+  PaginatedMilkRejectionDto
+} from '@shared/dtos/milk-rejection/milk-rejection.dto'
 
 declare global {
   interface Window {
@@ -65,16 +69,14 @@ declare global {
       //milk collection
       getMilkCollections: () => Promise<MilkCollectionDto[]>
 
-
-
       //rejection
       getReasons: () => Promise<ReasonDto[]>
       getPaginatedMilkRejections: (params: {
         page: number
         limit: number
         search: string
-      }) => Promise<PaginatedResponse<PaginatedMilkRejectionDto>>
-
+      }) => Promise<PaginatedResponse<MilkRejectionResponseDto>>
+      saveMilkRejection: (params: MilkRejectionSaveDto) => Promise<MilkRejectionResponseDto>
     }
   }
 }
