@@ -8,6 +8,7 @@ import type { Route } from '@renderer/types/routes/routes.types'
 import type { Vendor } from '@renderer/types/vendors/vendors.types'
 import { toast } from 'react-toastify'
 import { useSerialSnapshot } from '@renderer/hooks/useSerial'
+import { useAuth } from '@renderer/context/AuthContext'
 
 interface SelectOption {
   value: string
@@ -57,6 +58,7 @@ const IS_TEST_MODE = true
 const DEFAULT_TEST_WEIGHT = '25.5' // Your default test weight
 
 export const ProcurementCollection: React.FC = () => {
+  const { user } = useAuth()
   // Routes state
   const [routes, setRoutes] = useState<Route[]>([])
   const [routeOptions, setRouteOptions] = useState<SelectOption[]>([])
@@ -71,7 +73,7 @@ export const ProcurementCollection: React.FC = () => {
 
   // Collection metadata fields
   const [shift, setShift] = useState('1')
-  const [plant, setPlant] = useState('1102')
+  const [plant, setPlant] = useState<string>(user?.plant)
   const [weightSystem, setWeightSystem] = useState('WeightBowl')
   const [cansType, setCansType] = useState('Aluminium')
   const [milkType, setMilkType] = useState('cow')
@@ -254,10 +256,10 @@ export const ProcurementCollection: React.FC = () => {
     { value: '2', label: 'Evening' }
   ]
 
-  const plantOptions = [
-    { value: '1102', label: 'Raipur' },
-    { value: '1103', label: 'Jagatpur' }
-  ]
+  // const plantOptions = [
+  //   { value: '1102', label: 'Raipur' },
+  //   { value: '1103', label: 'Jagatpur' }
+  // ]
 
   const weights = [
     { value: 'WeightBowl', label: 'WeightBowl' },
@@ -370,7 +372,7 @@ export const ProcurementCollection: React.FC = () => {
       const cansNum = Number(noOfCans) || 0
 
       const payload = {
-        plant: plant,
+        plant: String(plant),
         userCode: userCode,
         rootCode: rootCode,
         vendorCode: vendorCode,
@@ -471,11 +473,11 @@ export const ProcurementCollection: React.FC = () => {
             {/* Chilling Center (Read-only, skipped in Tab order) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
-              <CustomForm.CustomSelectField
+              <CustomForm.CustomTextField
                 name="chilling"
                 value={plant}
-                onChange={(e: any) => setPlant(e.target.value)}
-                options={plantOptions}
+                // onChange={(e: any) => setPlant(e.target.value)}
+                // options={plantOptions}
                 readOnly={true}
                 tabIndex={-1}
               />
