@@ -59,7 +59,7 @@ export const Rootes: React.FC = () => {
     }
   }
 
-   const handleStartSync = async () => {
+  const handleStartSync = async () => {
     // Check internet connection first
     const hasNet = await verifyConnection()
     if (!hasNet) {
@@ -69,11 +69,11 @@ export const Rootes: React.FC = () => {
     }
     // Extract logged-in user credentials (with safe fallbacks)
     const plant = String(user?.plant)
-    const org = String(user?.orgCode )
+    const org = String(user?.orgCode)
     const branch = String(user?.branchCode)
-    console.log("plant", user?.plant)
-    console.log("org", user?.orgCode)
-    console.log("branch", user?.branchCode)
+    console.log('plant', user?.plant)
+    console.log('org', user?.orgCode)
+    console.log('branch', user?.branchCode)
     try {
       setIsSyncing(true)
       setShowConfirm(false)
@@ -129,10 +129,16 @@ export const Rootes: React.FC = () => {
               {/* Displaying Current User Context */}
               <div className="mb-6 py-2 px-3 bg-slate-50 dark:bg-zinc-800 rounded-xl text-xs text-slate-600 dark:text-zinc-400 flex justify-center gap-4">
                 <span>
-                  Plant: <strong className="text-slate-800 dark:text-zinc-200">{user?.plant || '1102'}</strong>
+                  Plant:{' '}
+                  <strong className="text-slate-800 dark:text-zinc-200">
+                    {user?.plant}
+                  </strong>
                 </span>
                 <span>
-                  User: <strong className="text-slate-800 dark:text-zinc-200">{user?.userName || 'User'}</strong>
+                  User:{' '}
+                  <strong className="text-slate-800 dark:text-zinc-200">
+                    {user?.userName}
+                  </strong>
                 </span>
               </div>
               {/* Action Buttons */}

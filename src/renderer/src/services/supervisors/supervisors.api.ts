@@ -16,6 +16,11 @@ const supervisorsApi = {
       limit,
       search
     })
+  },
+
+
+  syncSupervisors: (plant: string, org: string, branch: string) => {
+    return window.api.syncSupervisors(plant, org, branch)
   }
 }
 

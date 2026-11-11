@@ -27,6 +27,7 @@ declare global {
 
       // Vendors
       getVendors: () => Promise<Vendor[]>
+      syncVendors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       getVendorsByRoute: (params: { routeCode: string }) => Promise<Vendor[]>
       getPaginatedVendors: (params: {
         page: number
@@ -36,7 +37,7 @@ declare global {
 
       // supervisor
       getSupervisors: () => Promise<Supervisor[]>
-
+      syncSupervisors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       getPaginatedSupervisors: (params: {
         page: number
         limit: number

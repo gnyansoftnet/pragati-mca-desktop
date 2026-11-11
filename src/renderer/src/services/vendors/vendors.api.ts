@@ -16,6 +16,10 @@ const vendorsApi = {
       limit,
       search
     })
+  },
+
+  syncVendors: (plant: string, org: string, branch: string) => {
+    return window.api.syncVendors(plant, org, branch)
   }
 }
 
