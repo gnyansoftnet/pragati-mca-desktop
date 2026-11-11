@@ -1,8 +1,11 @@
 // Types shared by main, preload and renderer.
 
 // 'weight' = weighing scale, 'milkAnalyzer' = FAT/SNF/CLR analyzer
-export type ParserType = 'raw' | 'weight' | 'milkAnalyzer'
+export type ParserType =
+  'raw' | 'weight' | 'analyzer-1' | 'analyzer-2' | 'analyzer-3' | 'analyzer-4'
 
+export const isAnalyzer = (t: string) => t.startsWith('analyzer-')
+export const analyzerName = (t: string) => `Analyzer ${t.replace('analyzer-', '')}`
 export interface PortConfig {
   path: string // COM3, COM4 ... (or SIM-SCALE / SIM-ANALYZER in dev)
   baudRate: number

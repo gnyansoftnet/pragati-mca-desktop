@@ -2,6 +2,7 @@ import { singleton } from 'tsyringe'
 import { SerialPort } from 'serialport'
 import { BrowserWindow } from 'electron'
 import {
+  isAnalyzer,
   PortConfig,
   PortListItem,
   PortState,
@@ -81,8 +82,11 @@ export class SerialComPortService {
 
     if (result.data) {
       const at = Date.now()
+      const role = this.states.get(path)?.parserType ?? 'raw'
       for (const [key, value] of Object.entries(result.data)) {
-        this.readings.set(key, { value, at, path })
+        // analyzers are stored as "analyzer-2.fat" so four analyzers can't overwrite each other
+        const name = isAnalyzer(role) ? `${role}.${key}` : key
+        this.readings.set(name, { value, at, path })
       }
     }
 
