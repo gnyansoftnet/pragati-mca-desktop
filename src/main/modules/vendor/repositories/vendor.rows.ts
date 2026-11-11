@@ -10,7 +10,7 @@ export interface VendorRow extends RowDataPacket {
   supervisor_emp_id: string
 }
 
-export type VendorListRow = Pick<VendorRow, 'id' | 'dsk_code' | 'dsk_name' | 'vendor_code'>
+export type VendorListRow = VendorRow
 
 export interface CountRow extends RowDataPacket {
   total: number

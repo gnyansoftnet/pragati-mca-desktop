@@ -21,7 +21,10 @@ export class VendorService {
         id: r.id,
         dskCode: r.dsk_code,
         dskName: r.dsk_name,
-        vendorCode: r.vendor_code
+        vendorCode: r.vendor_code,
+        mobileNumber: r.mobile_number,
+        routeCode: r.route_code,
+        supervisorEmpId: r.supervisor_emp_id
       }))
     } catch (error) {
       if (error instanceof AppError) throw error
@@ -36,7 +39,10 @@ export class VendorService {
         id: r.id,
         dskCode: r.dsk_code,
         dskName: r.dsk_name,
-        vendorCode: r.vendor_code
+        vendorCode: r.vendor_code,
+        mobileNumber: r.mobile_number,
+        routeCode: r.route_code,
+        supervisorEmpId: r.supervisor_emp_id
       }))
     } catch (error) {
       if (error instanceof AppError) throw error
