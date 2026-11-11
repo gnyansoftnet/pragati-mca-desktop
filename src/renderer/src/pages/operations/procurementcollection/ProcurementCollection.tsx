@@ -123,24 +123,6 @@ export const ProcurementCollection: React.FC = () => {
     }
   }
 
-  // Fetch vendors from master
-  // const fetchVendors = async (): Promise<void> => {
-  //   try {
-  //     setLoadingVendors(true)
-  //     const response = await api.vendors.getAll()
-  //     setVendors(response)
-
-  //     const options: SelectOption[] = response.map((vendor) => ({
-  //       value: String(vendor.id),
-  //       label: vendor.vendorCode
-  //     }))
-  //     setVendorOptions(options)
-  //   } catch (error) {
-  //     console.error('Failed to fetch vendors:', error)
-  //   } finally {
-  //     setLoadingVendors(false)
-  //   }
-  // }
   // Fetch vendors whenever the selected route changes
   useEffect(() => {
     // If no route is selected, clear vendor list and selection
@@ -392,7 +374,7 @@ export const ProcurementCollection: React.FC = () => {
         userCode: userCode,
         rootCode: rootCode,
         vendorCode: vendorCode,
-        shift: Number(shift) || 1,
+        shift: Number(shift),
         canType: selectedCan,
         weightSystem: selectedWeight,
         milkType: selectedMilkType,

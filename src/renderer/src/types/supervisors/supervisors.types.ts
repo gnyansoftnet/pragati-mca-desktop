@@ -1,6 +1,6 @@
 export interface Supervisor {
   id: number
-  empId: string
+  employeeId: string
   firstName: string
   lastName: string
   plant: string

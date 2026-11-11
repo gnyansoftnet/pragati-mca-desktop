@@ -30,7 +30,7 @@
 import { SerialSnapshot } from '@shared/dtos/connection/serial-com-port.dto'
 import { useEffect, useState } from 'react'
 
-// Shared module-level state so Topbar, MacineConnection & ProcurementCollection always share the exact same snapshot
+// Shared module-level state so Topbar, MachineConnection & ProcurementCollection always share the exact same snapshot
 let globalSnapshot: SerialSnapshot = { readings: {}, ports: [] }
 const listeners = new Set<(s: SerialSnapshot) => void>()
 

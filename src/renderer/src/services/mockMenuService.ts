@@ -73,8 +73,8 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
   // },
   {
     id: 3,
-    title: 'Macine Connection',
-    path: '/macine-connection',
+    title: 'Machine Connection',
+    path: '/machine-connection',
     icon: 'MonitorSpeaker',
     roles: ['admin', 'staff', 'farmer'],
     category: 'operations',
