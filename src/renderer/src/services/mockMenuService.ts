@@ -91,16 +91,6 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     order_index: 50,
     badge: ''
   },
-  // {
-  //   id: 5,
-  //   title: 'PortConnection',
-  //   path: '/port-connection',
-  //   icon: 'MonitorSpeaker',
-  //   roles: ['admin', 'staff', 'farmer'],
-  //   category: 'operations',
-  //   order_index: 50,
-  //   badge: ''
-  // },
   {
     id: 6,
     title: 'Analyze',
@@ -136,6 +126,16 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     title: 'Supervisors',
     path: '/supervisors',
     icon: 'FolderUsers',
+    roles: ['admin', 'staff', 'farmer'],
+    category: 'master',
+    order_index: 50,
+    badge: ''
+  },
+  {
+    id: 10,
+    title: 'Users',
+    path: '/users',
+    icon: 'Users',
     roles: ['admin', 'staff', 'farmer'],
     category: 'master',
     order_index: 50,

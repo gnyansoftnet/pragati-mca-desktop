@@ -61,7 +61,7 @@ export class RouteService {
   async saveRoutes(plant: string, org: string, branch: string): Promise<SyncSucess> {
     try {
       const routes = await this.routeApi.syncDownRoutes(plant, org, branch)
-
+      
       const row = await this.routeRepo.saveRoutes(routes)
       return {
         success: Number(row.success),
