@@ -35,6 +35,7 @@ declare global {
       // user
       login: (userName: string, password: string) => Promise<UserResponseDto>
       syncUser: (plant: string) => Promise<SyncSucess>
+      usersExist: () => Promise<boolean>
 
       // routes
       getRoutes: () => Promise<RouteResponseDto[]>

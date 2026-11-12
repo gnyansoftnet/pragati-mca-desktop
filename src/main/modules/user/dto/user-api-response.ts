@@ -56,6 +56,7 @@ export interface ApiUserOrgBranch {
 
 export interface ApiUser {
   userId: number
+  plantName: string
   plantId: string | null
   userName: string
   password: string
@@ -93,6 +94,7 @@ export interface UserAssignment {
 export interface User {
   userId: number
   plantId: string | null
+  plantName: string | null
   userName: string
   userCode: string
   status: string
@@ -110,6 +112,7 @@ export function toUser(api: ApiUser): User {
     userId: api.userId,
     plantId: api.plantId,
     userName: api.userName,
+    plantName: api.plantName,
     userCode: api.userCode,
     status: api.status,
     fullName: api.fullName,

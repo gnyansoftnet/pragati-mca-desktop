@@ -20,6 +20,7 @@ export class UserSyncService {
     }
 
     return data.data.map((u): User => ({
+      plantName: u.plantName,
       userId: u.userId,
       plantId: u.plantId,
       userName: u.userName,

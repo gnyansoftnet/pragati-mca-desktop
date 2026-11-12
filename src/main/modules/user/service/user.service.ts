@@ -38,6 +38,7 @@ export class UserService {
       // const refreshToken = this.tokenService.generateRefreshToken(payLoad)
 
       return {
+        plantName: user.plant_name,
         id: user.id,
         userName: user.user_name,
         userCode: user.user_code,
@@ -68,6 +69,16 @@ export class UserService {
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new DatabaseError('Failed to save users', { cause: error })
+    }
+  }
+
+  async usersExist(): Promise<boolean> {
+    try {
+      const row = await this.userRepo.usersExist()
+      return row
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to checkuser users', { cause: error })
     }
   }
 }
