@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   User,
@@ -39,6 +39,26 @@ export const LoginPage: React.FC = () => {
   const [syncStatus, setSyncStatus] = useState<{ type: 'success' | 'error'; text: string } | null>(
     null
   )
+  const [hasUsers, setHasUsers] = useState<boolean>(false)
+  const [checkingUsers, setCheckingUsers] = useState<boolean>(true)
+
+  const checkUsersExist = async (): Promise<void> => {
+    try {
+      setCheckingUsers(true)
+      const exists = await window.api.usersExist()
+      const found = Boolean(exists)
+      setHasUsers(found)
+      setShowSyncInput(!found)
+    } catch (error) {
+      console.error('Failed to check usersExist:', error)
+    } finally {
+      setCheckingUsers(false)
+    }
+  }
+
+  useEffect(() => {
+    checkUsersExist()
+  }, [])
 
   // 1. Triggered on "Submit" click: Opens Confirmation Popup
   const handleOpenConfirm = () => {
@@ -68,8 +88,8 @@ export const LoginPage: React.FC = () => {
     // 2. Internet is OK -> proceed with sync
     try {
       setIsSyncing(true)
-      
-      const res = await (window as any).api?.syncUser(trimmedPlant)
+
+      const res = await window.api.syncUser(trimmedPlant)
       if (res && res.success === 1) {
         const successMsg = res.message || 'User batch sync completed successfully'
         toast.success(successMsg)
@@ -79,12 +99,15 @@ export const LoginPage: React.FC = () => {
         })
         setPlantCode('')
         setShowConfirmModal(false)
-
-        // Close the sync box after 3 seconds
-        setTimeout(() => {
-          setShowSyncInput(false)
-          setSyncStatus(null)
-        }, 3000)
+        const existsAfterSync = await window.api.usersExist()
+        const foundAfterSync = Boolean(existsAfterSync)
+        setHasUsers(foundAfterSync)
+        if (foundAfterSync) {
+          setTimeout(() => {
+            setShowSyncInput(false)
+            setSyncStatus(null)
+          }, 1500)
+        }
       } else {
         toast.error(res?.message || 'Sync failed from server.')
         setShowConfirmModal(false)
@@ -100,6 +123,10 @@ export const LoginPage: React.FC = () => {
   // Real login authentication
   const handleLogin = async (e?: React.FormEvent): Promise<void> => {
     if (e) e.preventDefault()
+    if (!hasUsers) {
+      toast.warn('Please sync plant users first.')
+      return
+    }
     const trimmedUser = username.trim()
     if (!trimmedUser || !password) {
       toast.warn('Please enter Username and Password.')
@@ -186,32 +213,48 @@ export const LoginPage: React.FC = () => {
 
         <form onSubmit={handleLogin} className="space-y-4">
           {/* User Name Input */}
-          <div className="flex items-center gap-3 bg-slate-100/90 hover:bg-slate-100 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 focus-within:border-slate-300 border border-slate-200/60 rounded-xl px-4 py-3.5 transition-all">
+          {/* User Name Input */}
+          <div
+            className={`flex items-center gap-3 border border-slate-200/60 rounded-xl px-4 py-3.5 transition-all ${
+              checkingUsers || !hasUsers
+                ? 'bg-slate-200/70 opacity-60 cursor-not-allowed'
+                : 'bg-slate-100/90 hover:bg-slate-100 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 focus-within:border-slate-300'
+            }`}
+          >
             <User className="w-4 h-4 text-slate-400 shrink-0" />
             <input
               type="text"
               value={username}
+              disabled={checkingUsers || !hasUsers || isLoggingIn}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="UserName"
-              className="w-full bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
+              className="w-full bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none disabled:cursor-not-allowed"
             />
           </div>
 
           {/* Password Input */}
           <div className="space-y-2">
-            <div className="flex items-center gap-3 bg-slate-100/90 hover:bg-slate-100 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 focus-within:border-slate-300 border border-slate-200/60 rounded-xl px-4 py-3.5 transition-all">
+            <div
+              className={`flex items-center gap-3 border border-slate-200/60 rounded-xl px-4 py-3.5 transition-all ${
+                checkingUsers || !hasUsers
+                  ? 'bg-slate-200/70 opacity-60 cursor-not-allowed'
+                  : 'bg-slate-100/90 hover:bg-slate-100 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 focus-within:border-slate-300'
+              }`}
+            >
               <Lock className="w-4 h-4 text-slate-400 shrink-0" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
+                disabled={checkingUsers || !hasUsers || isLoggingIn}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                className="w-full bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
+                className="w-full bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none disabled:cursor-not-allowed"
               />
               <button
                 type="button"
+                disabled={checkingUsers || !hasUsers || isLoggingIn}
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-slate-400 hover:text-slate-600 transition focus:outline-none cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 transition focus:outline-none cursor-pointer disabled:cursor-not-allowed"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -223,11 +266,12 @@ export const LoginPage: React.FC = () => {
               <div className="flex justify-end pr-1">
                 <button
                   type="button"
+                  disabled={checkingUsers || hasUsers}
                   onClick={() => {
                     setShowSyncInput(true)
                     setSyncStatus(null)
                   }}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 transition cursor-pointer"
+                  className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-slate-500"
                 >
                   <CloudSync size={14} className="text-primary" />
                   <span>Sync Plant User !</span>
@@ -240,17 +284,19 @@ export const LoginPage: React.FC = () => {
                     <CloudSync size={14} className="text-primary" />
                     Sync Plant User
                   </span>
-                  <button
-                    type="button"
-                    disabled={isSyncing}
-                    onClick={() => {
-                      setShowSyncInput(false)
-                      setSyncStatus(null)
-                    }}
-                    className="text-slate-400 hover:text-slate-600 cursor-pointer p-0.5 rounded transition"
-                  >
-                    <X size={14} />
-                  </button>
+                  {hasUsers && (
+                    <button
+                      type="button"
+                      disabled={isSyncing}
+                      onClick={() => {
+                        setShowSyncInput(false)
+                        setSyncStatus(null)
+                      }}
+                      className="text-slate-400 hover:text-slate-600 cursor-pointer p-0.5 rounded transition"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2">
