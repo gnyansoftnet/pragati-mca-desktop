@@ -3,22 +3,29 @@ import { Cable, RefreshCw } from 'lucide-react'
 import Button1 from '../../../components/buttons/Button1'
 import PageBreadcrumb from '../../../components/breadcrumbs/PageBreadcrumb'
 import CustomForm from '../../../components/customform/CustomForm'
-import type { PortConfig, PortListItem, PortState, SerialSnapshot } from '@shared/dtos/connection/serial-com-port.dto'
+import type {
+  ParserType,
+  PortConfig,
+  PortListItem,
+  PortState,
+  SerialSnapshot
+} from '@shared/dtos/connection/serial-com-port.dto'
 import { useSerialSnapshot, refreshSerialSnapshot } from '@renderer/hooks/useSerial'
-
+import { isAnalyzer } from '@shared/dtos/connection/serial-com-port.dto'
 type Parity = 'none' | 'odd' | 'even' | 'mark' | 'space'
-type Machine = 'weight' | 'milkAnalyzer'
-
+type Machine = Exclude<ParserType, 'raw'>
 interface Settings {
   baudRate: number
   parity: Parity
   dataBits: number
   stopBits: number
 }
-
 const MACHINES: { value: Machine; label: string }[] = [
   { value: 'weight', label: 'Weight Scale' },
-  { value: 'milkAnalyzer', label: 'Milk Analyzer' }
+  { value: 'analyzer-1', label: 'Milk Analyzer 1' },
+  { value: 'analyzer-2', label: 'Milk Analyzer 2' },
+  { value: 'analyzer-3', label: 'Milk Analyzer 3' },
+  { value: 'analyzer-4', label: 'Milk Analyzer 4' }
 ]
 
 const PARITY_CODE: Record<Parity, number> = { none: 0, odd: 1, even: 2, mark: 3, space: 4 }
@@ -52,9 +59,7 @@ function loadSettings(machine: string): Settings {
 function saveSettings(machine: string, settings: Settings) {
   try {
     localStorage.setItem(storeKey(machine), JSON.stringify(settings))
-  } catch {
-    
-  }
+  } catch {}
 }
 
 const dotColor = (status: string) =>
@@ -105,7 +110,8 @@ export const MacineConnection: React.FC = () => {
 
   // ---------- Dropdown Options ----------
   // Machines are ALWAYS selectable (multiple scales/analyzers allowed)
-  const machineOptions = MACHINES
+  const usedMachines = new Set(activeSnap.ports.map((p) => p.parserType))
+  const machineOptions = MACHINES.filter((m) => !usedMachines.has(m.value))
 
   // Only ports currently in use cannot be reselected
   const usedPaths = new Set(activeSnap.ports.map((p) => p.path))
@@ -115,22 +121,12 @@ export const MacineConnection: React.FC = () => {
       label: p.friendlyName ? `${p.path} - ${p.friendlyName}` : p.path,
       value: p.path
     }))
-
   const onMachineChange = (value: string) => {
     setMachine(value as Machine | '')
     if (value) setSettings(loadSettings(value))
   }
-
-  // Label generator: "Weight Scale 1", "Weight Scale 2", etc.
-  const getMachineDisplayTitle = (portItem: PortState, allPorts: PortState[]) => {
-    const sameTypePorts = allPorts.filter((p) => p.parserType === portItem.parserType)
-    const baseLabel = MACHINES.find((m) => m.value === portItem.parserType)?.label ?? portItem.parserType
-
-    if (sameTypePorts.length > 1) {
-      const index = sameTypePorts.findIndex((p) => p.path === portItem.path) + 1
-      return `${baseLabel} ${index}`
-    }
-    return `${baseLabel} 1`
+  const getMachineDisplayTitle = (portItem: PortState) => {
+    return MACHINES.find((m) => m.value === portItem.parserType)?.label ?? portItem.parserType
   }
 
   // ---------- Connect Action ----------
@@ -189,11 +185,56 @@ export const MacineConnection: React.FC = () => {
   const connectedCount = activeSnap.ports.filter((p) => p.status === 'connected').length
   const canConnect = !!machine && !!port && !busy
 
+  const renderParsedReading = (portItem: PortState) => {
+    if (portItem.parserType === 'weight') {
+      const w = activeSnap.readings.weight?.value
+      if (w === undefined) return null
+      return (
+        <p className="mt-1 text-xs font-semibold text-emerald-700">
+          Parsed Weight: <span className="font-mono">{w} kg</span>
+        </p>
+      )
+    }
+
+    if (isAnalyzer(portItem.parserType)) {
+      const fat = activeSnap.readings[`${portItem.parserType}.fat`]?.value
+      const snf = activeSnap.readings[`${portItem.parserType}.snf`]?.value
+      const wtr = activeSnap.readings[`${portItem.parserType}.wtr`]?.value
+      const temp = activeSnap.readings[`${portItem.parserType}.temp`]?.value
+
+      if (fat === undefined && snf === undefined && wtr === undefined && temp === undefined) {
+        return null
+      }
+
+      return (
+        <div className="mt-1.5 flex flex-wrap gap-2 text-[11px] font-semibold">
+          <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+            FAT: {fat ?? '-'}%
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200">
+            SNF: {snf ?? '-'}%
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-cyan-50 text-cyan-700 border border-cyan-200">
+            WTR: {wtr ?? '-'}%
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200">
+            TEMP: {temp ?? '-'}°C
+          </span>
+        </div>
+      )
+    }
+
+    return null
+  }
+
   return (
     <div className="space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Machine Connection" desc="Connect your machines before milk collection" />
+        <PageBreadcrumb
+          title="Machine Connection"
+          desc="Connect your machines before milk collection"
+        />
         <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700">
           <span
             className={`h-2.5 w-2.5 rounded-full ${connectedCount > 0 ? 'bg-emerald-500' : 'bg-slate-400'}`}
@@ -224,7 +265,9 @@ export const MacineConnection: React.FC = () => {
                 value={machine}
                 onChange={(e: any) => onMachineChange(e.target.value)}
                 options={machineOptions}
-                placeholder="Select machine type"
+                placeholder={
+                  machineOptions.length > 0 ? 'Select machine type' : 'All machines connected'
+                }
               />
             </div>
 
@@ -327,7 +370,7 @@ export const MacineConnection: React.FC = () => {
         )}
 
         {activeSnap.ports.map((p) => {
-          const displayTitle = getMachineDisplayTitle(p, activeSnap.ports)
+          const displayTitle = getMachineDisplayTitle(p)
 
           return (
             <div
@@ -363,6 +406,8 @@ export const MacineConnection: React.FC = () => {
                     )}
                   </p>
                 )}
+
+                {renderParsedReading(p)}
               </div>
 
               <button
