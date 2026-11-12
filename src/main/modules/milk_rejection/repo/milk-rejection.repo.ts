@@ -8,6 +8,7 @@ import type {
   CountRow,
   PagedMilkRejectionRows
 } from './milk-rejection.rows'
+import { OperationAction } from '../../../core/constants/operation-action.enum'
 
 const REJECTION_COLUMNS = `id, plant, dsk_name, dsk_code, route, supervisor, shift,
   no_of_canes, aprox_quantity, reason, sync_status, created_at, updated_at`
@@ -22,10 +23,12 @@ const SQL_GET_REJECTION_BY_ID = `
     FROM rejection_milk
    WHERE id = ?`
 
-const SQL_INSERT_REJECTION = `
-  INSERT INTO rejection_milk
-    (plant, dsk_name, dsk_code, route, supervisor, shift, no_of_canes, aprox_quantity, reason)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+// const SQL_INSERT_REJECTION = `
+//   INSERT INTO rejection_milk
+//     (plant, dsk_name, dsk_code, route, supervisor, shift, no_of_canes, aprox_quantity, reason)
+//   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+const USP_M_REJECTION_MILK_IUD = 'CALL USP_M_REJECTION_MILK_IUD(?,?,?,?,?,?,?,?,?,?,?)'
 
 @injectable()
 export class MilkRejectionRepo {
@@ -69,7 +72,9 @@ export class MilkRejectionRepo {
   }
 
   async saveMilkRejection(data: MilkRejectionSaveDto): Promise<MilkRejectionRow | undefined> {
-    const [result] = await db.execute<ResultSetHeader>(SQL_INSERT_REJECTION, [
+    const [result] = await db.execute<ResultSetHeader>(USP_M_REJECTION_MILK_IUD, [
+      OperationAction.INSERT,
+      null,
       data.plant,
       data.dskName,
       data.dskCode,
@@ -80,7 +85,6 @@ export class MilkRejectionRepo {
       data.aproxQuantity,
       data.reason
     ])
-
     return this.getRejectionMilk(result.insertId)
   }
 }

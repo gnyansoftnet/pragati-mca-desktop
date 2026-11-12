@@ -13,6 +13,7 @@ const SQL_GET_MILK_SAMPLES = `
      AND shift = ?
      AND plant = ?
      AND d_flag = 0
+     AND is_analyse=0
    ORDER BY sample_code ASC`
 
 const USP_M_MILK_SAMPLE_UPDATE = 'CALL USP_M_MILK_SAMPLE_UPDATE(?,?,?,?,?,?)'
