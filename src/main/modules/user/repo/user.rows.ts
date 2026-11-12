@@ -16,6 +16,15 @@ export interface UserRow extends RowDataPacket {
   plant_name: string
 }
 
+export interface PagedUserRows {
+  rows: UserRow[]
+  total: number
+}
+
+export interface CountRow extends RowDataPacket {
+  total: number
+}
+
 export interface SyncUserRow extends RowDataPacket {
   success: number
   message: string

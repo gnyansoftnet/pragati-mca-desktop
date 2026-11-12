@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron'
 import { container } from '../../core/di/container'
 import { UserService } from './service/user.service'
+import { PaginationRequestDto } from '@shared/dtos/pagination.dto'
 
 const service = container.resolve(UserService)
 
@@ -12,4 +13,8 @@ export function registerUserIpc(): void {
     service.saveUsers(plant, intial)
   )
   ipcMain.handle('user:usersExist', (_event): Promise<boolean> => service.usersExist())
+
+  ipcMain.handle('user:getPaginatedUsers', (_event, params: PaginationRequestDto) =>
+    service.getPaginatedUsers(params)
+  )
 }

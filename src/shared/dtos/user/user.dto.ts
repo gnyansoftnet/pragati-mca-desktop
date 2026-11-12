@@ -1,3 +1,5 @@
+import { PaginatedResponseDto } from "../../../main/utils/pagination.dto"
+
 export interface UserResponseDto {
   id: number
   userName: string
@@ -12,3 +14,4 @@ export interface UserResponseDto {
   orgCode: string
   branchCode: string
 }
+export type PaginatedUsersDto = PaginatedResponseDto<UserResponseDto>
