@@ -29,11 +29,10 @@ export const TopbarUserProfile: React.FC = () => {
 
   return (
     <div className="relative select-none" ref={dropdownRef}>
-      {/* Profile Trigger Pill */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-2xl hover:bg-slate-100/80 border border-transparent hover:border-slate-200/60 transition cursor-pointer group"
+        className="flex items-center gap-2.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-2xl border-slate-200/90 hover:bg-slate-100/80 border hover:border-slate-200/60 transition cursor-pointer group"
       >
         <div className="w-9 h-9 rounded-full bg-linear-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xs shadow-xs group-hover:scale-105 transition-transform">
           {user?.avatar || 'RA'}
@@ -51,22 +50,21 @@ export const TopbarUserProfile: React.FC = () => {
         </div>
       </button>
 
-      {/* Profile Dropdown Menu */}
       {isOpen && (
         <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
           {/* User Info Header */}
           <div className="px-4 py-3 border-b border-slate-100">
             <p className="text-xs font-bold text-slate-900">{user?.name || 'Dhruv Halbe'}</p>
-            <p className="text-[11px] text-slate-400 truncate">
+            {/* <p className="text-[11px] text-slate-400 truncate">
               {user?.email || 'admin@pragatimilk.com'}
-            </p>
-            <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-teal-50 text-primary border border-teal-100">
+            </p> */}
+            {/* <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-teal-50 text-primary border border-teal-100">
               {user?.roleLabel || 'Super Admin'}
-            </span>
+            </span> */}
           </div>
 
-          {/* Menu Options */}
-          <div className="py-1">
+
+          {/* <div className="py-1">
             <button
               type="button"
               onClick={() => {
@@ -90,9 +88,9 @@ export const TopbarUserProfile: React.FC = () => {
               <KeyRound className="w-4 h-4 text-slate-400" />
               <span>Change Password</span>
             </button>
-          </div>
+          </div> */}
 
-          {/* Divider & Sign Out */}
+
           <div className="border-t border-slate-100 pt-1">
             <button
               type="button"

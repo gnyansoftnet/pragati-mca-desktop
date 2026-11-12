@@ -26,16 +26,16 @@ export const TopbarClock: React.FC = () => {
   })
 
   return (
-    <div className="flex items-center gap-2 sm:gap-3 bg-slate-50/80 border border-slate-200/80 px-3.5 py-1.5 rounded-2xl shadow-2xs select-none">
+    <div className="flex flex-col items-center sm:gap-1 bg-slate-50/80 border border-slate-200/80 px-3.5 py-1 rounded-2xl shadow-2xs select-none">
       {/* Time Display */}
       <div className="flex items-center gap-1.5 text-slate-800">
         <Clock className="w-3.5 h-3.5 text-primary shrink-0 strokeWidth={2.2}" />
-        <span className="font-mono text-xs sm:text-sm font-bold tracking-tight">
+        <span className="font-mono text-xs sm:text-[14px] font-bold tracking-tight">
           {formattedTime}
         </span>
       </div>
 
-      <div className="hidden sm:block h-3.5 w-px bg-slate-200" />
+      {/* <div className="hidden sm:block h-3.5 w-px bg-slate-200" /> */}
 
       {/* Date Display */}
       <div className="hidden sm:flex items-center gap-1.5 text-slate-500">

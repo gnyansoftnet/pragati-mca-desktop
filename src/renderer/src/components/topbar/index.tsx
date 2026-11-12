@@ -28,15 +28,11 @@ export const Topbar: React.FC<TopbarProps> = ({
         <TopbarOrgName />
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+      <div className="flex items-center gap-2 sm:gap-2 shrink-0">
         <TopbarInternetBadge />
-
         <TopbarMachineBadges />
-
-        {/* <TopbarClock /> */}
-
+        <TopbarClock />
         <div className="h-6 w-px bg-slate-200/80" />
-
         <TopbarUserProfile />
       </div>
     </header>

@@ -224,7 +224,7 @@ export const ProcurementCollection: React.FC = () => {
   //     }
   //   }
   // }, [snap.readings.weight, isScaleConnected, weightCans])
-    // Auto-capture live weight from connected machine scale (Zero manual input)
+  // Auto-capture live weight from connected machine scale (Zero manual input)
   useEffect(() => {
     if (isScaleConnected && snap.readings.weight?.value !== undefined) {
       const scaleValue = String(snap.readings.weight.value)
@@ -465,6 +465,16 @@ export const ProcurementCollection: React.FC = () => {
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
         <CustomForm onSubmit={(e) => e.preventDefault()} className="w-full">
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2.5">
+            {/* Date (Read-only, skipped in Tab order) */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700">Date</label>
+              <CustomForm.CustomTextField
+                name="date"
+                value={getCurrentLocalDate()}
+                readOnly={true}
+                tabIndex={-1}
+              />
+            </div>
             {/* Shift (tabIndex: 1) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
@@ -475,6 +485,7 @@ export const ProcurementCollection: React.FC = () => {
                 value={shift}
                 onChange={(e: any) => setShift(e.target.value)}
                 options={shifts}
+                readOnly={true}
                 tabIndex={1}
               />
             </div>
@@ -491,13 +502,12 @@ export const ProcurementCollection: React.FC = () => {
                 tabIndex={-1}
               />
             </div>
-
-            {/* Date (Read-only, skipped in Tab order) */}
+            {/* Tipping Time (Read-only, skipped in Tab order) */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Date</label>
+              <label className="text-xs font-semibold text-slate-700">Tipping Time</label>
               <CustomForm.CustomTextField
-                name="date"
-                value={getCurrentLocalDate()}
+                name="time"
+                value={currentTime}
                 readOnly={true}
                 tabIndex={-1}
               />
@@ -556,17 +566,6 @@ export const ProcurementCollection: React.FC = () => {
                 onChange={(e: any) => setMilkStatus(e.target.value)}
                 options={mstatus}
                 tabIndex={5}
-              />
-            </div>
-
-            {/* Tipping Time (Read-only, skipped in Tab order) */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Tipping Time</label>
-              <CustomForm.CustomTextField
-                name="time"
-                value={currentTime}
-                readOnly={true}
-                tabIndex={-1}
               />
             </div>
 
@@ -631,7 +630,7 @@ export const ProcurementCollection: React.FC = () => {
             </div>
 
             {/* Weight (LTR) - Strictly Machine-Calculated & Read-only */}
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold text-slate-700">
                   Weight (LTR) <span className="text-rose-500">*</span>
@@ -769,7 +768,6 @@ export const ProcurementCollection: React.FC = () => {
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
   )

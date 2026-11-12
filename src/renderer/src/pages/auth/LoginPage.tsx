@@ -41,6 +41,7 @@ export const LoginPage: React.FC = () => {
   )
   const [hasUsers, setHasUsers] = useState<boolean>(false)
   const [checkingUsers, setCheckingUsers] = useState<boolean>(true)
+  const [initial, setInitial] = useState<string>('true')
 
   const checkUsersExist = async (): Promise<void> => {
     try {
@@ -89,7 +90,7 @@ export const LoginPage: React.FC = () => {
     try {
       setIsSyncing(true)
 
-      const res = await window.api.syncUser(trimmedPlant)
+      const res = await window.api.syncUser(trimmedPlant, initial)
       if (res && res.success === 1) {
         const successMsg = res.message || 'User batch sync completed successfully'
         toast.success(successMsg)
