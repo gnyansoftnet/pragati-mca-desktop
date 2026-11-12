@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Search, Activity, CheckCircle2, Clock, RefreshCw } from 'lucide-react'
 import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
 import CustomForm from '@renderer/components/customform/CustomForm'
@@ -10,6 +9,7 @@ import { useSerialSnapshot } from '@renderer/hooks/useSerial'
 
 import api from '@renderer/services'
 import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
+import { analyzerName, isAnalyzer } from '@shared/dtos/connection/serial-com-port.dto'
 
 export const Analyze: React.FC = () => {
   // Current Date default
@@ -31,9 +31,9 @@ export const Analyze: React.FC = () => {
 
   // Live serial snapshot to detect connected Milk Analyzer ports
   const snap = useSerialSnapshot()
-  const connectedAnalyzers = snap.ports.filter(
-    (p) => p.parserType === 'milkAnalyzer' && p.status === 'connected'
-  )
+  const connectedAnalyzers = snap.ports
+    .filter((p) => isAnalyzer(p.parserType) && p.status === 'connected')
+    .sort((a, b) => a.parserType.localeCompare(b.parserType))
 
   const shifts = [
     { value: '1', label: 'Morning' },
@@ -65,41 +65,39 @@ export const Analyze: React.FC = () => {
   const DEFAULT_TEST_FAT = 4.2
   const DEFAULT_TEST_SNF = 8.5
 
-  // Live readings parsed from connected Milk Analyzer (via serial-parser.ts)
-  const rawFat = snap.readings.fat?.value
-  const rawSnf = snap.readings.snf?.value
-  const rawClr = snap.readings.clr?.value
-
-  const liveFat: number | null =
-    rawFat !== undefined ? Number(rawFat) : IS_TEST_MODE ? DEFAULT_TEST_FAT : null
-
-  const liveSnf: number | null =
-    rawSnf !== undefined ? Number(rawSnf) : IS_TEST_MODE ? DEFAULT_TEST_SNF : null
-
-  const liveClr: number | null = rawClr !== undefined ? Number(rawClr) : null
-
-  const hasLiveAnalyzerReading = liveFat !== null || liveSnf !== null
-
-  // 1. On dropdown change: ONLY select port & display machine reading (DO NOT SUBMIT)
-  const handlePortSelect = (sample: MilkSampleDto, chosenPort: string) => {
-    setSelectedPorts((prev) => ({ ...prev, [sample.id]: chosenPort }))
-    if (chosenPort) {
-      toast.info(`Port ${chosenPort} selected for Sample #${sample.sampleCode}. Ready for reading.`)
+  // Lookup live FAT/SNF for a specific analyzer ("analyzer-1" ... "analyzer-4")
+  const getLiveReading = (analyzerRole?: string) => {
+    if (!analyzerRole) return { fat: null as number | null, snf: null as number | null }
+    const rawFat = snap.readings[`${analyzerRole}.fat`]?.value
+    const rawSnf = snap.readings[`${analyzerRole}.snf`]?.value
+    return {
+      fat: rawFat !== undefined ? Number(rawFat) : IS_TEST_MODE ? DEFAULT_TEST_FAT : null,
+      snf: rawSnf !== undefined ? Number(rawSnf) : IS_TEST_MODE ? DEFAULT_TEST_SNF : null
     }
   }
 
-  // 2. Submit only when valid machine data (> 0.0) arrives
+  // 1. On dropdown change: ONLY select analyzer & display machine reading (DO NOT SUBMIT)
+  const handlePortSelect = (sample: MilkSampleDto, chosenAnalyzer: string) => {
+    setSelectedPorts((prev) => ({ ...prev, [sample.id]: chosenAnalyzer }))
+    if (chosenAnalyzer) {
+      toast.info(
+        `${analyzerName(chosenAnalyzer)} selected for Sample #${sample.sampleCode}. Ready for reading.`
+      )
+    }
+  }
+
+  // 2. Submit only when valid machine data (> 0.0) arrives for that row's analyzer
   const handleSubmitSample = async (sample: MilkSampleDto) => {
-    const chosenPort = selectedPorts[sample.id]
-    if (!chosenPort) {
+    const chosenAnalyzer = selectedPorts[sample.id]
+    if (!chosenAnalyzer) {
       toast.warn('Please select an Analyzer Port first.')
       return
     }
 
+    const { fat: liveFat, snf: liveSnf } = getLiveReading(chosenAnalyzer)
     const fatToSubmit = liveFat !== null ? liveFat : Number(sample.fat ?? 0)
     const snfToSubmit = liveSnf !== null ? liveSnf : Number(sample.snf ?? 0)
 
-    // VALIDATION: Block submission if data is 0.0 and 0.0
     if (fatToSubmit <= 0 && snfToSubmit <= 0) {
       toast.error('Cannot submit: Machine reading is 0.0! Please wait for analyzer reading.')
       return
@@ -117,10 +115,27 @@ export const Analyze: React.FC = () => {
       }
 
       await api.sample.updateMilkSample(payload)
+
+      // Clear only this analyzer's readings so old FAT/SNF cannot be reused
+      if (window.api?.clearSerialReadings) {
+        await window.api.clearSerialReadings([
+          `${chosenAnalyzer}.fat`,
+          `${chosenAnalyzer}.snf`,
+          `${chosenAnalyzer}.wtr`,
+          `${chosenAnalyzer}.temp`
+        ])
+      }
+
+      setSelectedPorts((prev) => {
+        const next = { ...prev }
+        delete next[sample.id]
+        return next
+      })
+
       toast.success(
         `Sample #${sample.sampleCode} submitted! (FAT: ${fatToSubmit.toFixed(2)}%, SNF: ${snfToSubmit.toFixed(2)}%)`
       )
-      await fetchMilkSamples() // Refresh table
+      await fetchMilkSamples()
     } catch (error) {
       console.error('Failed to submit analysis:', error)
       toast.error('Failed to submit analysis.')
@@ -131,20 +146,6 @@ export const Analyze: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* Toast Alert Container */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
-
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <PageBreadcrumb title="Analyze" desc="Test milk samples with connected Milk Analyzer" />
 
@@ -260,16 +261,16 @@ export const Analyze: React.FC = () => {
                 samples.map((item, index) => {
                   const isAnalyzed = Number(item.isAnalyse) === 1
                   const isUpdating = updatingSampleId === item.id
+                  const selectedAnalyzer = selectedPorts[item.id]
+                  const { fat: liveFat, snf: liveSnf } = getLiveReading(selectedAnalyzer)
 
                   return (
                     <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
-                      {/* Sample No */}
                       <td className="py-1 px-3 font-bold text-primary">{item.sampleCode}</td>
 
-                      {/* Port Dropdown Column (Only selects port, does not submit) */}
                       <td className="py-1 px-3">
                         <select
-                          value={selectedPorts[item.id] || ''}
+                          value={selectedAnalyzer || ''}
                           disabled={isUpdating || isAnalyzed || connectedAnalyzers.length === 0}
                           onChange={(e) => handlePortSelect(item, e.target.value)}
                           className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary cursor-pointer disabled:bg-slate-100 disabled:cursor-not-allowed"
@@ -277,13 +278,11 @@ export const Analyze: React.FC = () => {
                           <option value="">
                             {connectedAnalyzers.length === 0
                               ? 'No Analyzer Connected'
-                              : 'Select Port to Read...'}
+                              : 'Select Analyzer to Read...'}
                           </option>
-                          {connectedAnalyzers.map((port, idx) => (
-                            <option key={port.path} value={port.path}>
-                              {connectedAnalyzers.length > 1
-                                ? `Analyzer ${idx + 1} (${port.path})`
-                                : port.path}
+                          {connectedAnalyzers.map((port) => (
+                            <option key={port.path} value={port.parserType}>
+                              {analyzerName(port.parserType)} ({port.path})
                             </option>
                           ))}
                         </select>

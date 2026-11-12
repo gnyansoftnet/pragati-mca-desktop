@@ -3,9 +3,9 @@ import type { Vendor } from './vendors.types'
 import type { MilkSample, UpdateMilkSamplePayload } from './analysis/milk-analysis.types'
 import type { Supervisor } from './supervisors.types'
 import type { PaginatedResponse } from './common.types'
-import { SerialConnectDto, SerialResultDto } from '@shared/dtos/connection/serial.dto'
+// import { SerialConnectDto, SerialResultDto } from '@shared/dtos/connection/serial.dto'
 import { ReasonDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
-import { PortListItem, SerialSnapshot } from '@shared/dtos/connection/serial-com-port.dto'
+// import { PortListItem, SerialSnapshot } from '@shared/dtos/connection/serial-com-port.dto'
 import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
 import { MilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
 import { UserResponseDto } from '@shared/dtos/user/user.dto'
@@ -15,6 +15,13 @@ import {
   MilkRejectionSaveDto,
   PaginatedMilkRejectionDto
 } from '@shared/dtos/milk-rejection/milk-rejection.dto'
+
+import {
+  PortConfig,
+  PortListItem,
+  SerialResult,
+  SerialSnapshot
+} from '@shared/dtos/connection/serial-com-port.dto'
 
 declare global {
   interface Window {
@@ -52,15 +59,15 @@ declare global {
 
       //gyana
       // getSerialPorts: () => Promise<{ path: string }[]>
-      connectSerial: (params: SerialConnectDto) => Promise<SerialResultDto>
+      // connectSerial: (params: SerialConnectDto) => Promise<SerialResultDto>
       // disconnectSerial: () => Promise<void>
       onSerialData: (cb: (text: string) => void) => () => void
 
       //get serial ports
-      getSerialPorts: () => Promise<PortListItem[]>
-      getSnapshot: () => Promise<SerialSnapshot>
-      onSerialSnapshot: (cb: (s: SerialSnapshot) => void) => () => void
-      disconnectSerial: (path: string) => Promise<SerialResult>
+      // getSerialPorts: () => Promise<PortListItem[]>
+      // getSnapshot: () => Promise<SerialSnapshot>
+      // onSerialSnapshot: (cb: (s: SerialSnapshot) => void) => () => void
+      // disconnectSerial: (path: string) => Promise<SerialResult>
 
       // Milk Samples & Analysis
       getMilkSamples: (date: string, shift: number, plant: string) => Promise<MilkSampleDto[]>
@@ -77,6 +84,16 @@ declare global {
         search: string
       }) => Promise<PaginatedResponse<MilkRejectionResponseDto>>
       saveMilkRejection: (params: MilkRejectionSaveDto) => Promise<MilkRejectionResponseDto>
+
+
+
+      // serial port
+      connectSerial: (cfg: PortConfig) => Promise<SerialResult>
+      getSerialPorts: () => Promise<PortListItem[]>
+      getSnapshot: () => Promise<SerialSnapshot>
+      onSerialSnapshot: (cb: (s: SerialSnapshot) => void) => () => void
+      disconnectSerial: (path: string) => Promise<SerialResult>
+      clearSerialReadings: (keys?: string[]) => Promise<void>
     }
   }
 }

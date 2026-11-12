@@ -54,8 +54,8 @@ interface MilkEntry {
 // }
 
 // Set to true while testing; set to false in production with real hardware
-const IS_TEST_MODE = true
-const DEFAULT_TEST_WEIGHT = '25.5' // Your default test weight
+// const IS_TEST_MODE = true
+// const DEFAULT_TEST_WEIGHT = '25.5'
 
 export const ProcurementCollection: React.FC = () => {
   const { user } = useAuth()
@@ -89,11 +89,11 @@ export const ProcurementCollection: React.FC = () => {
 
   // Hardware machine serial snapshot (Live Machine Connection)
   const snap = useSerialSnapshot()
-  // const isScaleConnected = snap.ports.some(
-  //   (p) => p.parserType === 'weight' && p.status === 'connected'
-  // )
-  const isScaleConnected =
-    IS_TEST_MODE || snap.ports.some((p) => p.parserType === 'weight' && p.status === 'connected')
+  const isScaleConnected = snap.ports.some(
+    (p) => p.parserType === 'weight' && p.status === 'connected'
+  )
+  // const isScaleConnected =
+  //   IS_TEST_MODE || snap.ports.some((p) => p.parserType === 'weight' && p.status === 'connected')
 
   // Pagination and entries state
   // const [pagination, setPagination] = useState<PaginationState>({
@@ -208,22 +208,31 @@ export const ProcurementCollection: React.FC = () => {
   //     }
   //   }
   // }, [snap.readings.weight, isScaleConnected])
-  useEffect(() => {
-    if (IS_TEST_MODE) {
-      // In test mode, always keep the default test weight loaded
-      if (!weightCans) {
-        setWeightCans(DEFAULT_TEST_WEIGHT)
-      }
-      return
-    }
+  // useEffect(() => {
+  //   if (IS_TEST_MODE) {
+  //     // In test mode, always keep the default test weight loaded
+  //     if (!weightCans) {
+  //       setWeightCans(DEFAULT_TEST_WEIGHT)
+  //     }
+  //     return
+  //   }
 
+  //   if (isScaleConnected && snap.readings.weight?.value !== undefined) {
+  //     const scaleValue = String(snap.readings.weight.value)
+  //     if (scaleValue && scaleValue !== '0') {
+  //       setWeightCans(scaleValue)
+  //     }
+  //   }
+  // }, [snap.readings.weight, isScaleConnected, weightCans])
+    // Auto-capture live weight from connected machine scale (Zero manual input)
+  useEffect(() => {
     if (isScaleConnected && snap.readings.weight?.value !== undefined) {
       const scaleValue = String(snap.readings.weight.value)
-      if (scaleValue && scaleValue !== '0') {
+      if (Number(scaleValue) > 0) {
         setWeightCans(scaleValue)
       }
     }
-  }, [snap.readings.weight, isScaleConnected, weightCans])
+  }, [snap.readings.weight, isScaleConnected])
 
   const getCurrentLocalDate = (): string => {
     const today = new Date()
@@ -401,8 +410,8 @@ export const ProcurementCollection: React.FC = () => {
       // Requirement 1: DO NOT clear selectedRoute. Only clear vendor name, cans, and weight.
       setSelectedVendor('')
       setNoOfCans('')
-      // setWeightCans('')
-      setWeightCans(IS_TEST_MODE ? DEFAULT_TEST_WEIGHT : '')
+      setWeightCans('')
+      // setWeightCans(IS_TEST_MODE ? DEFAULT_TEST_WEIGHT : '')
 
       // Clear the captured weight reading in serial service so new reading arrives fresh
       if (typeof window !== 'undefined' && (window as any).api?.clearSerialReadings) {
