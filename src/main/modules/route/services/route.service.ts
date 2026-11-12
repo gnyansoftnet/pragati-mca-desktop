@@ -5,7 +5,6 @@ import { RouteRepo } from '../repositories/route.repo'
 import { AppError, DatabaseError } from '../../../utils/app-errors'
 import { RouteSyncService } from './route-sync.service'
 import { SyncSucess } from '@shared/dtos/sync-success.dto'
-import z from 'zod'
 
 @injectable()
 export class RouteService {
@@ -62,10 +61,7 @@ export class RouteService {
   async saveRoutes(plant: string, org: string, branch: string): Promise<SyncSucess> {
     try {
       const routes = await this.routeApi.syncDownRoutes(plant, org, branch)
-      const RouteSchema = z.object({
-        
-    
-      })
+
       const row = await this.routeRepo.saveRoutes(routes)
       return {
         success: Number(row.success),
