@@ -120,18 +120,6 @@ export class MilkCollectionService {
     }
   }
 
-  async getWeightSystems(): Promise<WeightSystemDto[]> {
-    try {
-      const rows = await this.milkRepo.getWeightSystems()
-      return rows.map((r) => ({
-        id: r.id,
-        system_list: r.system_list
-      }))
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to fetch weight systems', { cause: error })
-    }
-  }
   async getMilkCollections(): Promise<MilkCollectionDto[]> {
     try {
       const rows = await this.milkRepo.getMilkCollections()
@@ -168,6 +156,32 @@ export class MilkCollectionService {
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new DatabaseError('Failed to fetch weight systems', { cause: error })
+    }
+  }
+
+  async getWeightSystems(): Promise<WeightSystemDto[]> {
+    try {
+      const rows = await this.milkRepo.getWeightSystems()
+      return rows.map((r) => ({
+        id: r.id,
+        system_list: r.system_list
+      }))
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to fetch weight systems', { cause: error })
+    }
+  }
+
+  async saveWeightSystem(systemList: string, userCode: string): Promise<WeightSystemDto> {
+    try {
+      const rows = await this.milkRepo.saveWeightSystem(systemList, userCode)
+      return {
+        id: rows.id,
+        system_list: rows.system_list
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to save weight systems', { cause: error })
     }
   }
 }

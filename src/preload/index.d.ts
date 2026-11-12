@@ -24,7 +24,7 @@ import {
   PaginatedSupervisorDto,
   SupervisorResponseDto
 } from '@shared/dtos/supervisor/supervisor.dto'
-import { UserResponseDto } from '@shared/dtos/user/user.dto'
+import { PaginatedUsersDto, UserResponseDto } from '@shared/dtos/user/user.dto'
 import { PaginatedVendorsDto, VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
 import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
@@ -36,6 +36,7 @@ declare global {
       login: (userName: string, password: string) => Promise<UserResponseDto>
       syncUser: (plant: string, intial: string) => Promise<SyncSucess>
       usersExist: () => Promise<boolean>
+      getPaginatedUsers: (params: PaginationRequestDto) => Promise<PaginatedUsersDto>
 
       // routes
       getRoutes: () => Promise<RouteResponseDto[]>
@@ -60,8 +61,10 @@ declare global {
         toDate?: string
       ) => Promise<PaginatedMilkCollectionDto>
       saveMilkCollection: (params: SaveMilkCollectionDto) => Promise<MilkCollectionDto>
-      getWeightSystems: () => Promise<WeightSystemDto[]>
       getMilkCollections: () => Promise<MilkCollectionDto[]>
+      // weight system
+      getWeightSystems: () => Promise<WeightSystemDto[]>
+      saveWeightSystem: (systemList: string, userCode: string) => Promise<WeightSystemDto>
 
       // milk analysis
       updateMilkSample: (params: MilkSampleUpdateDto) => Promise<MilkSampleDto>

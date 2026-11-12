@@ -6,7 +6,7 @@ import {
   MilkRejectionSaveDto,
   PaginatedMilkRejectionDto
 } from '../shared/dtos/milk-collection/milk-rejection.dto'
-import { UserResponseDto } from '@shared/dtos/user/user.dto'
+import { PaginatedUsersDto, UserResponseDto } from '@shared/dtos/user/user.dto'
 import {
   PortConfig,
   PortListItem,
@@ -38,6 +38,8 @@ const api = {
   syncUser: (plant: string, intial: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('user:syncUser', plant, intial),
   usersExist: (): Promise<boolean> => ipcRenderer.invoke('user:usersExist'),
+  getPaginatedUsers: (params: PaginationRequestDto): Promise<PaginatedUsersDto> =>
+    ipcRenderer.invoke('user:getPaginatedUsers', params),
 
   // routes
   getRoutes: (): Promise<RouteResponseDto[]> => ipcRenderer.invoke('route:getRoutes'),
@@ -71,11 +73,14 @@ const api = {
     ipcRenderer.invoke('milk-collection:getPaginatedMilkCollctions', params, fromDate, toDate),
   saveMilkCollection: (params: SaveMilkCollectionDto): Promise<MilkCollectionDto> =>
     ipcRenderer.invoke('milk-collection:saveMilkCollection', params),
-  getWeightSystems: (): Promise<WeightSystemDto[]> =>
-    ipcRenderer.invoke('milk-collection:getWeightSystems'),
-
   getMilkCollections: (): Promise<MilkCollectionDto[]> =>
     ipcRenderer.invoke('milk-collection:getMilkCollections'),
+
+  // weight system
+  getWeightSystems: (): Promise<WeightSystemDto[]> =>
+    ipcRenderer.invoke('milk-collection:getWeightSystems'),
+  saveWeightSystem: (systemList: string, userCode: string): Promise<WeightSystemDto> =>
+    ipcRenderer.invoke('milk-collection:saveWeightSystem', systemList, userCode),
 
   // milk analysis
   getMilkSamples: (sampleDate: string, shift: number, plant: string): Promise<MilkSampleDto[]> =>

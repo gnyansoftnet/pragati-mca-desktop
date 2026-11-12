@@ -1,10 +1,11 @@
 import { inject, injectable } from 'tsyringe'
 import { PasswordService } from './password.service'
-import type { UserResponseDto } from '@shared/dtos/user/user.dto'
+import type { PaginatedUsersDto, UserResponseDto } from '@shared/dtos/user/user.dto'
 import { UserRepo } from '../repo/user.repo'
 import { AppError, DatabaseError, ValidationError } from '../../../utils/app-errors'
 import { UserSyncService } from './user-sync.service'
 import { SyncSucess } from '@shared/dtos/sync-success.dto'
+import { PaginationRequestDto } from '@shared/dtos/pagination.dto'
 
 @injectable()
 export class UserService {
@@ -79,6 +80,46 @@ export class UserService {
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new DatabaseError('Failed to checkuser users', { cause: error })
+    }
+  }
+
+  async getPaginatedUsers(data: PaginationRequestDto): Promise<PaginatedUsersDto> {
+    const page = Math.max(1, Math.trunc(Number(data.page)) || 1)
+    const limit = Math.max(1, Math.trunc(Number(data.limit)) || 10)
+    const offset = (page - 1) * limit
+    const search = data.search?.trim() || undefined
+
+    try {
+      const { rows, total } = await this.userRepo.getPaginatedUsers(search, limit, offset)
+      const totalPages = Math.ceil(total / limit)
+
+      return {
+        data: rows.map((user) => ({
+          plantName: user.plant_name,
+          id: user.id,
+          userName: user.user_name,
+          userCode: user.user_code,
+          plant: user.plant,
+          role: user.role,
+          orgCode: user.org_code,
+          branchCode: user.branch_code,
+          branchId: user.branch_id,
+          orgId: user.org_id,
+          roleId: user.role_id,
+          userId: user.user_id
+        })),
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages,
+          hasNextPage: page < totalPages,
+          hasPrevPage: page > 1
+        }
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to fetch user', { cause: error })
     }
   }
 }
