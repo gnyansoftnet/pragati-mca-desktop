@@ -8,15 +8,19 @@ import { User, UserListResponse } from '../dto/user-api-response'
 export class UserSyncService {
   constructor(private readonly api: ApiService) {}
 
-  async syncDownUsers(plant: string): Promise<User[]> {
+  async syncDownUsers(plant: string, intial: string): Promise<User[]> {
     const { data } = await this.api.http.get<UserListResponse>(Url.user, {
       params: {
-        plant: plant
+        plant: plant,
+        intial: intial
       }
     })
     console.log(data.data)
     if (!data.success) {
       throw new ExternalApiError(`User API failed: ${data.message}`)
+    }
+    if (data.data.length == 0) {
+      throw new ExternalApiError(`already plant used or do not have any user: ${data.message}`)
     }
 
     return data.data.map((u): User => ({

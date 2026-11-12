@@ -35,7 +35,8 @@ const api = {
   login: (userName: string, password: string): Promise<UserResponseDto> =>
     ipcRenderer.invoke('user:login', userName, password),
 
-  syncUser: (plant: string): Promise<SyncSucess> => ipcRenderer.invoke('user:syncUser', plant),
+  syncUser: (plant: string, intial: string): Promise<SyncSucess> =>
+    ipcRenderer.invoke('user:syncUser', plant, intial),
   usersExist: (): Promise<boolean> => ipcRenderer.invoke('user:usersExist'),
 
   // routes

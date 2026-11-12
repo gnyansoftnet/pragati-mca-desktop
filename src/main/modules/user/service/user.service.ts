@@ -57,9 +57,9 @@ export class UserService {
     }
   }
 
-  async saveUsers(plant: string): Promise<SyncSucess> {
+  async saveUsers(plant: string, intial: string): Promise<SyncSucess> {
     try {
-      const users = await this.userApi.syncDownUsers(plant)
+      const users = await this.userApi.syncDownUsers(plant, intial)
       const row = await this.userRepo.saveUsers(users)
       return {
         success: Number(row.success),

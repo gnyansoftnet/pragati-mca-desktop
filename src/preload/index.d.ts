@@ -34,7 +34,7 @@ declare global {
     api: {
       // user
       login: (userName: string, password: string) => Promise<UserResponseDto>
-      syncUser: (plant: string) => Promise<SyncSucess>
+      syncUser: (plant: string, intial: string) => Promise<SyncSucess>
       usersExist: () => Promise<boolean>
 
       // routes
