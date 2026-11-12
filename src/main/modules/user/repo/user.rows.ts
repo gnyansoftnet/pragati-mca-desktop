@@ -13,6 +13,7 @@ export interface UserRow extends RowDataPacket {
   branch_id: number
   role_id: number
   user_id: number
+  plant_name: string
 }
 
 export interface SyncUserRow extends RowDataPacket {
@@ -20,4 +21,3 @@ export interface SyncUserRow extends RowDataPacket {
   message: string
   total: number
 }
-

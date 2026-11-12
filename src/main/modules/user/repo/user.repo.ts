@@ -4,6 +4,7 @@ import { SyncUserRow, UserRow } from './user.rows'
 import { OperationAction } from '../../../core/constants/operation-action.enum'
 import { User } from '../dto/user-api-response'
 import { DatabaseError } from '../../../utils/app-errors'
+import { RowDataPacket } from 'mysql2'
 
 const SQL_FIND_USER_BY_NAME = `
   SELECT *
@@ -13,6 +14,15 @@ const SQL_FIND_USER_BY_NAME = `
 
 @injectable()
 export class UserRepo {
+  async usersExist(): Promise<boolean> {
+    const [rows] = await db.query<RowDataPacket[]>(
+      `SELECT EXISTS(
+       SELECT 1 FROM user LIMIT 1
+     ) AS isExist`
+    )
+
+    return Boolean(rows[0].isExist)
+  }
   async findByUserName(userName: string): Promise<UserRow | undefined> {
     const [rows] = await db.execute<UserRow[]>(SQL_FIND_USER_BY_NAME, [userName])
     return rows[0]

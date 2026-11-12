@@ -9,4 +9,5 @@ export function registerUserIpc(): void {
     service.login(userName, password)
   )
   ipcMain.handle('user:syncUser', (_event, plant: string) => service.saveUsers(plant))
+  ipcMain.handle('user:usersExist', (_event): Promise<boolean> => service.usersExist())
 }
