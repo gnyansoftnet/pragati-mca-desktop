@@ -61,8 +61,10 @@ declare global {
         toDate?: string
       ) => Promise<PaginatedMilkCollectionDto>
       saveMilkCollection: (params: SaveMilkCollectionDto) => Promise<MilkCollectionDto>
-      getWeightSystems: () => Promise<WeightSystemDto[]>
       getMilkCollections: () => Promise<MilkCollectionDto[]>
+      // weight system
+      getWeightSystems: () => Promise<WeightSystemDto[]>
+      saveWeightSystem: (systemList: string, userCode: string) => Promise<WeightSystemDto>
 
       // milk analysis
       updateMilkSample: (params: MilkSampleUpdateDto) => Promise<MilkSampleDto>

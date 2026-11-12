@@ -3,6 +3,7 @@ import { db } from '../../../core/config/database.config'
 import { CountRow, MilkCollectionPagedRows, MilkCollectionRow } from './milk-collection.rows'
 import { WeightSystemRow } from './weight-system.row'
 import { SaveMilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
+import { ResultSetHeader } from 'mysql2'
 
 const SQL_MILK_COLLECTION_COLUMNS = `id, trans_code, plant, user_code, root_code, vendor_code, shift,
   sample_date, sample_code, can_type, weight_system, milk_type, milk_status, tiping_time,
@@ -114,5 +115,28 @@ export class MilkCollectionRepo {
   async getWeightSystems(): Promise<WeightSystemRow[]> {
     const [rows] = await db.execute<WeightSystemRow[]>(SQL_GET_WEIGHT_SYSTEMS)
     return rows
+  }
+
+  async saveWeightSystem(systemList: string, userCode: string): Promise<WeightSystemRow> {
+    const [result] = await db.execute<ResultSetHeader>(
+      `INSERT INTO weight_system_list (system_list, user_code)
+       VALUES (?, ?) AS new_row
+       ON DUPLICATE KEY UPDATE
+         user_code = new_row.user_code,
+         id = LAST_INSERT_ID(id)`,
+      [systemList, userCode]
+    )
+
+    const [rows] = await db.execute<WeightSystemRow[]>(
+      `SELECT id, system_list, user_code, creation_date, update_date
+       FROM weight_system_list
+       WHERE id = ?`,
+      [result.insertId]
+    )
+
+    if (!rows.length) {
+      throw new Error('Failed to save weight system')
+    }
+    return rows[0]
   }
 }

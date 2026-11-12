@@ -73,11 +73,14 @@ const api = {
     ipcRenderer.invoke('milk-collection:getPaginatedMilkCollctions', params, fromDate, toDate),
   saveMilkCollection: (params: SaveMilkCollectionDto): Promise<MilkCollectionDto> =>
     ipcRenderer.invoke('milk-collection:saveMilkCollection', params),
-  getWeightSystems: (): Promise<WeightSystemDto[]> =>
-    ipcRenderer.invoke('milk-collection:getWeightSystems'),
-
   getMilkCollections: (): Promise<MilkCollectionDto[]> =>
     ipcRenderer.invoke('milk-collection:getMilkCollections'),
+
+  // weight system
+  getWeightSystems: (): Promise<WeightSystemDto[]> =>
+    ipcRenderer.invoke('milk-collection:getWeightSystems'),
+  saveWeightSystem: (systemList: string, userCode: string): Promise<WeightSystemDto> =>
+    ipcRenderer.invoke('milk-collection:saveWeightSystem', systemList, userCode),
 
   // milk analysis
   getMilkSamples: (sampleDate: string, shift: number, plant: string): Promise<MilkSampleDto[]> =>
