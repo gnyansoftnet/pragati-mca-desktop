@@ -1,10 +1,11 @@
+import 'reflect-metadata'
 import 'dotenv/config'
 import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerIpcHandlers } from './core/ipc/register-ipc'
-import { container } from './core/di/container'
+import { bootstrapContainer, container } from './core/di/container'
 import { SerialComPortService } from './modules/machine/service/serial-com-port.service'
 
 let mainWindow: BrowserWindow | null = null
@@ -51,7 +52,7 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-
+  bootstrapContainer()
   // this must call registerSerialIpc() inside (see step 6)
   registerIpcHandlers()
 

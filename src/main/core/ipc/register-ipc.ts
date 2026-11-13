@@ -1,12 +1,11 @@
 import { ipcMain, net } from 'electron'
-import { registerMilkAnalysisIpc } from '../../modules/analysis/milk-analysis.ipc'
 import { registerSerialIpc } from '../../modules/machine/serial-com-port.ipc'
-import { registerMilkCollectionIpc } from '../../modules/milk_collection/milk-collection.ipc'
-import { registerMilkRejectionIpc } from '../../modules/milk_rejection/milk-rejection.ipc'
 import { registerRouteIpc } from '../../modules/route/route.ipc'
 import { registerSupervisorIpc } from '../../modules/supervisor/supervisor.ipc'
 import { registerUserIpc } from '../../modules/user/user.ipc'
 import { registerVendorIpc } from '../../modules/vendor/vendor-ipc'
+import { registerSyncIpc } from '../../modules/sync/sync.ipc'
+import { registerProcurmentIpc } from '../../modules/procurement/procurement.ipc'
 
 const PROBE_URLS = [
   'https://clients3.google.com/generate_204',
@@ -43,13 +42,11 @@ async function checkInternetFromMain(timeoutMs = 3500): Promise<boolean> {
 export function registerIpcHandlers(): void {
   ipcMain.removeHandler('network:checkInternet')
   ipcMain.handle('network:checkInternet', async () => checkInternetFromMain())
-
-  registerRouteIpc()
   registerVendorIpc()
-  registerMilkCollectionIpc()
-  registerMilkAnalysisIpc()
+  registerRouteIpc()
+  registerProcurmentIpc()
   registerSerialIpc()
   registerSupervisorIpc()
-  registerMilkRejectionIpc()
   registerUserIpc()
+  registerSyncIpc()
 }

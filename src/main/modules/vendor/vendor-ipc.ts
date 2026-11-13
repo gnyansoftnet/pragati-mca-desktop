@@ -1,22 +1,18 @@
 import { ipcMain } from 'electron'
 import { container } from '../../core/di/container'
-import { VendorService } from './services/vendor-service'
-import { PaginationRequestDto } from '../../../shared/dtos/pagination.dto'
-import { SyncSucess } from '@shared/dtos/sync-success.dto'
 
-const service = container.resolve(VendorService)
+import { PaginationRequestDto } from '../../../shared/dtos/pagination.dto'
+import type { IVendorService } from './services/i-vendor.service'
+import { TOKENS } from '../../core/di/token'
 
 export function registerVendorIpc(): void {
-  ipcMain.handle('vendor:getVendors', () => service.getVendors())
-  ipcMain.handle(
-    'vendor:syncVendors',
-    (_event, plant: string, org: string, branch: string): Promise<SyncSucess> =>
-      service.saveVendors(plant, org, branch)
-  )
+  const vendorService = container.resolve<IVendorService>(TOKENS.VendorService)
+  ipcMain.handle('vendor:getVendors', () => vendorService.getVendors())
+
   ipcMain.handle('vendor:getVendorsByRoute', (_event, routeCode: string) =>
-    service.getVendorsByRoute(routeCode)
+    vendorService.getVendorsByRoute(routeCode)
   )
   ipcMain.handle('vendor:getPaginatedVendors', (_event, params: PaginationRequestDto) =>
-    service.getPaginatedVendors(params)
+    vendorService.getPaginatedVendors(params)
   )
 }
