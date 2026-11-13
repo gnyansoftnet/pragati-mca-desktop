@@ -1,17 +1,14 @@
 import { ipcMain } from 'electron'
 import { container } from '../../core/di/container'
-import { RouteService } from './services/route.service'
 import { PaginationRequestDto } from '../../../shared/dtos/pagination.dto'
-
-const service = container.resolve(RouteService)
+import { IRouteService } from './services/i-route.service'
+import { TOKENS } from '../../core/di/token'
 
 export function registerRouteIpc(): void {
-  ipcMain.handle('route:getRoutes', () => service.getRoutes())
-  ipcMain.handle('route:syncRoutes', (_event, plant: string, org: string, branch: string) =>
-    service.saveRoutes(plant, org, branch)
-  )
+  const routeService = container.resolve<IRouteService>(TOKENS.RouteService)
+  ipcMain.handle('route:getRoutes', () => routeService.getRoutes())
 
   ipcMain.handle('route:getPaginatedRoutes', (_event, params: PaginationRequestDto) =>
-    service.getPaginatedRoutes(params)
+    routeService.getPaginatedRoutes(params)
   )
 }
