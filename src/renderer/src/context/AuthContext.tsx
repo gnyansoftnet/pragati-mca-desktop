@@ -2,16 +2,17 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { UserProfile, UserRole } from '../types/auth'
 import { DynamicMenuItem } from '../types/menu'
 import { fetchMenusForRole } from '../services/mockMenuService'
+import { UserResponseDto } from '@shared/dtos/user/user.dto'
 
 interface AuthContextType {
-  user: UserProfile | null
+  user: UserResponseDto | null
   role: UserRole
   menus: DynamicMenuItem[]
   isAuthenticated: boolean
   isLoading: boolean
-  login: (userName: string, password?: string) => Promise<UserProfile>
+  login: (userName: string, password?: string) => Promise<UserResponseDto>
   logout: () => void
-  setAuthUser: (user: UserProfile) => void
+  setAuthUser: (user: UserResponseDto) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -20,7 +21,7 @@ const AUTH_STORAGE_KEY = 'pragati_mca_auth_user'
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // Load saved user from localStorage on app launch
-  const [user, setUser] = useState<UserProfile | null>(() => {
+  const [user, setUser] = useState<UserResponseDto | null>(() => {
     try {
       const saved = localStorage.getItem(AUTH_STORAGE_KEY)
       return saved ? JSON.parse(saved) : null
@@ -42,7 +43,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
 
   // Helper to format user object with avatar and labels
-  const formatUser = (userData: any): UserProfile => {
+  const formatUser = (userData: any): UserResponseDto => {
     const rawName = userData.userName || 'User'
     const initials = rawName.slice(0, 2).toUpperCase()
 
@@ -69,7 +70,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [user])
 
   // Login with username and password via window.api.login
-  const login = async (userName: string, password = ''): Promise<UserProfile> => {
+  const login = async (userName: string, password = ''): Promise<UserResponseDto> => {
     setIsLoading(true)
     try {
       const result = await window.api.login(userName, password)
@@ -91,7 +92,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }
 
-  const setAuthUser = (userData: UserProfile) => {
+  const setAuthUser = (userData: UserResponseDto) => {
     const formatted = formatUser(userData)
     setUser(formatted)
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(formatted))

@@ -35,7 +35,11 @@ export const TopbarUserProfile: React.FC = () => {
         className="flex items-center gap-2.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-2xl border-slate-200/90 hover:bg-slate-100/80 border hover:border-slate-200/60 transition cursor-pointer group"
       >
         <div className="w-9 h-9 rounded-full bg-linear-to-br from-primary to-secondary text-white flex items-center justify-center font-bold text-xs shadow-xs group-hover:scale-105 transition-transform">
-          {user?.avatar || 'RA'}
+          {user?.userName
+            ?.split(' ')
+            .map((word) => word.charAt(0))
+            .join('')
+            .toUpperCase()}
         </div>
         <div className="hidden md:block text-left">
           <div className="flex items-center gap-1.5">
@@ -44,9 +48,7 @@ export const TopbarUserProfile: React.FC = () => {
             </h4>
             <ChevronDown className={`w-3.5 h-3.5 text-slate-400 ...`} />
           </div>
-          <p className="text-[10px] text-slate-400 font-medium">
-             Plant {user?.plant || '1102'}
-          </p>
+          <p className="text-[10px] text-slate-400 font-medium">Plant {user?.plant || '1102'}</p>
         </div>
       </button>
 
@@ -54,7 +56,7 @@ export const TopbarUserProfile: React.FC = () => {
         <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
           {/* User Info Header */}
           <div className="px-4 py-3 border-b border-slate-100">
-            <p className="text-xs font-bold text-slate-900">{user?.name || 'Dhruv Halbe'}</p>
+            <p className="text-xs font-bold text-slate-900">{user?.userName || 'Dhruv Halbe'}</p>
             {/* <p className="text-[11px] text-slate-400 truncate">
               {user?.email || 'admin@pragatimilk.com'}
             </p> */}
@@ -62,7 +64,6 @@ export const TopbarUserProfile: React.FC = () => {
               {user?.roleLabel || 'Super Admin'}
             </span> */}
           </div>
-
 
           {/* <div className="py-1">
             <button
@@ -90,7 +91,6 @@ export const TopbarUserProfile: React.FC = () => {
             </button>
           </div> */}
 
-
           <div className="border-t border-slate-100 pt-1">
             <button
               type="button"
@@ -98,7 +98,7 @@ export const TopbarUserProfile: React.FC = () => {
               className="w-full px-4 py-2.5 text-xs text-rose-600 hover:bg-rose-50 flex items-center gap-2.5 transition cursor-pointer font-medium"
             >
               <LogOut className="w-4 h-4 text-rose-500" />
-              <span>Sign out</span>
+              <span>Logout</span>
             </button>
           </div>
         </div>

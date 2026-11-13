@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Search, Activity, CheckCircle2, Clock, RefreshCw } from 'lucide-react'
-import { ToastContainer, toast } from 'react-toastify'
-
+import { toast } from 'react-toastify'
+import { useAuth } from '@renderer/context/AuthContext'
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
 import CustomForm from '@renderer/components/customform/CustomForm'
 import Button1 from '@renderer/components/buttons/Button1'
@@ -12,6 +12,8 @@ import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection
 import { analyzerName, isAnalyzer } from '@shared/dtos/connection/serial-com-port.dto'
 
 export const Analyze: React.FC = () => {
+  const { user } = useAuth()
+
   // Current Date default
   const getCurrentLocalDate = (): string => {
     const today = new Date()
@@ -23,7 +25,7 @@ export const Analyze: React.FC = () => {
 
   const [date, setDate] = useState<string>(getCurrentLocalDate())
   const [shift, setShift] = useState<string>('1')
-  const [plant, setPlant] = useState<string>('1102')
+  const [plant, setPlant] = useState<string>(user?.plant)
 
   const [samples, setSamples] = useState<MilkSampleDto[]>([])
   const [loading, setLoading] = useState<boolean>(false)
@@ -42,10 +44,10 @@ export const Analyze: React.FC = () => {
     { value: '2', label: 'Evening' }
   ]
 
-  const plantOptions = [
-    { value: '1102', label: 'Raipur' },
-    { value: '1103', label: 'Jagatpur' }
-  ]
+  // const plantOptions = [
+  //   { value: '1102', label: 'Raipur' },
+  //   { value: '1103', label: 'Jagatpur' }
+  // ]
 
   // 1. Fetch samples when user clicks "Find"
   const fetchMilkSamples = async () => {
@@ -152,7 +154,7 @@ export const Analyze: React.FC = () => {
       const payload = {
         sampleDate: date,
         shift: Number(shift),
-        plant: plant,
+        plant: String(user?.plant || plant),
         sampleCode: String(sample.sampleCode),
         fat: fatToSubmit,
         snf: snfToSubmit
@@ -245,11 +247,11 @@ export const Analyze: React.FC = () => {
             {/* Chilling Center */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
-              <CustomForm.CustomSelectField
+              <CustomForm.CustomTextField
                 name="chilling"
-                value={plant}
-                onChange={(e: any) => setPlant(e.target.value)}
-                options={plantOptions}
+                value={user?.plantName || user?.plant || ''}
+                readOnly={true}
+                tabIndex={-1}
               />
             </div>
 

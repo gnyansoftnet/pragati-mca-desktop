@@ -301,7 +301,7 @@ export const Rejection: React.FC = () => {
 
       // Note exact DTO field names: noOfCanes & aproxQuantity
       const payload: MilkRejectionSaveDto = {
-        plant: String(plant),
+        plant: String(user?.plant || plant),
         dskName: String(chosenVendor?.dskName || ''),
         dskCode: String(chosenVendor?.dskCode || selectedVendor),
         route: String(chosenRoute?.routeCode || selectedRoute),
@@ -344,10 +344,9 @@ export const Rejection: React.FC = () => {
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomTextField
                 name="chilling"
-                value={plant}
-                // onChange={(e: any) => setPlant(e.target.value)}
-                // options={plantOptions}
+                value={user?.plantName || user?.plant || ''}
                 readOnly={true}
+                tabIndex={-1}
               />
             </div>
             {/* Date (Read-only, skipped in Tab order) */}

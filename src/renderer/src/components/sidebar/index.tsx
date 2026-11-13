@@ -73,7 +73,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, isMobileOpen, onC
           isCollapsed ? 'w-20' : 'w-64'
         } ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
-        <SidebarLogo isCollapsed={isCollapsed} roleLabel={user?.roleLabel} />
+        <SidebarLogo isCollapsed={isCollapsed} />
 
         <SidebarMenu isCollapsed={isCollapsed} onCloseMobile={onCloseMobile} />
 

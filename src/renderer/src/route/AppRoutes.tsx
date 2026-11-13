@@ -12,6 +12,7 @@ import { Analyze } from '../pages/operations/analyze/Analyze'
 import { Rootes } from '../pages/master/rootes/Rootes'
 import { Vendors } from '../pages/master/vendors/Vendors'
 import { Supervisors } from '../pages/master/supervisors/Supervisors'
+import { Analyzed } from '../pages/master/analyzed/Analyzed'
 import { Users } from '../pages/master/users/Users'
 import { DynamicRoutePage } from '../pages/common/DynamicRoutePage'
 
@@ -37,6 +38,7 @@ export const AppRoutes: React.FC = () => {
           <Route path="routes" element={<Rootes />} />
           <Route path="vendors" element={<Vendors />} />
           <Route path="supervisors" element={<Supervisors />} />
+          <Route path="analyzed-sample" element={<Analyzed />} />
           <Route path="*" element={<DynamicRoutePage />} />
         </Route>
 
