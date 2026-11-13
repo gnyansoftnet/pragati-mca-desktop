@@ -6,9 +6,10 @@ import Button1 from '@renderer/components/buttons/Button1'
 import TableToolbar from '@renderer/components/table/TableToolbar'
 import TablePagination from '@renderer/components/table/TablePagination'
 import api from '@renderer/services'
-import type { Supervisor } from '@renderer/types/supervisors/supervisors.types'
+// import type { Supervisor } from '@renderer/types/supervisors/supervisors.types'
 import { useAuth } from '@renderer/context/AuthContext'
 import { useNetwork } from '@renderer/hooks/useNetwork'
+import { SupervisorResponseDto } from '@shared/dtos/supervisor/supervisor.dto'
 
 interface PaginationState {
   page: number
@@ -25,7 +26,7 @@ export const Supervisors: React.FC = () => {
 
   const [showConfirm, setShowConfirm] = useState(false)
   const [isSyncing, setIsSyncing] = useState(false)
-  const [supervisors, setSupervisors] = useState<Supervisor[]>([])
+  const [supervisors, setSupervisors] = useState<SupervisorResponseDto[]>([])
   const [loadingSupervisors, setLoadingSupervisors] = useState<boolean>(false)
 
   // Filter & Pagination States

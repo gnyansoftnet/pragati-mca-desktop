@@ -6,9 +6,10 @@ import Button1 from '@renderer/components/buttons/Button1'
 import TableToolbar from '@renderer/components/table/TableToolbar'
 import TablePagination from '@renderer/components/table/TablePagination'
 import api from '@renderer/services'
-import type { Vendor } from '@renderer/types/vendors/vendors.types'
+// import type { Vendor } from '@renderer/types/vendors/vendors.types'
 import { useAuth } from '@renderer/context/AuthContext'
 import { useNetwork } from '@renderer/hooks/useNetwork'
+import { VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
 
 interface PaginationState {
   page: number
@@ -25,7 +26,7 @@ export const Vendors: React.FC = () => {
 
   const [showConfirm, setShowConfirm] = useState(false)
   const [isSyncing, setIsSyncing] = useState(false)
-  const [vendors, setVendors] = useState<Vendor[]>([])
+  const [vendors, setVendors] = useState<VendoreResponseDto[]>([])
   const [loadingVendors, setLoadingVendors] = useState<boolean>(false)
 
   // Filter & Pagination States

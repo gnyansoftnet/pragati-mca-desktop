@@ -84,6 +84,9 @@ declare global {
       getSnapshot: () => Promise<SerialSnapshot>
       clearSerialReadings: (keys?: string[]) => Promise<void>
       onSerialSnapshot: (cb: (s: SerialSnapshot) => void) => () => void
+
+      // network
+      checkInternet: () => Promise<boolean>
     }
   }
 }

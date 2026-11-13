@@ -1,8 +1,9 @@
-import type { Supervisor } from '../../types/supervisors/supervisors.types'
+// import type { Supervisor } from '../../types/supervisors/supervisors.types'
 import type { PaginatedResponse } from '../../types/common.types'
+import { SupervisorResponseDto } from '@shared/dtos/supervisor/supervisor.dto'
 
 const supervisorsApi = {
-  getAll: (): Promise<Supervisor[]> => {
+  getAll: (): Promise<SupervisorResponseDto[]> => {
     return window.api.getSupervisors()
   },
 
@@ -10,7 +11,7 @@ const supervisorsApi = {
     page: number,
     limit: number,
     search: string
-  ): Promise<PaginatedResponse<Supervisor>> => {
+  ): Promise<PaginatedResponse<SupervisorResponseDto>> => {
     return window.api.getPaginatedSupervisors({
       page,
       limit,

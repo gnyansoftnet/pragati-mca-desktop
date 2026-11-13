@@ -6,9 +6,10 @@ import Button1 from '@renderer/components/buttons/Button1'
 import TableToolbar from '@renderer/components/table/TableToolbar'
 import TablePagination from '@renderer/components/table/TablePagination'
 import api from '@renderer/services'
-import type { Route } from '@renderer/types/routes/routes.types'
+// import type { Route } from '@renderer/types/routes/routes.types'
 import { useAuth } from '@renderer/context/AuthContext'
 import { useNetwork } from '@renderer/hooks/useNetwork'
+import { RouteResponseDto } from '@shared/dtos/route/route-response.dto'
 
 export const Rootes: React.FC = () => {
   const { user } = useAuth()
@@ -16,7 +17,7 @@ export const Rootes: React.FC = () => {
 
   const [showConfirm, setShowConfirm] = useState(false)
   const [isSyncing, setIsSyncing] = useState(false)
-  const [routes, setRoutes] = useState<Route[]>([])
+  const [routes, setRoutes] = useState<RouteResponseDto[]>([])
   const [loadingRoutes, setLoadingRoutes] = useState<boolean>(false)
 
   const [pageSize, setPageSize] = useState<number | 'all'>(10)

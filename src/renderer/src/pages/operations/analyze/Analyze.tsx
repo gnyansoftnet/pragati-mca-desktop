@@ -24,10 +24,12 @@ export const Analyze: React.FC = () => {
   const [date, setDate] = useState<string>(getCurrentLocalDate())
   const [shift, setShift] = useState<string>('1')
   const [plant, setPlant] = useState<string>('1102')
+
   const [samples, setSamples] = useState<MilkSampleDto[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [updatingSampleId, setUpdatingSampleId] = useState<number | null>(null)
   const [selectedPorts, setSelectedPorts] = useState<Record<number, string>>({})
+  const [activeSampleId, setActiveSampleId] = useState<number | null>(null)
 
   // Live serial snapshot to detect connected Milk Analyzer ports
   const snap = useSerialSnapshot()
@@ -76,15 +78,57 @@ export const Analyze: React.FC = () => {
     }
   }
 
-  // 1. On dropdown change: ONLY select analyzer & display machine reading (DO NOT SUBMIT)
+  // 1. On dropdown change: select analyzer & track this sample as active
   const handlePortSelect = (sample: MilkSampleDto, chosenAnalyzer: string) => {
-    setSelectedPorts((prev) => ({ ...prev, [sample.id]: chosenAnalyzer }))
-    if (chosenAnalyzer) {
-      toast.info(
-        `${analyzerName(chosenAnalyzer)} selected for Sample #${sample.sampleCode}. Ready for reading.`
-      )
+    if (!chosenAnalyzer) {
+      setSelectedPorts((prev) => {
+        const next = { ...prev }
+        delete next[sample.id]
+        return next
+      })
+      if (activeSampleId === sample.id) {
+        setActiveSampleId(null)
+      }
+      return
     }
+    setSelectedPorts((prev) => ({ ...prev, [sample.id]: chosenAnalyzer }))
+    setActiveSampleId(sample.id)
+    toast.info(
+      `${analyzerName(chosenAnalyzer)} selected for Sample #${sample.sampleCode}. Ready for reading.`
+    )
   }
+
+  // 2. Global Enter key listener: saves the active sample with machine readings
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Enter') return
+      // Don't intercept Enter if user is typing in date/search inputs
+      const target = e.target as HTMLElement | null
+      const tagName = target?.tagName
+      if (tagName === 'INPUT' || tagName === 'TEXTAREA') {
+        return
+      }
+      // 1. Check current active sample
+      let targetSample = samples.find(
+        (s) => s.id === activeSampleId && selectedPorts[s.id] && Number(s.isAnalyse) !== 1
+      )
+      // 2. Fallback: find any pending sample with port selected and live readings > 0
+      if (!targetSample) {
+        targetSample = samples.find((s) => {
+          const port = selectedPorts[s.id]
+          if (!port || Number(s.isAnalyse) === 1) return false
+          const { fat, snf } = getLiveReading(port)
+          return (fat ?? 0) > 0 || (snf ?? 0) > 0
+        })
+      }
+      if (targetSample && updatingSampleId === null) {
+        e.preventDefault()
+        handleSubmitSample(targetSample)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [activeSampleId, samples, selectedPorts, updatingSampleId, snap.readings, date, shift, plant])
 
   // 2. Submit only when valid machine data (> 0.0) arrives for that row's analyzer
   const handleSubmitSample = async (sample: MilkSampleDto) => {
@@ -131,6 +175,7 @@ export const Analyze: React.FC = () => {
         delete next[sample.id]
         return next
       })
+      setActiveSampleId(null)
 
       toast.success(
         `Sample #${sample.sampleCode} submitted! (FAT: ${fatToSubmit.toFixed(2)}%, SNF: ${snfToSubmit.toFixed(2)}%)`
@@ -265,7 +310,17 @@ export const Analyze: React.FC = () => {
                   const { fat: liveFat, snf: liveSnf } = getLiveReading(selectedAnalyzer)
 
                   return (
-                    <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
+                    <tr
+                      key={item.id ?? index}
+                      onClick={() => {
+                        if (!isAnalyzed) {
+                          setActiveSampleId(item.id)
+                        }
+                      }}
+                      className={`hover:bg-slate-50/70 transition cursor-pointer ${
+                        activeSampleId === item.id ? 'bg-primary/5' : ''
+                      }`}
+                    >
                       <td className="py-1 px-3 font-bold text-primary">{item.sampleCode}</td>
 
                       <td className="py-1 px-3">
@@ -273,6 +328,12 @@ export const Analyze: React.FC = () => {
                           value={selectedAnalyzer || ''}
                           disabled={isUpdating || isAnalyzed || connectedAnalyzers.length === 0}
                           onChange={(e) => handlePortSelect(item, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault()
+                              handleSubmitSample(item)
+                            }
+                          }}
                           className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary cursor-pointer disabled:bg-slate-100 disabled:cursor-not-allowed"
                         >
                           <option value="">
@@ -293,7 +354,7 @@ export const Analyze: React.FC = () => {
                         {item.netWeight ?? '0.0'}
                       </td>
 
-                      {/* FAT % (Shows saved value if analyzed, or Live Machine reading if pending) */}
+                      {/* FAT % */}
                       <td className="py-1 px-3 font-bold text-slate-800">
                         {isAnalyzed ? (
                           <span className="text-slate-800">
@@ -311,7 +372,7 @@ export const Analyze: React.FC = () => {
                         )}
                       </td>
 
-                      {/* SNF % (Shows saved value if analyzed, or Live Machine reading if pending) */}
+                      {/* SNF % */}
                       <td className="py-1 px-3 font-bold text-slate-800">
                         {isAnalyzed ? (
                           <span className="text-slate-800">
@@ -349,7 +410,7 @@ export const Analyze: React.FC = () => {
                         )}
                       </td>
 
-                      {/* Action: Submit Button (Active ONLY when port is selected & machine reading > 0.0) */}
+                      {/* Action: Save Button (Active ONLY when port is selected & machine reading > 0.0) */}
                       <td className="py-1 px-3 text-center">
                         {isAnalyzed ? (
                           <span className="text-[11px] text-slate-400 font-medium">Done</span>
@@ -367,16 +428,16 @@ export const Analyze: React.FC = () => {
                                 ? 'Select port first'
                                 : (liveFat ?? 0) <= 0
                                   ? 'Waiting for analyzer reading > 0.0'
-                                  : 'Click to submit machine reading'
+                                  : 'Click or press Enter to save machine reading'
                             }
                             className={`px-3 py-1 rounded-xl text-xs font-semibold transition cursor-pointer inline-flex items-center justify-center gap-1.5 ${
                               selectedPorts[item.id] && ((liveFat ?? 0) > 0 || (liveSnf ?? 0) > 0)
-                                ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs'
+                                ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs ring-2 ring-emerald-300'
                                 : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
                             }`}
                           >
                             <CheckCircle2 className="w-3 h-3" />
-                            <span>Submit</span>
+                            <span>Save (Enter)</span>
                           </button>
                         )}
                       </td>
