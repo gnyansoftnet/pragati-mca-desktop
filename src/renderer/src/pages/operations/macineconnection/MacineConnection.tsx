@@ -258,7 +258,7 @@ export const MacineConnection: React.FC = () => {
             {/* Machine Type */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 mb-2">
-                Select Machine <span className="text-rose-500">*</span>
+                Select Machine Type<span className="text-rose-500">*</span>
               </label>
               <CustomForm.CustomSelectField
                 name="machine"

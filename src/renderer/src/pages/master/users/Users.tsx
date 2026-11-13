@@ -121,28 +121,28 @@ export const Users: React.FC = () => {
         {/* Confirmation Modal */}
         {showConfirm && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs transition-opacity animate-fade-in">
-            <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-zinc-800 p-6 text-center transform transition-all scale-100">
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shadow-inner">
+            <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl border border-slate-100 p-6 text-center transform transition-all scale-100">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-amber-100  text-amber-600 flex items-center justify-center shadow-inner">
                 <RefreshCw className="w-8 h-8 animate-spin-slow" />
               </div>
-              <h3 className="text-lg font-bold text-slate-800 dark:text-zinc-100 mb-2">
+              <h3 className="text-lg font-bold text-slate-800 mb-2">
                 Sync User Data
               </h3>
-              <p className="text-sm text-slate-600 dark:text-zinc-300 leading-relaxed mb-4">
+              <p className="text-sm text-slate-600 leading-relaxed mb-4">
                 It will take a while, are you sure you want to continue?
               </p>
 
               {/* Displaying Current User Context */}
-              <div className="mb-6 py-2 px-3 bg-slate-50 dark:bg-zinc-800 rounded-xl text-xs text-slate-600 dark:text-zinc-400 flex justify-center gap-4">
+              <div className="mb-6 py-2 px-3 bg-slate-50 rounded-xl text-xs text-slate-600  flex justify-center gap-4">
                 <span>
                   Plant:{' '}
-                  <strong className="text-slate-800 dark:text-zinc-200">
+                  <strong className="text-slate-800 ">
                     {user?.plant || '1102'}
                   </strong>
                 </span>
                 <span>
                   User:{' '}
-                  <strong className="text-slate-800 dark:text-zinc-200">
+                  <strong className="text-slate-800">
                     {user?.userName || '-'}
                   </strong>
                 </span>
@@ -154,7 +154,7 @@ export const Users: React.FC = () => {
                   type="button"
                   disabled={isSyncing}
                   onClick={() => setShowConfirm(false)}
-                  className="w-1/2 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 font-semibold text-xs hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all cursor-pointer disabled:opacity-50"
+                  className="w-1/2 py-2.5 px-4 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs hover:bg-slate-100 transition-all cursor-pointer disabled:opacity-50"
                 >
                   Cancel
                 </button>

@@ -43,7 +43,7 @@ export const DynamicRoutePage: React.FC<DynamicRoutePageProps> = ({ menuItem: pr
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             Dynamic menu route rendered from MySQL permissions for role:{' '}
-            <span className="font-semibold text-teal-600">{user?.roleLabel}</span>.
+            <span className="font-semibold text-teal-600">{user?.userName}</span>.
           </p>
         </div>
 

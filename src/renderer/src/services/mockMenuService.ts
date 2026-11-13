@@ -141,6 +141,16 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     order_index: 50,
     badge: ''
   },
+  {
+    id: 11,
+    title: 'Analyzed Samples',
+    path: '/analyzed-sample',
+    icon: 'FileText',
+    roles: ['admin', 'staff', 'farmer'],
+    category: 'master',
+    order_index: 50,
+    badge: ''
+  },
 ]
 
 export async function fetchMenusForRole(role: UserRole): Promise<DynamicMenuItem[]> {

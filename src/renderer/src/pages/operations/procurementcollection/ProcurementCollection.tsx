@@ -56,8 +56,8 @@ interface MilkEntry {
 // }
 
 // Set to true while testing; set to false in production with real hardware
-// const IS_TEST_MODE = true
-// const DEFAULT_TEST_WEIGHT = '25.5'
+const IS_TEST_MODE = true
+const DEFAULT_TEST_WEIGHT = '25.5'
 
 export const ProcurementCollection: React.FC = () => {
   const { user } = useAuth()
@@ -210,31 +210,31 @@ export const ProcurementCollection: React.FC = () => {
   //     }
   //   }
   // }, [snap.readings.weight, isScaleConnected])
-  // useEffect(() => {
-  //   if (IS_TEST_MODE) {
-  //     // In test mode, always keep the default test weight loaded
-  //     if (!weightCans) {
-  //       setWeightCans(DEFAULT_TEST_WEIGHT)
-  //     }
-  //     return
-  //   }
-
-  //   if (isScaleConnected && snap.readings.weight?.value !== undefined) {
-  //     const scaleValue = String(snap.readings.weight.value)
-  //     if (scaleValue && scaleValue !== '0') {
-  //       setWeightCans(scaleValue)
-  //     }
-  //   }
-  // }, [snap.readings.weight, isScaleConnected, weightCans])
-  // Auto-capture live weight from connected machine scale (Zero manual input)
   useEffect(() => {
+    if (IS_TEST_MODE) {
+      // In test mode, always keep the default test weight loaded
+      if (!weightCans) {
+        setWeightCans(DEFAULT_TEST_WEIGHT)
+      }
+      return
+    }
+
     if (isScaleConnected && snap.readings.weight?.value !== undefined) {
       const scaleValue = String(snap.readings.weight.value)
-      if (Number(scaleValue) > 0) {
+      if (scaleValue && scaleValue !== '0') {
         setWeightCans(scaleValue)
       }
     }
-  }, [snap.readings.weight, isScaleConnected])
+  }, [snap.readings.weight, isScaleConnected, weightCans])
+  // Auto-capture live weight from connected machine scale (Zero manual input)
+  // useEffect(() => {
+  //   if (isScaleConnected && snap.readings.weight?.value !== undefined) {
+  //     const scaleValue = String(snap.readings.weight.value)
+  //     if (Number(scaleValue) > 0) {
+  //       setWeightCans(scaleValue)
+  //     }
+  //   }
+  // }, [snap.readings.weight, isScaleConnected])
 
   const getCurrentLocalDate = (): string => {
     const today = new Date()
@@ -294,7 +294,7 @@ export const ProcurementCollection: React.FC = () => {
     { value: 'best', label: 'Best' }
   ]
 
-  // Requirement 6: Compute Total no. of cans for the active route until route is changed
+  // Compute Total no. of cans for the active route until route is changed
   const routeTotalCans = useMemo(() => {
     if (!selectedRoute) return 0
 
@@ -383,7 +383,7 @@ export const ProcurementCollection: React.FC = () => {
       const cansNum = Number(noOfCans) || 0
 
       const payload = {
-        plant: String(plant),
+        plant: String(user?.plant || plant),
         userCode: userCode,
         rootCode: rootCode,
         vendorCode: vendorCode,
@@ -412,8 +412,8 @@ export const ProcurementCollection: React.FC = () => {
       // Requirement 1: DO NOT clear selectedRoute. Only clear vendor name, cans, and weight.
       setSelectedVendor('')
       setNoOfCans('')
-      setWeightCans('')
-      // setWeightCans(IS_TEST_MODE ? DEFAULT_TEST_WEIGHT : '')
+      // setWeightCans('')
+      setWeightCans(IS_TEST_MODE ? DEFAULT_TEST_WEIGHT : '')
 
       // Clear the captured weight reading in serial service so new reading arrives fresh
       if (typeof window !== 'undefined' && (window as any).api?.clearSerialReadings) {
@@ -448,11 +448,11 @@ export const ProcurementCollection: React.FC = () => {
   const handleCancel = () => {
     setSelectedRoute('')
     setSelectedVendor('')
-    setShift('')
-    setWeightSystem('')
-    setCansType('')
-    setMilkType('')
-    setMilkStatus('')
+    // setShift('1')
+    // setWeightSystem('')
+    // setCansType('')
+    // setMilkType('')
+    // setMilkStatus('')
     setNoOfCans('')
     setWeightCans('')
   }
@@ -497,9 +497,7 @@ export const ProcurementCollection: React.FC = () => {
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomTextField
                 name="chilling"
-                value={plant}
-                // onChange={(e: any) => setPlant(e.target.value)}
-                // options={plantOptions}
+                value={user?.plantName || user?.plant || ''}
                 readOnly={true}
                 tabIndex={-1}
               />
@@ -667,7 +665,7 @@ export const ProcurementCollection: React.FC = () => {
             <Button1
               variant="outline"
               icon={<X className="w-3.5 h-3.5 text-primary" />}
-              label="Cancel"
+              label="Clear"
               onClick={handleCancel}
               tabIndex={9}
             />
@@ -690,25 +688,37 @@ export const ProcurementCollection: React.FC = () => {
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
                 <th className="py-3 px-2 whitespace-nowrap">Sample Code</th>
+                <th className="py-3 px-2 whitespace-nowrap">Date</th>
                 <th className="py-3 px-2 whitespace-nowrap">Shift</th>
                 <th className="py-3 px-2 whitespace-nowrap">Chilling Plant</th>
-                <th className="py-3 px-2 whitespace-nowrap">Date</th>
+                <th className="py-3 px-2 whitespace-nowrap">Route Name</th>
+                <th className="py-3 px-2 whitespace-nowrap">Vendor Name</th>
                 <th className="py-3 px-2 whitespace-nowrap">Weight System</th>
-                <th className="py-3 px-2 whitespace-nowrap">Routes</th>
                 <th className="py-3 px-2 whitespace-nowrap">Cans Type</th>
                 <th className="py-3 px-2 whitespace-nowrap">Milk Type</th>
                 <th className="py-3 px-2 whitespace-nowrap">Milk Status</th>
-                <th className="py-3 px-2 whitespace-nowrap">Tipping Time</th>
-                <th className="py-3 px-2 whitespace-nowrap">Vendor Name</th>
                 <th className="py-3 px-2 whitespace-nowrap">No. of Cans</th>
+                <th className="py-3 px-2 whitespace-nowrap">Gross Weight</th>
                 <th className="py-3 px-2 whitespace-nowrap">Net Weight</th>
+                <th className="py-3 px-2 whitespace-nowrap">Tipping Time</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
               {entries.map((item, index) => (
                 <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
                   <td className="py-2 px-4 font-semibold text-primary">{item.sampleCode}</td>
-                  <td className="py-2 px-4">
+                  <td className="py-2 px-4 font-semibold text-primary">
+                    {item.sampleDate
+                      ? (() => {
+                          const d = new Date(item.sampleDate)
+                          return isNaN(d.getTime())
+                            ? String(item.sampleDate)
+                            : d.toLocaleDateString()
+                        })()
+                      : item.date || ''}
+                  </td>
+                  <td className="py-2 px-4 font-semibold text-slate-800">{item.shift}</td>
+                  {/* <td className="py-2 px-4">
                     <span
                       className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                         String(item.shift) === '1'
@@ -724,26 +734,14 @@ export const ProcurementCollection: React.FC = () => {
                           ? 'Evening'
                           : item.shiftName || `Shift ${item.shift}`}
                     </span>
-                  </td>
-                  <td className="py-2 px-4 font-semibold text-slate-800">
-                    {item.plant || item.chillingPlant}
-                  </td>
-                  <td className="py-2 px-4 font-semibold text-primary">
-                    {item.sampleDate
-                      ? (() => {
-                          const d = new Date(item.sampleDate)
-                          return isNaN(d.getTime())
-                            ? String(item.sampleDate)
-                            : d.toLocaleDateString()
-                        })()
-                      : item.date || ''}
-                  </td>
-                  <td className="py-2 px-4 font-bold text-slate-900">
-                    {item.weightSystem || item.grossWeight}
-                  </td>
+                  </td> */}
+                  <td className="py-2 px-4 font-semibold text-slate-800">{item.plant}</td>
                   <td className="py-2 px-4 font-semibold text-primary max-w-40 truncate">
-                    {item.rootCode || item.routes}
+                    {item.rootCode}
                   </td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
+                  <td className="py-2 px-4 font-bold text-slate-900">{item.weightSystem}</td>
+
                   <td className="py-2 px-4 font-semibold text-primary">{item.canType}</td>
                   <td className="py-2 px-4">
                     <span
@@ -761,10 +759,10 @@ export const ProcurementCollection: React.FC = () => {
                     </span>
                   </td>
                   <td className="py-2 px-4 font-semibold text-primary">{item.milkStatus}</td>
-                  <td className="py-2 px-4 font-semibold text-primary">{item.tipingTime}</td>
-                  <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
                   <td className="py-2 px-4 font-semibold text-primary">{item.noOfCans}</td>
                   <td className="py-2 px-4 font-bold text-emerald-600">{item.netWeight}</td>
+                  <td className="py-2 px-4 font-bold text-emerald-600">{item.netWeight}</td>
+                  <td className="py-2 px-4 font-semibold text-primary">{item.tipingTime}</td>
                 </tr>
               ))}
             </tbody>
