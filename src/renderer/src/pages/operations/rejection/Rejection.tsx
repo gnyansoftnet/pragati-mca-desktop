@@ -4,8 +4,8 @@ import api from '@renderer/services'
 import Button1 from '@renderer/components/buttons/Button1'
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
 import CustomForm from '@renderer/components/customform/CustomForm'
-import type { Route } from '@renderer/types/routes/routes.types'
-import type { Vendor } from '@renderer/types/vendors/vendors.types'
+// import type { Route } from '@renderer/types/routes/routes.types'
+// import type { Vendor } from '@renderer/types/vendors/vendors.types'
 import { toast } from 'react-toastify'
 import {
   MilkRejectionSaveDto,
@@ -15,6 +15,8 @@ import {
 import { useAuth } from '@renderer/context/AuthContext'
 import TableToolbar from '@renderer/components/table/TableToolbar'
 import TablePagination from '@renderer/components/table/TablePagination'
+import { RouteResponseDto } from '@shared/dtos/route/route-response.dto'
+import { VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
 
 interface SelectOption {
   value: string
@@ -25,13 +27,13 @@ export const Rejection: React.FC = () => {
   //save
   const [loadingSave, setLoadingSave] = useState<boolean>(false)
   // Routes state
-  const [routes, setRoutes] = useState<Route[]>([])
+  const [routes, setRoutes] = useState<RouteResponseDto[]>([])
   const [routeOptions, setRouteOptions] = useState<SelectOption[]>([])
   const [selectedRoute, setSelectedRoute] = useState<string>('')
   const [loadingRoutes, setLoadingRoutes] = useState<boolean>(false)
 
   // Vendors state
-  const [vendors, setVendors] = useState<Vendor[]>([])
+  const [vendors, setVendors] = useState<VendoreResponseDto[]>([])
   const [vendorOptions, setVendorOptions] = useState<SelectOption[]>([])
   const [selectedVendor, setSelectedVendor] = useState<string>('')
   const [loadingVendors, setLoadingVendors] = useState<boolean>(false)
@@ -121,7 +123,7 @@ export const Rejection: React.FC = () => {
           response = await (window as any).api.getVendorsByRoute(routeCode)
         }
 
-        const vendorList: Vendor[] = Array.isArray(response)
+        const vendorList: VendoreResponseDto[] = Array.isArray(response)
           ? response
           : Array.isArray(response?.data)
             ? response.data

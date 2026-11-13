@@ -111,7 +111,10 @@ const api = {
     const handler = (_e: Electron.IpcRendererEvent, s: SerialSnapshot) => cb(s)
     ipcRenderer.on('serial:update', handler)
     return () => ipcRenderer.removeListener('serial:update', handler)
-  }
+  },
+
+  // network check (runs in main process so renderer DevTools does not log ERR_NAME_NOT_RESOLVED)
+  checkInternet: (): Promise<boolean> => ipcRenderer.invoke('network:checkInternet')
 }
 
 if (process.contextIsolated) {
