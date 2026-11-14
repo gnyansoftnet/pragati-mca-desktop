@@ -40,19 +40,22 @@ declare global {
 
       // routes
       getRoutes: () => Promise<RouteResponseDto[]>
-      syncRoutes: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       getPaginatedRoutes: (params: PaginationRequestDto) => Promise<PaginatedRoutesDto>
 
       // supervisor
       getSupervisors: () => Promise<SupervisorResponseDto[]>
-      syncSupervisors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       getPaginatedSupervisors: (params: PaginationRequestDto) => Promise<PaginatedSupervisorDto>
 
       // vendor
       getVendors: () => Promise<VendoreResponseDto[]>
-      syncVendors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       getVendorsByRoute: (routeCode: string) => Promise<VendoreResponseDto[]>
       getPaginatedVendors: (params: PaginationRequestDto) => Promise<PaginatedVendorsDto>
+
+      // sync process
+      syncRoutes: (plant: string, org: string, branch: string) => Promise<SyncSucess>
+      syncVendors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
+      syncSupervisors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
+      syncMilkCollection: (fromDate: string, toDate: string) => Promise<any>
 
       // milk collection
       getPaginatedMilkCollctions: (

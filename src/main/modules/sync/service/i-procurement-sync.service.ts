@@ -1,3 +1,4 @@
+import { MilkRejectionSyncRequestDto } from '../dto/milk-rejection-save'
 import {
   MilkCollectionSyncRequestDto,
   MilkCollectionSyncResultDto
@@ -5,5 +6,6 @@ import {
 
 export interface IProcurmentSyncService {
   syncUpMilkCollection(data: MilkCollectionSyncRequestDto): Promise<MilkCollectionSyncResultDto>
-  syncMilkCollection(fromDate: string, toDate: string): Promise<number>
+  syncUpMilkRejection(data: MilkRejectionSyncRequestDto): Promise<MilkCollectionSyncResultDto>
+  markStatusMilkCollection(fromDate: string, toDate: string): Promise<number>
 }

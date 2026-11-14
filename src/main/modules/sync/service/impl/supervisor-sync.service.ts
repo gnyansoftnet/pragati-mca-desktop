@@ -19,6 +19,9 @@ export class SupervisorSyncService implements ISupervisorSyncService {
   async saveSupervisors(plant: string, org: string, branch: string): Promise<SyncSucess> {
     try {
       const supervisors = await this.syncDownSupervisors(plant, org, branch)
+      if (supervisors.length == 0) {
+        throw new ExternalApiError('Supervisor not found')
+      }
       const row = await this.supervisorRepo.saveSupervisors(supervisors)
       return {
         success: Number(row.success),
