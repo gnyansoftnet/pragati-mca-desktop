@@ -7,6 +7,17 @@ import {
   UnauthorizedError
 } from '../../main/utils/app-errors'
 
+// Pull a readable message out of whatever shape the server returned
+const extractServerMessage = (data: unknown): string => {
+  if (!data) return ''
+  if (typeof data === 'string') return data.slice(0, 500)
+  try {
+    return JSON.stringify(data).slice(0, 500)
+  } catch {
+    return ''
+  }
+}
+
 export const apiClient = (): AxiosInstance => {
   const baseURL = process.env.EXTERNAL_API_BASE_URL
   const username = process.env.EXTERNAL_API_USERNAME
@@ -43,14 +54,28 @@ export const apiClient = (): AxiosInstance => {
       if (error instanceof AppError) return Promise.reject(error)
 
       const status = error.response?.status
+      const serverMessage = extractServerMessage(error.response?.data)
       const options = { cause: error }
+
+      if (serverMessage) {
+        console.error(
+          `[API ${error.config?.method?.toUpperCase()} ${error.config?.url}] ${status}: ${serverMessage}`
+        )
+      }
 
       if (status === 401 || status === 403)
         return Promise.reject(new UnauthorizedError('API authentication failed', options))
       if (status === 404)
         return Promise.reject(new NotFoundError('API resource not found', options))
       if (status)
-        return Promise.reject(new ExternalApiError(`API responded with ${status}`, options))
+        return Promise.reject(
+          new ExternalApiError(
+            serverMessage
+              ? `API responded with ${status}: ${serverMessage}`
+              : `API responded with ${status}`,
+            options
+          )
+        )
       if (error.code === 'ECONNABORTED')
         return Promise.reject(new ExternalApiError('API timeout', options))
 

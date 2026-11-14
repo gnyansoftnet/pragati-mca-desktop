@@ -31,6 +31,6 @@ export function registerSyncIpc(): void {
   ipcMain.handle(
     'procurement-sync:syncMilkCollection',
     (_event, fromDate: string, toDate: string): Promise<any> =>
-      proService.syncMilkCollection(fromDate, toDate)
+      proService.markStatusMilkCollection(fromDate, toDate)
   )
 }

@@ -42,6 +42,8 @@ const api = {
     ipcRenderer.invoke('vendor-sync:syncVendors', plant, org, branch),
   syncSupervisors: (plant: string, org: string, branch: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('supervisor-sync:syncSupervisors', plant, org, branch),
+  syncMilkCollection: (fromDate: string, toDate: string): Promise<SyncSucess> =>
+    ipcRenderer.invoke('procurement-sync:syncMilkCollection', fromDate, toDate),
 
   syncUser: (plant: string, intial: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('user:syncUser', plant, intial),

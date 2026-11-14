@@ -18,6 +18,9 @@ export class RouteSyncService implements IRouteSyncService {
   async saveRoutes(plant: string, org: string, branch: string): Promise<SyncSucess> {
     try {
       const routes = await this.syncDownRoutes(plant, org, branch)
+      if (routes.length == 0) {
+        throw new ExternalApiError('no route found')
+      }
       const row = await this.routeSyncRepo.saveRoutes(routes)
       return {
         success: Number(row.success),

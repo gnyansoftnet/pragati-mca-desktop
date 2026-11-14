@@ -25,7 +25,7 @@ export class VendorSyncService implements IVendorSyncService {
       }
     })
 
-    if (!data.success || data.data.length == 0) {
+    if (!data.success) {
       throw new ExternalApiError(`Vendor API failed: ${data.message}`)
     }
 
@@ -53,6 +53,9 @@ export class VendorSyncService implements IVendorSyncService {
   async saveVendors(plant: string, org: string, branch: string): Promise<SyncSucess> {
     try {
       const vendors = await this.syncDownVendors(plant, org, branch)
+      if (vendors.length == 0) {
+        throw new ExternalApiError('no vendor found')
+      }
       const row = await this.vendoSyncRepo.saveVendors(vendors)
       return {
         success: Number(row.success),
