@@ -56,6 +56,7 @@ declare global {
       syncVendors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       syncSupervisors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       syncMilkCollection: (fromDate: string, toDate: string) => Promise<any>
+      syncMilkRejection: (fromDate: string, toDate: string) => Promise<any>
 
       // milk collection
       getPaginatedMilkCollctions: (

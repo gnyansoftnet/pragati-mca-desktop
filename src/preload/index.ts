@@ -38,15 +38,22 @@ const api = {
   // sync
   syncRoutes: (plant: string, org: string, branch: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('route-sync:syncRoutes', plant, org, branch),
+
   syncVendors: (plant: string, org: string, branch: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('vendor-sync:syncVendors', plant, org, branch),
+
   syncSupervisors: (plant: string, org: string, branch: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('supervisor-sync:syncSupervisors', plant, org, branch),
+
   syncMilkCollection: (fromDate: string, toDate: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('procurement-sync:syncMilkCollection', fromDate, toDate),
 
+  syncMilkRejection: (fromDate: string, toDate: string): Promise<SyncSucess> =>
+    ipcRenderer.invoke('procurement-sync:syncMilkRejection', fromDate, toDate),
+
   syncUser: (plant: string, intial: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('user:syncUser', plant, intial),
+
   usersExist: (): Promise<boolean> => ipcRenderer.invoke('user:usersExist'),
   getPaginatedUsers: (params: PaginationRequestDto): Promise<PaginatedUsersDto> =>
     ipcRenderer.invoke('user:getPaginatedUsers', params),
