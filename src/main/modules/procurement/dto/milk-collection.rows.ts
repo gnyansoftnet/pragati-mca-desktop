@@ -6,7 +6,9 @@ export interface MilkCollectionRow extends RowDataPacket {
   plant: string
   user_code: string
   root_code: string
+  root_name: string
   vendor_code: string
+  dsk_name: string
   shift: number
   sample_date: string
   sample_code: number

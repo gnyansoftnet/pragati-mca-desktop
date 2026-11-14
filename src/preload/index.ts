@@ -79,13 +79,15 @@ const api = {
   getPaginatedMilkCollctions: (
     params: PaginationRequestDto,
     fromDate?: string,
-    toDate?: string
+    toDate?: string,
+    isAnalyse?: number
   ): Promise<PaginatedMilkCollectionDto> =>
     ipcRenderer.invoke(
       'procurement-collection:getPaginatedMilkCollctions',
       params,
       fromDate,
-      toDate
+      toDate,
+      isAnalyse
     ),
   saveMilkCollection: (params: SaveMilkCollectionDto): Promise<MilkCollectionDto> =>
     ipcRenderer.invoke('procurement-collection:saveMilkCollection', params),

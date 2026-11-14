@@ -9,7 +9,8 @@ export interface IMilkCollectionRepo {
     limit: number,
     offset: number,
     fromDate?: string,
-    toDate?: string
+    toDate?: string,
+    isAnalyse?: number
   ): Promise<MilkCollectionPagedRows>
   getWeightSystems(): Promise<WeightSystemRow[]>
   getMilkCollections(): Promise<MilkCollectionRow[]>

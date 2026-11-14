@@ -10,10 +10,10 @@ import { SaveMilkCollectionDto } from '@shared/dtos/milk-collection/milk-collect
 import { ResultSetHeader } from 'mysql2'
 import { IMilkCollectionRepo } from '../i-milk-collection.repo'
 
-const SQL_MILK_COLLECTION_COLUMNS = `id, trans_code, plant, user_code, root_code, vendor_code, shift,
-  sample_date, sample_code, can_type, weight_system, milk_type, milk_status, tiping_time,
-  no_of_cans, gross_weight, net_weight, net_ltr, fat, snf, clr, is_analyse, entry,
-  sync_status, sync_date, created_at, updated_at, d_flag`
+// const SQL_MILK_COLLECTION_COLUMNS = `id, trans_code, plant, user_code, root_code, vendor_code, shift,
+//   sample_date, sample_code, can_type, weight_system, milk_type, milk_status, tiping_time,
+//   no_of_cans, gross_weight, net_weight, net_ltr, fat, snf, clr, is_analyse, entry,
+//   sync_status, sync_date, created_at, updated_at, d_flag`
 
 const USP_M_MILK_COLLECTION_IUD =
   'CALL USP_M_MILK_COLLECTION_IUD(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
@@ -32,11 +32,15 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
 
   async getMilkCollections(): Promise<MilkCollectionRow[]> {
     const [rows] = await db.query<MilkCollectionRow[]>(
-      `SELECT ${SQL_MILK_COLLECTION_COLUMNS}
-       FROM milk_collection_details
-      WHERE sample_date = CURDATE()
-        AND d_flag = 0
-      ORDER BY id DESC`
+      `SELECT m.*,
+              r.route_name,
+              v.dsk_name
+       FROM milk_collection_details m
+       LEFT JOIN route r  ON r.route_code  = m.root_code
+       LEFT JOIN vendor v ON v.dsk_code = m.vendor_code
+       WHERE m.sample_date = CURDATE()
+         AND m.d_flag = 0
+       ORDER BY m.id DESC`
     )
     return rows
   }
@@ -46,9 +50,10 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
     limit: number,
     offset: number,
     fromDate?: string,
-    toDate?: string
+    toDate?: string,
+    isAnalyse: number = 0
   ): Promise<MilkCollectionPagedRows> {
-    let where = 'WHERE d_flag = 0'
+    let where = 'WHERE m.d_flag = 0'
     const params: (string | number)[] = []
 
     // ---- date filter ----
@@ -61,30 +66,40 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
       }
       if (from > to) [from, to] = [to, from]
 
-      where += ` AND created_at >= ? AND created_at < DATE_ADD(?, INTERVAL 1 DAY)`
+      where += ` AND m.created_at >= ? AND m.created_at < DATE_ADD(?, INTERVAL 1 DAY)`
       params.push(from, to)
     } else {
       // default: today's data
-      where += ` AND created_at >= CURDATE() AND created_at < CURDATE() + INTERVAL 1 DAY`
+      where += ` AND m.created_at >= CURDATE() AND m.created_at < CURDATE() + INTERVAL 1 DAY`
     }
+
+    // ---- analyse filter (default 0) ----
+    where += ` AND m.is_analyse = ?`
+    params.push(isAnalyse === 1 ? 1 : 0)
 
     // ---- search filter ----
     if (search) {
-      where += ` AND (trans_code LIKE ? OR user_code LIKE ? OR root_code LIKE ? OR vendor_code LIKE ?)`
+      where += ` AND (m.trans_code LIKE ? OR m.user_code LIKE ? OR m.root_code LIKE ? OR m.vendor_code LIKE ?)`
       const like = `%${search}%`
       params.push(like, like, like, like)
     }
 
     const [[countRows], [rows]] = await Promise.all([
       db.query<CountRow[]>(
-        `SELECT COUNT(*) AS total FROM milk_collection_details ${where}`,
+        `SELECT COUNT(*) AS total
+       FROM milk_collection_details m
+       ${where}`,
         params
       ),
       db.query<MilkCollectionRow[]>(
-        `SELECT ${SQL_MILK_COLLECTION_COLUMNS}
-       FROM milk_collection_details
+        `SELECT m.*,
+              r.route_name,
+              v.dsk_name
+       FROM milk_collection_details m
+       LEFT JOIN route r  ON r.route_code = m.root_code
+       LEFT JOIN vendor v ON v.dsk_code   = m.vendor_code
        ${where}
-       ORDER BY id ASC
+       ORDER BY m.id ASC
        LIMIT ? OFFSET ?`,
         [...params, limit, offset]
       )
