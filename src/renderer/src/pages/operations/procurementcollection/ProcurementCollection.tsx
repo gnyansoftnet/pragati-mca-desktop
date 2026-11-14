@@ -89,6 +89,31 @@ export const ProcurementCollection: React.FC = () => {
   // Ref for the Save button (for auto-focus when cans are entered)
   const saveButtonRef = useRef<HTMLButtonElement | null>(null)
 
+  // Ref to track if Route was just selected by user
+  const shouldFocusVendorRef = useRef(false)
+
+  // 1. When route changes: update state and mark that vendor should be focused once loaded
+  const handleRouteChange = (e: any) => {
+    const val = e?.target?.value ?? ''
+    setSelectedRoute(val)
+    if (val) {
+      shouldFocusVendorRef.current = true
+    }
+  }
+
+  // 2. When vendor is selected: auto-focus No. of Cans input
+  const handleVendorChange = (e: any) => {
+    const val = e?.target?.value ?? ''
+    setSelectedVendor(val)
+    if (val) {
+      setTimeout(() => {
+        const cansInput = document.getElementById('no-of-cans-input') as HTMLInputElement | null
+        cansInput?.focus()
+        cansInput?.select()
+      }, 50)
+    }
+  }
+
   // Hardware machine serial snapshot (Live Machine Connection)
   const snap = useSerialSnapshot()
   const isScaleConnected = snap.ports.some(
@@ -176,6 +201,16 @@ export const ProcurementCollection: React.FC = () => {
         setVendorOptions([])
       } finally {
         setLoadingVendors(false)
+        // Focus the Vendor dropdown input as soon as it is enabled & populated
+        if (shouldFocusVendorRef.current) {
+          shouldFocusVendorRef.current = false
+          setTimeout(() => {
+            const vendorInput = document.getElementById(
+              'vendor-select-input'
+            ) as HTMLInputElement | null
+            vendorInput?.focus()
+          }, 80)
+        }
       }
     }
 
@@ -241,7 +276,7 @@ export const ProcurementCollection: React.FC = () => {
     const year = today.getFullYear()
     const month = String(today.getMonth() + 1).padStart(2, '0')
     const day = String(today.getDate()).padStart(2, '0')
-    return `${year}-${month}-${day}`
+    return `${day}-${month}-${year}`
   }
 
   const getCurrentLocalDateTime = (): string => {
@@ -305,12 +340,21 @@ export const ProcurementCollection: React.FC = () => {
 
     return entries
       .filter((item) => {
+        // const itemRoute = item.rootCode || item.routes
+        // return (
+        //   itemRoute === currentCode ||
+        //   itemRoute === currentRoute?.routeName ||
+        //   String(item.routes) === String(selectedRoute)
+        // )
+        // 1. Match Route
         const itemRoute = item.rootCode || item.routes
-        return (
+        const isRouteMatch =
           itemRoute === currentCode ||
           itemRoute === currentRoute?.routeName ||
           String(item.routes) === String(selectedRoute)
-        )
+        // Matches whichever shift is currently active ('1', '2', '3', etc.)
+        const isShiftMatch = !shift || String(item.shift) === String(shift)
+        return isRouteMatch && isShiftMatch
       })
       .reduce((sum, item) => sum + (Number(item.noOfCans) || 0), 0)
   }, [selectedRoute, entries, routes])
@@ -415,6 +459,14 @@ export const ProcurementCollection: React.FC = () => {
       // setWeightCans('')
       setWeightCans(IS_TEST_MODE ? DEFAULT_TEST_WEIGHT : '')
 
+      // Auto-focus Vendor input for the next collection on this route
+      setTimeout(() => {
+        const vendorInput = document.getElementById(
+          'vendor-select-input'
+        ) as HTMLInputElement | null
+        vendorInput?.focus()
+      }, 100)
+
       // Clear the captured weight reading in serial service so new reading arrives fresh
       if (typeof window !== 'undefined' && (window as any).api?.clearSerialReadings) {
         await (window as any).api.clearSerialReadings(['weight'])
@@ -458,10 +510,12 @@ export const ProcurementCollection: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Breadcrumb Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Procurement Collection" desc="Record real-time machine tipping" />
+        <PageBreadcrumb title="Procurement Collection" 
+        // desc="Record real-time machine tipping" 
+        />
       </div>
 
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
@@ -572,14 +626,15 @@ export const ProcurementCollection: React.FC = () => {
             {/* Dynamic Routes Dropdown (tabIndex: 6) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Routes <span className="text-rose-500">*</span>{' '}
+                Routes Name<span className="text-rose-500">*</span>{' '}
                 {loadingRoutes && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
                 name="route"
+                inputId="route-select-input"
                 placeholder={loadingRoutes ? 'Loading routes...' : 'Select & search route...'}
                 value={selectedRoute}
-                onChange={(e: any) => setSelectedRoute(e.target.value)}
+                onChange={handleRouteChange}
                 options={routeOptions}
                 disabled={loadingRoutes}
                 tabIndex={6}
@@ -594,6 +649,7 @@ export const ProcurementCollection: React.FC = () => {
               </label>
               <CustomForm.CustomSelectSearchField
                 name="vendor"
+                inputId="vendor-select-input"
                 placeholder={
                   !selectedRoute
                     ? 'Please select a route first...'
@@ -604,20 +660,21 @@ export const ProcurementCollection: React.FC = () => {
                         : 'Select & search vendor...'
                 }
                 value={selectedVendor}
-                onChange={(e: any) => setSelectedVendor(e.target.value)}
+                onChange={handleVendorChange}
                 options={vendorOptions}
                 disabled={loadingVendors || !selectedRoute}
                 tabIndex={7}
               />
             </div>
 
-            {/* Number of Cans (tabIndex: 8) with Enter handler and Route Total Cans counter */}
+            {/* Number of Cans (tabIndex: 8) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
                 No. of Cans <span className="text-rose-500">*</span>
               </label>
               <CustomForm.CustomNumberField
                 name="noOfCans"
+                id="no-of-cans-input"
                 value={noOfCans}
                 onChange={(e: any) => setNoOfCans(e.target.value)}
                 onKeyDown={handleNoOfCansKeyDown}
@@ -690,7 +747,7 @@ export const ProcurementCollection: React.FC = () => {
                 <th className="py-3 px-2 whitespace-nowrap">Sample Code</th>
                 <th className="py-3 px-2 whitespace-nowrap">Date</th>
                 <th className="py-3 px-2 whitespace-nowrap">Shift</th>
-                <th className="py-3 px-2 whitespace-nowrap">Chilling Plant</th>
+                <th className="py-3 px-2 whitespace-nowrap">Plant Id</th>
                 <th className="py-3 px-2 whitespace-nowrap">Route Name</th>
                 <th className="py-3 px-2 whitespace-nowrap">Vendor Name</th>
                 <th className="py-3 px-2 whitespace-nowrap">Weight System</th>

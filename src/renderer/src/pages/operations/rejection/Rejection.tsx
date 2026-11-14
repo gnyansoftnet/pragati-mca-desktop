@@ -170,7 +170,7 @@ export const Rejection: React.FC = () => {
     const year = today.getFullYear()
     const month = String(today.getMonth() + 1).padStart(2, '0')
     const day = String(today.getDate()).padStart(2, '0')
-    return `${year}-${month}-${day}`
+    return `${day}-${month}-${year}`
   }
 
   const formatApproxQuantity = (raw: string): string => {
@@ -312,6 +312,8 @@ export const Rejection: React.FC = () => {
         reason: String(selectedReason)
       }
 
+      // console.log("payload rejection", payload)
+
       await api.rejection.saveMilkRejection(payload)
 
       toast.success('Milk rejection saved successfully!')
@@ -331,9 +333,11 @@ export const Rejection: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Rejection" desc="Connect you machine before collection" />
+        <PageBreadcrumb title="Rejection"
+        //  desc="Connect you machine before collection" 
+         />
       </div>
 
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
@@ -501,12 +505,14 @@ export const Rejection: React.FC = () => {
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
                 <th className="py-3 px-2">ID</th>
-                <th className="py-3 px-2">Plant</th>
-                <th className="py-3 px-2">Route</th>
+                <th className="py-3 px-2">Plant Id</th>
+                <th className="py-3 px-2">Date</th>
+                <th className="py-3 px-2">Shift</th>
+                <th className="py-3 px-2">Route Name</th>
                 <th className="py-3 px-2">DSK Code</th>
                 <th className="py-3 px-2">DSK Name</th>
                 <th className="py-3 px-2">Supervisor</th>
-                <th className="py-3 px-2">Shift</th>
+
                 <th className="py-3 px-2">No. of Cans</th>
                 <th className="py-3 px-2">Approx Qty (LTR)</th>
                 <th className="py-3 px-2">Reason</th>
@@ -530,13 +536,15 @@ export const Rejection: React.FC = () => {
                   <tr key={item.id} className="hover:bg-slate-50/70 transition">
                     <td className="py-2 px-2 font-semibold text-primary">{item.id}</td>
                     <td className="py-2 px-2 text-slate-700">{item.plant}</td>
+                    <td className="py-2 px-2 text-slate-700"></td>
+                    <td className="py-2 px-2 text-slate-700">{item.shift}</td>
                     <td className="py-2 px-2 font-semibold text-primary">{item.route}</td>
                     <td className="py-2 px-2 text-slate-700">{item.dskCode}</td>
                     <td className="py-2 px-2 font-semibold text-slate-800">{item.dskName}</td>
                     <td className="py-2 px-2 text-slate-700">{item.supervisor}</td>
-                    <td className="py-2 px-2 text-slate-700">
+                    {/* <td className="py-2 px-2 text-slate-700">
                       {item.shift === '1' ? 'Morning' : item.shift === '2' ? 'Evening' : item.shift}
-                    </td>
+                    </td> */}
                     <td className="py-2 px-2 text-slate-700">{item.noOfCanes}</td>
                     <td className="py-2 px-2 font-semibold text-slate-800">{item.aproxQuantity}</td>
                     <td className="py-2 px-2 text-slate-700">{item.reason}</td>
