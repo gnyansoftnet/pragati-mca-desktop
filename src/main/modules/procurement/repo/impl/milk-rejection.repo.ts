@@ -87,6 +87,7 @@ export class MilkRejectionRepo implements IMilkRejectionRepo {
       data.aproxQuantity,
       data.reason
     ])
+
     return this.getRejectionMilk(result.insertId)
   }
 }
