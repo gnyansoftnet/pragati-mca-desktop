@@ -7,5 +7,6 @@ import {
 export interface IProcurmentSyncService {
   syncUpMilkCollection(data: MilkCollectionSyncRequestDto): Promise<MilkCollectionSyncResultDto>
   syncUpMilkRejection(data: MilkRejectionSyncRequestDto): Promise<MilkCollectionSyncResultDto>
-  markStatusMilkCollection(fromDate: string, toDate: string): Promise<number>
+  syncToWebMilkCollection(fromDate: string, toDate: string): Promise<MilkCollectionSyncResultDto>
+  syncToWebMilkRejection(fromDate: string, toDate: string): Promise<MilkCollectionSyncResultDto>
 }

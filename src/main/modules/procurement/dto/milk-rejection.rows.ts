@@ -2,6 +2,7 @@ import type { RowDataPacket } from 'mysql2'
 
 export interface MilkRejectionRow extends RowDataPacket {
   id: number
+  rejection_code: string
   plant: string
   dsk_name: string
   dsk_code: string
@@ -14,6 +15,7 @@ export interface MilkRejectionRow extends RowDataPacket {
   sync_status: string
   created_at: string
   updated_at: string
+  d_falg: number
 }
 
 export interface ReasonRow extends RowDataPacket {

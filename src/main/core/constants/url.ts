@@ -5,5 +5,6 @@ export const Url = {
   transport: '/sap/opu/odata/SAP/ZRMRD_INT_SRV/TruckSheetHeaderSet',
   supervisior: '/api/desktop/getSupervisorsByPlant',
   user: '/api/desktop/getUsersByPlant',
-  milk: '/api/desktop/saveMilkCollection'
+  milkCollection: '/api/desktop/saveMilkCollection',
+  milkRejection: '/api/desktop/saveMilkRejection'
 } as const
