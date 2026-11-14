@@ -110,12 +110,12 @@ export const Analyzed: React.FC = () => {
   }, [searchQuery, pageSize])
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <PageBreadcrumb
           title="Analyzed Collections"
-          desc="View collection records and sync local storage to server"
+          // desc="View collection records and sync local storage to server"
         />
 
         {/* Sync to server Button */}
@@ -144,11 +144,10 @@ export const Analyzed: React.FC = () => {
               <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shadow-inner">
                 <RefreshCw className="w-8 h-8 animate-spin-slow" />
               </div>
-              <h3 className="text-lg font-bold text-slate-800 mb-2">
-                Sync to Server
-              </h3>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">Sync to Server</h3>
               <p className="text-sm text-slate-600 leading-relaxed mb-4">
-                This will upload all locally collected milk records to the central cloud server. Are you sure you want to proceed?
+                This will upload all locally collected milk records to the central cloud server. Are
+                you sure you want to proceed?
               </p>
 
               {/* Current Context Badges */}
@@ -160,10 +159,7 @@ export const Analyzed: React.FC = () => {
                   </strong>
                 </span>
                 <span>
-                  User:{' '}
-                  <strong className="text-slate-800 ">
-                    {user?.userName || '-'}
-                  </strong>
+                  User: <strong className="text-slate-800 ">{user?.userName || '-'}</strong>
                 </span>
               </div>
 
@@ -260,9 +256,7 @@ export const Analyzed: React.FC = () => {
                             : `Shift ${item.shift}`}
                       </span>
                     </td>
-                    <td className="py-2 px-4 font-semibold text-slate-800">
-                      {item.plant}
-                    </td>
+                    <td className="py-2 px-4 font-semibold text-slate-800">{item.plant}</td>
                     <td className="py-2 px-4 font-semibold text-primary">
                       {item.sampleDate
                         ? (() => {
@@ -273,9 +267,7 @@ export const Analyzed: React.FC = () => {
                           })()
                         : ''}
                     </td>
-                    <td className="py-2 px-4 font-bold text-slate-900">
-                      {item.weightSystem}
-                    </td>
+                    <td className="py-2 px-4 font-bold text-slate-900">{item.weightSystem}</td>
                     <td className="py-2 px-4 font-semibold text-primary max-w-40 truncate">
                       {item.rootCode}
                     </td>

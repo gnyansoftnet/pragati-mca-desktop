@@ -136,7 +136,7 @@ export const Supervisors: React.FC = () => {
     }, 300)
 
     return () => clearTimeout(timer)
-     console.log("supervisors" , supervisors);
+    console.log('supervisors', supervisors)
   }, [searchQuery, pageSize])
 
   // Handle Entries Per Page Dropdown Change
@@ -150,13 +150,13 @@ export const Supervisors: React.FC = () => {
     fetchPaginatedSupervisors(newPage, pageSize, searchQuery)
   }
 
- 
-
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Supervisors" desc="Manage and view plant supervisors" />
+        <PageBreadcrumb title="Supervisors" 
+        // desc="Manage and view plant supervisors"
+         />
 
         <Button1
           disabled={isSyncing}
@@ -173,25 +173,17 @@ export const Supervisors: React.FC = () => {
               <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-amber-100  text-amber-600 flex items-center justify-center shadow-inner">
                 <RefreshCw className="w-8 h-8 animate-spin-slow" />
               </div>
-              <h3 className="text-lg font-bold text-slate-800 mb-2">
-                Sync Supervisor Data
-              </h3>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">Sync Supervisor Data</h3>
               <p className="text-sm text-slate-600 leading-relaxed mb-4">
                 It will take a while, are you sure you want to continue?
               </p>
               {/* Displaying Current User Context */}
               <div className="mb-6 py-2 px-3 bg-slate-50 rounded-xl text-xs text-slate-600  flex justify-center gap-4">
                 <span>
-                  Plant:{' '}
-                  <strong className="text-slate-800">
-                    {user?.plant}
-                  </strong>
+                  Plant: <strong className="text-slate-800">{user?.plant}</strong>
                 </span>
                 <span>
-                  User:{' '}
-                  <strong className="text-slate-800">
-                    {user?.userName}
-                  </strong>
+                  User: <strong className="text-slate-800">{user?.userName}</strong>
                 </span>
               </div>
               {/* Action Buttons */}

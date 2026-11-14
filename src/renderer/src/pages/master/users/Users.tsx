@@ -81,7 +81,7 @@ export const Users: React.FC = () => {
       setShowConfirm(false)
 
       const result = await window.api.syncUser(plant, initial)
-      if (result && (result.success === 1)) {
+      if (result && result.success === 1) {
         toast.success(result.message || 'Users synced successfully from server!')
         // Refresh users table to display newly synced data
         await fetchPaginatedUsers(1, pageSize, searchQuery)
@@ -104,10 +104,12 @@ export const Users: React.FC = () => {
   }, [searchQuery, pageSize])
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Users" desc="Sync users with internet connection" />
+        <PageBreadcrumb title="Users" 
+        // desc="Sync users with internet connection"
+         />
         <Button1
           disabled={isSyncing}
           onClick={() => setShowConfirm(true)}
@@ -125,9 +127,7 @@ export const Users: React.FC = () => {
               <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-amber-100  text-amber-600 flex items-center justify-center shadow-inner">
                 <RefreshCw className="w-8 h-8 animate-spin-slow" />
               </div>
-              <h3 className="text-lg font-bold text-slate-800 mb-2">
-                Sync User Data
-              </h3>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">Sync User Data</h3>
               <p className="text-sm text-slate-600 leading-relaxed mb-4">
                 It will take a while, are you sure you want to continue?
               </p>
@@ -135,16 +135,10 @@ export const Users: React.FC = () => {
               {/* Displaying Current User Context */}
               <div className="mb-6 py-2 px-3 bg-slate-50 rounded-xl text-xs text-slate-600  flex justify-center gap-4">
                 <span>
-                  Plant:{' '}
-                  <strong className="text-slate-800 ">
-                    {user?.plant || '1102'}
-                  </strong>
+                  Plant: <strong className="text-slate-800 ">{user?.plant || '1102'}</strong>
                 </span>
                 <span>
-                  User:{' '}
-                  <strong className="text-slate-800">
-                    {user?.userName || '-'}
-                  </strong>
+                  User: <strong className="text-slate-800">{user?.userName || '-'}</strong>
                 </span>
               </div>
 

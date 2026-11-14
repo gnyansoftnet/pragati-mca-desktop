@@ -130,9 +130,12 @@ export const DashboardPage: React.FC = () => {
   // ];
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Dashboard" desc="View your personal daily milk pouring logs" />
+    <div className="space-y-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <PageBreadcrumb
+          title="Dashboard"
+          // desc="View your personal daily milk pouring logs"
+        />
 
         <div className="flex items-center gap-2.5">
           <Button1
@@ -195,54 +198,89 @@ export const DashboardPage: React.FC = () => {
         />
       </CustomForm> */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
           <div>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              {user?.role === 'farmer' ? 'TOTAL POURS' : 'TOTAL FARMERS'}
-            </p>
-            <h3 className="text-2xl font-bold text-slate-800 mt-1">13</h3>
+            <div className="flex items-center ">
+              <p className="text-[13px] font-semibold text-slate-400  tracking-wider">
+                Total Routes:
+              </p>
+              <p className="text-[13px] font-bold text-slate-800 uppercase">40</p>
+            </div>
+            <div className="flex items-center">
+              <p className="text-[13px] font-semibold text-slate-400  tracking-wider">
+                Total Vendors:
+              </p>
+              <p className="text-[13px] font-bold text-slate-800 uppercase">399</p>
+            </div>
           </div>
+
           <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-primary to-secondary text-white flex items-center justify-center shadow-md shadow-primary/25">
             <Users className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex justify-between">
           <div>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              {user?.role === 'farmer' ? 'THIS MONTH' : 'NEW FARMERS'}
-            </p>
-            <h3 className="text-2xl font-bold text-slate-800 mt-1">0</h3>
+            <div className="flex items-center ">
+              <p className="text-[13px] font-semibold text-slate-400  tracking-wider">
+                Milk Collected:
+              </p>
+              <p className="text-[13px] font-bold text-slate-800 uppercase">150</p>
+            </div>
+            <div className="flex items-center">
+              <p className="text-[13px] font-semibold text-slate-400  tracking-wider">
+                Milk Analyzed:
+              </p>
+              <p className="text-[13px] font-bold text-slate-800 uppercase">45</p>
+            </div>
+            <div className="flex items-center">
+              <p className="text-[13px] font-semibold text-slate-400  tracking-wider">
+                Milk Rejected:
+              </p>
+              <p className="text-[13px] font-bold text-slate-800 uppercase">1</p>
+            </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-blue-500 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-pink-600 to-pink-300 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
             <UserPlus className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex justify-between">
           <div>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              {user?.role === 'farmer' ? "TODAY'S MILK" : "TODAY'S POURING"}
-            </p>
-            <h3 className="text-2xl font-bold text-slate-800 mt-1">
-              {user?.role === 'farmer' ? '18.5 L' : '0'}
-            </h3>
+            <div className="flex items-center ">
+              <p className="text-[13px] font-semibold text-slate-400  tracking-wider">
+                Total Supervisors:
+              </p>
+              <p className="text-[13px] font-bold text-slate-800 uppercase">4</p>
+            </div>
+            <div className="flex items-center">
+              <p className="text-[13px] font-semibold text-slate-400  tracking-wider">
+                Total Users:
+              </p>
+              <p className="text-[13px] font-bold text-slate-800 uppercase">4</p>
+            </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-emerald-600 to-emerald-300 text-white flex items-center justify-center shadow-md shadow-amber-500/20">
             <Calendar className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex justify-between">
           <div>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              {user?.role === 'farmer' ? 'AVG FAT %' : 'ACTIVE FARMERS'}
-            </p>
-            <h3 className="text-2xl font-bold text-slate-800 mt-1">
-              {user?.role === 'farmer' ? '4.2 %' : '11'}
-            </h3>
+            <div className="flex items-center ">
+              <p className="text-[13px] font-semibold text-slate-400  tracking-wider">
+                Weight Scale:
+              </p>
+              <p className="text-[13px] font-bold text-slate-800 uppercase">0/1</p>
+            </div>
+            <div className="flex items-center">
+              <p className="text-[13px] font-semibold text-slate-400  tracking-wider">
+                Milk Analyzer:
+              </p>
+              <p className="text-[13px] font-bold text-slate-800 uppercase">0/4</p>
+            </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-orange-600 to-orange-300 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
             <CheckCircle2 className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>

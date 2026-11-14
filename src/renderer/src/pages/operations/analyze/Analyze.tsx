@@ -192,9 +192,11 @@ export const Analyze: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Analyze" desc="Test milk samples with connected Milk Analyzer" />
+        <PageBreadcrumb title="Analyze"
+        //  desc="Test milk samples with connected Milk Analyzer" 
+         />
 
         {/* Analyzer Connection Status Indicator */}
         <div className="flex items-center gap-2">
@@ -241,6 +243,7 @@ export const Analyze: React.FC = () => {
                 value={shift}
                 onChange={(e: any) => setShift(e.target.value)}
                 options={shifts}
+                readOnly={true}
               />
             </div>
 
