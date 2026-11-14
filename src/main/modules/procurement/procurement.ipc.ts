@@ -26,8 +26,13 @@ export function registerProcurmentIpc(): void {
 
   ipcMain.handle(
     'procurement-collection:getPaginatedMilkCollctions',
-    (_event, params: PaginationRequestDto, fromDate?: string, toDate?: string) =>
-      collectionService.getPaginatedMilkCollections(params, fromDate, toDate)
+    (
+      _event,
+      params: PaginationRequestDto,
+      fromDate?: string,
+      toDate?: string,
+      isAnalyse?: number
+    ) => collectionService.getPaginatedMilkCollections(params, fromDate, toDate, isAnalyse)
   )
 
   ipcMain.handle('milk-collection:getWeightSystems', () => collectionService.getWeightSystems())

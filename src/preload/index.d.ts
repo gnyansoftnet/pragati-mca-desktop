@@ -62,7 +62,8 @@ declare global {
       getPaginatedMilkCollctions: (
         params: PaginationRequestDto,
         fromDate?: string,
-        toDate?: string
+        toDate?: string,
+        isAnalyse?: number
       ) => Promise<PaginatedMilkCollectionDto>
       saveMilkCollection: (params: SaveMilkCollectionDto) => Promise<MilkCollectionDto>
       getMilkCollections: () => Promise<MilkCollectionDto[]>

@@ -11,7 +11,8 @@ export interface IMilkCollectionService {
   getPaginatedMilkCollections(
     data: PaginationRequestDto,
     fromDate?: string,
-    toDate?: string
+    toDate?: string,
+    isAnalyse?: number
   ): Promise<PaginatedMilkCollectionDto>
   getMilkCollections(): Promise<MilkCollectionDto[]>
   getWeightSystems(): Promise<WeightSystemDto[]>
