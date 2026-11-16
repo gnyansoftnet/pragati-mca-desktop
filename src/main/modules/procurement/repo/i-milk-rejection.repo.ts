@@ -6,7 +6,9 @@ export interface IMilkRejectionRepo {
   getPaginatedMilkRejections(
     search: string | undefined,
     limit: number,
-    offset: number
+    offset: number,
+    fromDate?: string,
+    toDate?: string
   ): Promise<PagedMilkRejectionRows>
 
   saveMilkRejection(data: MilkRejectionSaveDto): Promise<MilkRejectionRow | undefined>

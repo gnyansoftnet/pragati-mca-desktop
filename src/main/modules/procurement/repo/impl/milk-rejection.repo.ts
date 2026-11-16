@@ -31,6 +31,8 @@ const SQL_GET_REJECTION_BY_ID = `
 
 const USP_M_REJECTION_MILK_IUD = 'CALL USP_M_REJECTION_MILK_IUD(?,?,?,?,?,?,?,?,?,?,?)'
 
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
+
 @injectable()
 export class MilkRejectionRepo implements IMilkRejectionRepo {
   constructor() {}
@@ -42,24 +44,53 @@ export class MilkRejectionRepo implements IMilkRejectionRepo {
   async getPaginatedMilkRejections(
     search: string | undefined,
     limit: number,
-    offset: number
+    offset: number,
+    fromDate?: string,
+    toDate?: string
   ): Promise<PagedMilkRejectionRows> {
-    let where = ''
-    const params: string[] = []
+    const conditions: string[] = []
+    const params: (string | number)[] = []
 
-    if (search) {
-      where = 'WHERE (dsk_name LIKE ? OR route LIKE ? OR supervisor LIKE ?)'
-      const like = `%${search}%`
-      params.push(like, like, like)
+    // ---- date filter ----
+    if (fromDate || toDate) {
+      let from = (fromDate ?? toDate) as string
+      let to = (toDate ?? fromDate) as string
+
+      if (!DATE_RE.test(from) || !DATE_RE.test(to)) {
+        throw new Error('Invalid date format. Use YYYY-MM-DD.')
+      }
+      if (from > to) [from, to] = [to, from]
+
+      conditions.push(`rm.created_at >= ? AND rm.created_at < DATE_ADD(?, INTERVAL 1 DAY)`)
+      params.push(from, to)
     }
 
+    // ---- search filter ----
+    if (search) {
+      conditions.push(
+        `(rm.dsk_name LIKE ? OR rm.route LIKE ? OR r.route_name LIKE ? OR rm.supervisor LIKE ?)`
+      )
+      const like = `%${search}%`
+      params.push(like, like, like, like)
+    }
+
+    const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
+
     const [[countRows], [rows]] = await Promise.all([
-      db.query<CountRow[]>(`SELECT COUNT(*) AS total FROM rejection_milk ${where}`, params),
+      db.query<CountRow[]>(
+        `SELECT COUNT(*) AS total
+           FROM rejection_milk rm
+           LEFT JOIN route r ON r.route_code = rm.route
+           ${where}`,
+        params
+      ),
       db.query<MilkRejectionRow[]>(
-        `SELECT ${REJECTION_COLUMNS}
-           FROM rejection_milk
+        `SELECT rm.*,
+                r.route_name
+           FROM rejection_milk rm
+           LEFT JOIN route r ON r.route_code = rm.route
            ${where}
-          ORDER BY id ASC
+          ORDER BY rm.id ASC
           LIMIT ? OFFSET ?`,
         [...params, limit, offset]
       )

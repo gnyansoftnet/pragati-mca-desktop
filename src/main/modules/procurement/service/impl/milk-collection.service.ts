@@ -10,6 +10,7 @@ import { AppError, DatabaseError } from '../../../../utils/app-errors'
 import { IMilkCollectionService } from '../i-milk-collection.service'
 import { TOKENS } from '../../../../core/di/token'
 import type { IMilkCollectionRepo } from '../../repo/i-milk-collection.repo'
+import { MilkCollectionRow } from '../../dto/milk-collection.rows'
 
 @injectable()
 export class MilkCollectionService implements IMilkCollectionService {
@@ -20,7 +21,7 @@ export class MilkCollectionService implements IMilkCollectionService {
 
   async saveMilkCollection(data: SaveMilkCollectionDto): Promise<MilkCollectionDto> {
     try {
-      const rows = await this.milkRepo.saveMilkCollection(data)
+      const rows: MilkCollectionRow = await this.milkRepo.saveMilkCollection(data)
       return rows.map((p) => ({
         id: p.id,
         transCode: p.trans_code,
@@ -84,6 +85,8 @@ export class MilkCollectionService implements IMilkCollectionService {
           transCode: r.trans_code,
           plant: r.plant,
           userCode: r.user_code,
+          dskName: r.dsk_name,
+          rootName: r.route_name,
           rootCode: r.root_code,
           vendorCode: r.vendor_code,
           shift: r.shift,
@@ -126,7 +129,7 @@ export class MilkCollectionService implements IMilkCollectionService {
 
   async getMilkCollections(): Promise<MilkCollectionDto[]> {
     try {
-      const rows = await this.milkRepo.getMilkCollections()
+      const rows: MilkCollectionRow[] = await this.milkRepo.getMilkCollections()
       return rows.map((r) => ({
         id: r.id,
         transCode: r.trans_code,
@@ -134,6 +137,8 @@ export class MilkCollectionService implements IMilkCollectionService {
         userCode: r.user_code,
         rootCode: r.root_code,
         vendorCode: r.vendor_code,
+        rootName: r.route_name,
+        dskName: r.dsk_name,
         shift: r.shift,
         sampleDate: r.sample_date,
         sampleCode: r.sample_code,

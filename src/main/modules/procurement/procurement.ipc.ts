@@ -53,7 +53,8 @@ export function registerProcurmentIpc(): void {
 
   ipcMain.handle(
     'procurement-rejection:getPaginatedMilkRejections',
-    (_event, params: PaginationRequestDto) => rejectionService.getPaginatedMilkRejections(params)
+    (_event, params: PaginationRequestDto, fromDate?: string, toDate?: string) =>
+      rejectionService.getPaginatedMilkRejections(params, fromDate, toDate)
   )
 
   ipcMain.handle('procurement-rejection:getReasons', () => rejectionService.getReasons())

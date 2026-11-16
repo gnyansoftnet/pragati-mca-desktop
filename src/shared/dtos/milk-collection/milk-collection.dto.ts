@@ -6,7 +6,9 @@ export interface MilkCollectionDto {
   plant: string
   userCode: string
   rootCode: string
+  rootName?: string | null
   vendorCode: string
+  dskName?: string | null
   shift: number
   sampleDate: string
   sampleCode: number

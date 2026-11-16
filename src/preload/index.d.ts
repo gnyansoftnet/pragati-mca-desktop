@@ -78,7 +78,9 @@ declare global {
       // milk rejection
       getReasons: () => Promise<ReasonDto[]>
       getPaginatedMilkRejections: (
-        params: PaginationRequestDto
+        params: PaginationRequestDto,
+        fromDate?: string,
+        toDate?: string
       ) => Promise<PaginatedMilkRejectionDto>
       saveMilkRejection: (params: MilkRejectionSaveDto) => Promise<MilkRejectionResponseDto>
 
