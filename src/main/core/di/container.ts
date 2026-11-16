@@ -31,6 +31,8 @@ import { SupervisorService } from '../../modules/supervisor/service/impl/supervi
 import { SupervisorRepo } from '../../modules/supervisor/repo/impl/supervisor.repo'
 import { MilkCollectionRepo } from '../../modules/procurement/repo/impl/milk-collection.repo'
 import { MilkCollectionService } from '../../modules/procurement/service/impl/milk-collection.service'
+import { TransportRepo } from '../../modules/transport/repo/impl/transport.repo'
+import { TransportService } from '../../modules/transport/service/impl/transport.service'
 
 export function bootstrapContainer(): void {
   // user
@@ -72,6 +74,9 @@ export function bootstrapContainer(): void {
 
   container.registerSingleton(TOKENS.MilkRejectionRepo, MilkRejectionRepo)
   container.registerSingleton(TOKENS.MilkRejectionService, MilkRejectionService)
+
+  container.registerSingleton(TOKENS.TransportRepo, TransportRepo)
+  container.registerSingleton(TOKENS.TransportService, TransportService)
 }
 
 export { container }

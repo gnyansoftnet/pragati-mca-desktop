@@ -27,6 +27,11 @@ import {
 import { PaginatedUsersDto, UserResponseDto } from '@shared/dtos/user/user.dto'
 import { PaginatedVendorsDto, VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
 import { SyncSucess } from '@shared/dtos/sync-success.dto'
+import {
+  PaginatedTransportDto,
+  TransportDto,
+  TransportSaveDto
+} from '@shared/dtos/transport/transport.dto'
 
 declare global {
   interface Window {
@@ -74,6 +79,14 @@ declare global {
       // milk analysis
       updateMilkSample: (params: MilkSampleUpdateDto) => Promise<MilkSampleDto>
       getMilkSamples: (sampleDate: string, shift: number, plant: string) => Promise<MilkSampleDto[]>
+
+      // transport
+      getPaginatedTransports: (
+        params: PaginationRequestDto,
+        fromDate?: string,
+        toDate?: string
+      ) => Promise<PaginatedTransportDto>
+      saveTransport: (params: TransportSaveDto) => Promise<TransportDto>
 
       // milk rejection
       getReasons: () => Promise<ReasonDto[]>
