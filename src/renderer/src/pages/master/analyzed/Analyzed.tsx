@@ -304,6 +304,7 @@ export const Analyzed: React.FC = () => {
                 <th className="py-3 px-2 whitespace-nowrap">Milk Type</th>
                 <th className="py-3 px-2 whitespace-nowrap">Milk Status</th>
                 <th className="py-3 px-2 whitespace-nowrap">No. of Cans</th>
+                <th className="py-3 px-2 whitespace-nowrap">Gross Weight</th>
                 <th className="py-3 px-2 whitespace-nowrap">Net Weight</th>
                 <th className="py-3 px-2 whitespace-nowrap">Tipping Time</th>
                 <th className="py-3 px-2 whitespace-nowrap">FAT (%)</th>
@@ -385,6 +386,9 @@ export const Analyzed: React.FC = () => {
                     </td>
                     <td className="py-2 px-4 font-semibold text-primary">{item.milkStatus}</td>
                     <td className="py-2 px-4 font-semibold text-primary">{item.noOfCans}</td>
+                    <td className="py-2 px-4 font-bold text-emerald-600">
+                      {Number(item.netWeight || item.netLtr || 0).toFixed(1)}
+                    </td>
                     <td className="py-2 px-4 font-bold text-emerald-600">
                       {Number(item.netWeight || item.netLtr || 0).toFixed(1)}
                     </td>
