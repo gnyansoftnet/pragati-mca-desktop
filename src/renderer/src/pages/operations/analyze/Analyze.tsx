@@ -289,7 +289,7 @@ export const Analyze: React.FC = () => {
             <tbody className="divide-y divide-slate-100 text-xs">
               {loading && (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-400 font-medium">
+                  <td colSpan={7} className="py-4 text-center text-slate-400 font-medium">
                     <div className="flex items-center justify-center gap-2">
                       <RefreshCw className="w-4 h-4 animate-spin text-primary" />
                       <span>Loading milk samples...</span>
@@ -300,7 +300,7 @@ export const Analyze: React.FC = () => {
 
               {!loading && samples.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-400 font-medium">
+                  <td colSpan={7} className="py-4 text-center text-slate-400 font-medium">
                     No samples found. Click &quot;Find&quot; to load pending milk samples.
                   </td>
                 </tr>

@@ -11,6 +11,7 @@ export interface MilkRejectionResponseDto {
   noOfCanes: string
   aproxQuantity: string
   reason: string
+  routeName?: string
   syncStatus?: string
   createdAt?: string
   updatedAt?: string

@@ -233,14 +233,14 @@ export const Supervisors: React.FC = () => {
             <tbody className="divide-y divide-slate-100 text-xs">
               {loadingSupervisors && (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-slate-400 font-medium">
+                  <td colSpan={5} className="py-4 text-center text-slate-400 font-medium">
                     Loading supervisors...
                   </td>
                 </tr>
               )}
               {supervisors.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-slate-400 font-medium">
+                  <td colSpan={5} className="py-4 text-center text-slate-400 font-medium">
                     No supervisors found
                   </td>
                 </tr>

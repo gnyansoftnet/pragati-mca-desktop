@@ -47,30 +47,6 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     category: 'dashboard',
     order_index: 10
   },
-  // {
-  //   id: 2,
-  //   title: 'Farmers',
-  //   path: '/farmers',
-  //   icon: 'Users',
-  //   roles: ['admin', 'staff'],
-  //   category: 'master',
-  //   order_index: 20,
-  //   badge: '13',
-  //   children: [
-  //     {
-  //       id: '2-1',
-  //       title: 'All Farmers',
-  //       path: '/farmers',
-  //       icon: 'ListFilter'
-  //     },
-  //     {
-  //       id: '2-2',
-  //       title: 'Add Farmer',
-  //       path: '/farmers/new',
-  //       icon: 'UserPlus'
-  //     }
-  //   ]
-  // },
   {
     id: 3,
     title: 'Machine Connection',
@@ -160,6 +136,36 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     category: 'master',
     order_index: 50,
     badge: ''
+  },
+  {
+    id: 12,
+    title: 'Reports',
+    path: '',
+    icon: 'Users',
+    roles: ['admin', 'staff'],
+    category: 'master',
+    order_index: 60,
+    badge: '',
+    children: [
+      {
+        id: '12-1',
+        title: 'Collection Report',
+        path: '/report-collection',
+        icon: 'ListFilter'
+      },
+      {
+        id: '12-2',
+        title: 'Rejection Report',
+        path: '/report-rejection',
+        icon: 'UserPlus'
+      },
+      {
+        id: '12-3',
+        title: 'Transport Report',
+        path: '/report-transport',
+        icon: 'UserPlus'
+      }
+    ]
   },
 ]
 

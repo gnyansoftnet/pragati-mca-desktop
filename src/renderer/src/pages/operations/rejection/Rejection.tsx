@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Bookmark } from 'lucide-react'
+import { Bookmark, X } from 'lucide-react'
 import api from '@renderer/services'
 import Button1 from '@renderer/components/buttons/Button1'
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
@@ -216,19 +216,41 @@ export const Rejection: React.FC = () => {
     hasPrevPage: false
   })
 
+  // Get current date in YYYY-MM-DD format for database queries
+  const getCurrentDateISO = (): string => {
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = String(today.getMonth() + 1).padStart(2, '0')
+    const day = String(today.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+  // Default fromDate and toDate set to today's date
+  const [fromDate, setFromDate] = useState<string>(getCurrentDateISO())
+  const [toDate, setToDate] = useState<string>(getCurrentDateISO())
+
+  console.log('fromDate', fromDate)
+  console.log('toDate', toDate)
+
   const fetchPaginatedRejections = async (
     pageNo = pagination.page,
     limitVal = pageSize,
-    searchVal = searchQuery
+    searchVal = searchQuery,
+    fdate = fromDate,
+    tDate = toDate
   ): Promise<void> => {
     try {
       setLoadingRejections(true)
       const actualLimit = limitVal === 'all' ? 10000000000000 : limitVal
-      const response = await window.api.getPaginatedMilkRejections({
-        page: pageNo,
-        limit: actualLimit,
-        search: searchVal.trim()
-      })
+      const response = await window.api.getPaginatedMilkRejections(
+        {
+          page: pageNo,
+          limit: actualLimit,
+          search: searchVal.trim()
+        },
+        fdate,
+        tDate
+      )
 
       if (response) {
         const dataList = Array.isArray(response.data)
@@ -330,6 +352,15 @@ export const Rejection: React.FC = () => {
     } finally {
       setLoadingSave(false)
     }
+  }
+
+
+  const handleCancel = () => {
+    setSelectedRoute('');
+    setSelectedVendor('');
+    setSupervisor('');
+    setNoOfCans('');
+    setApproxQuantity('');
   }
 
   return (
@@ -479,7 +510,14 @@ export const Rejection: React.FC = () => {
             </div>
           </div>
           {/* Find Button (Saves Analysis) */}
-          <div className="flex items-end justify-end">
+          <div className="flex justify-end items-center gap-2.5 mt-3 pt-2 border-t border-slate-100">
+            <Button1
+              variant="outline"
+              icon={<X className="w-3.5 h-3.5 text-primary" />}
+              label="Clear"
+              onClick={handleCancel}
+              tabIndex={9}
+            />
             <Button1
               variant="primary"
               icon={<Bookmark className="w-3.5 h-3.5 text-white" />}
@@ -537,9 +575,22 @@ export const Rejection: React.FC = () => {
                   <tr key={item.id} className="hover:bg-slate-50/70 transition">
                     <td className="py-2 px-2 font-semibold text-primary">{item.id}</td>
                     <td className="py-2 px-2 text-slate-700">{item.plant}</td>
-                    <td className="py-2 px-2 text-slate-700"></td>
+                    <td className="py-2 px-2 text-slate-700">
+                      {item.createdAt
+                        ? (() => {
+                            const d = new Date(item.createdAt)
+                            return isNaN(d.getTime())
+                              ? String(item.createdAt)
+                              : d.toLocaleDateString('en-GB', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: '2-digit'
+                                })
+                          })()
+                        : ''}
+                    </td>
                     <td className="py-2 px-2 text-slate-700">{item.shift}</td>
-                    <td className="py-2 px-2 font-semibold text-primary">{item.route}</td>
+                    <td className="py-2 px-2 font-semibold text-primary">{item.routeName}</td>
                     <td className="py-2 px-2 text-slate-700">{item.dskCode}</td>
                     <td className="py-2 px-2 font-semibold text-slate-800">{item.dskName}</td>
                     <td className="py-2 px-2 text-slate-700">{item.supervisor}</td>
@@ -547,7 +598,7 @@ export const Rejection: React.FC = () => {
                       {item.shift === '1' ? 'Morning' : item.shift === '2' ? 'Evening' : item.shift}
                     </td> */}
                     <td className="py-2 px-2 text-slate-700">{item.noOfCanes}</td>
-                    <td className="py-2 px-2 font-semibold text-slate-800">{item.aproxQuantity}</td>
+                    <td className="py-2 px-2 font-bold text-emerald-600">{item.aproxQuantity}</td>
                     <td className="py-2 px-2 text-slate-700">{item.reason}</td>
                   </tr>
                 ))

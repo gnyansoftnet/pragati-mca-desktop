@@ -11,40 +11,41 @@ import { useSerialSnapshot } from '@renderer/hooks/useSerial'
 import { useAuth } from '@renderer/context/AuthContext'
 import { RouteResponseDto } from '@shared/dtos/route/route-response.dto'
 import { VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
+import { MilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
 
 interface SelectOption {
   value: string
   label: string
 }
 
-interface MilkEntry {
-  id: number
-  sampleCode?: string | number
-  farmerId?: string
-  chillingPlant?: string
-  plant?: string
-  date?: string
-  sampleDate?: string | Date
-  routes?: string
-  rootCode?: string
-  canType?: string
-  shift?: number | string
-  shiftName?: string
-  milkType?: string
-  milkStatus?: string
-  tipingTime?: string
-  vendorCode?: string
-  noOfCans?: number | string
-  netWeight?: string | number
-  grossWeight?: string | number
-  fatPercent?: number
-  fat?: string | number
-  snfPercent?: number
-  snf?: string | number
-  clrPercent?: number
-  clr?: string | number
-  weightSystem?: string
-}
+// interface MilkEntry {
+//   id: number
+//   sampleCode?: string | number
+//   farmerId?: string
+//   chillingPlant?: string
+//   plant?: string
+//   date?: string
+//   sampleDate?: string | Date
+//   routes?: string
+//   rootCode?: string
+//   canType?: string
+//   shift?: number | string
+//   shiftName?: string
+//   milkType?: string
+//   milkStatus?: string
+//   tipingTime?: string
+//   vendorCode?: string
+//   noOfCans?: number | string
+//   netWeight?: string | number
+//   grossWeight?: string | number
+//   fatPercent?: number
+//   fat?: string | number
+//   snfPercent?: number
+//   snf?: string | number
+//   clrPercent?: number
+//   clr?: string | number
+//   weightSystem?: string
+// }
 
 // interface PaginationState {
 //   page: number
@@ -131,7 +132,7 @@ export const ProcurementCollection: React.FC = () => {
   //   hasNextPage: false,
   //   hasPrevPage: false
   // })
-  const [entries, setEntries] = useState<MilkEntry[]>([])
+  const [entries, setEntries] = useState<MilkCollectionDto[]>([])
 
   // Fetch routes from master
   const fetchRoutes = async (): Promise<void> => {
@@ -347,11 +348,11 @@ export const ProcurementCollection: React.FC = () => {
         //   String(item.routes) === String(selectedRoute)
         // )
         // 1. Match Route
-        const itemRoute = item.rootCode || item.routes
+        const itemRoute = item.rootCode || item.rootName
         const isRouteMatch =
           itemRoute === currentCode ||
           itemRoute === currentRoute?.routeName ||
-          String(item.routes) === String(selectedRoute)
+          String(item.rootName) === String(selectedRoute)
         // Matches whichever shift is currently active ('1', '2', '3', etc.)
         const isShiftMatch = !shift || String(item.shift) === String(shift)
         return isRouteMatch && isShiftMatch
@@ -763,8 +764,8 @@ export const ProcurementCollection: React.FC = () => {
             <tbody className="divide-y divide-slate-100 text-xs">
               {entries.map((item, index) => (
                 <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
-                  <td className="py-2 px-4 font-semibold text-primary">{item.sampleCode}</td>
-                  <td className="py-2 px-4 font-semibold text-primary">
+                  <td className="py-2 px-2 font-semibold text-primary">{item.sampleCode}</td>
+                  <td className="py-2 px-2 font-semibold text-primary">
                     {item.sampleDate
                       ? (() => {
                           const d = new Date(item.sampleDate)
@@ -778,7 +779,7 @@ export const ProcurementCollection: React.FC = () => {
                         })()
                       : ''}
                   </td>
-                  <td className="py-2 px-4 font-semibold text-slate-800">{item.shift}</td>
+                  <td className="py-2 px-2 font-semibold text-slate-800">{item.shift}</td>
                   {/* <td className="py-2 px-4">
                     <span
                       className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
@@ -796,15 +797,15 @@ export const ProcurementCollection: React.FC = () => {
                           : item.shiftName || `Shift ${item.shift}`}
                     </span>
                   </td> */}
-                  <td className="py-2 px-4 font-semibold text-slate-800">{item.plant}</td>
-                  <td className="py-2 px-4 font-semibold text-primary max-w-40 truncate">
-                    {item.rootCode}
+                  <td className="py-2 px-2 font-semibold text-slate-800">{item.plant}</td>
+                  <td className="py-2 px-2 font-semibold text-primary max-w-40 truncate">
+                    {item.rootName}
                   </td>
-                  <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
-                  <td className="py-2 px-4 font-bold text-slate-900">{item.weightSystem}</td>
+                  <td className="py-2 px-2 font-semibold whitespace-nowrap text-primary">{item.dskName}</td>
+                  <td className="py-2 px-2 font-bold text-slate-900">{item.weightSystem}</td>
 
-                  <td className="py-2 px-4 font-semibold text-primary">{item.canType}</td>
-                  <td className="py-2 px-4">
+                  <td className="py-2 px-2 font-semibold text-primary">{item.canType}</td>
+                  <td className="py-2 px-2">
                     <span
                       className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                         String(item.milkType).toLowerCase() === 'cow'
@@ -819,11 +820,11 @@ export const ProcurementCollection: React.FC = () => {
                       {item.milkType}
                     </span>
                   </td>
-                  <td className="py-2 px-4 font-semibold text-primary">{item.milkStatus}</td>
-                  <td className="py-2 px-4 font-semibold text-primary">{item.noOfCans}</td>
-                  <td className="py-2 px-4 font-bold text-emerald-600">{item.netWeight}</td>
-                  <td className="py-2 px-4 font-bold text-emerald-600">{item.netWeight}</td>
-                  <td className="py-2 px-4 font-semibold text-primary">{item.tipingTime}</td>
+                  <td className="py-2 px-2 font-semibold text-primary">{item.milkStatus}</td>
+                  <td className="py-2 px-2 font-semibold text-primary">{item.noOfCans}</td>
+                  <td className="py-2 px-2 font-bold text-emerald-600">{item.netWeight}</td>
+                  <td className="py-2 px-2 font-bold text-emerald-600">{item.netWeight}</td>
+                  <td className="py-2 px-2 font-semibold text-primary">{item.tipingTime}</td>
                 </tr>
               ))}
             </tbody>

@@ -227,14 +227,14 @@ export const Vendors: React.FC = () => {
             <tbody className="divide-y divide-slate-100 text-xs">
               {loadingVendors && (
                 <tr>
-                  <td colSpan={4} className="py-8 text-center text-slate-400 font-medium">
+                  <td colSpan={4} className="py-4 text-center text-slate-400 font-medium">
                     Loading vendors...
                   </td>
                 </tr>
               )}
               {vendors.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-8 text-center text-slate-400 font-medium">
+                  <td colSpan={4} className="py-4 text-center text-slate-400 font-medium">
                     No vendors found
                   </td>
                 </tr>
