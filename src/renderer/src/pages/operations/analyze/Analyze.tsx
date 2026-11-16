@@ -243,7 +243,6 @@ export const Analyze: React.FC = () => {
                 value={shift}
                 onChange={(e: any) => setShift(e.target.value)}
                 options={shifts}
-                readOnly={true}
               />
             </div>
 

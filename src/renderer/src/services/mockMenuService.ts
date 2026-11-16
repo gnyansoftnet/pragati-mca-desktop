@@ -143,9 +143,19 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
   },
   {
     id: 11,
-    title: 'Analyzed Samples',
-    path: '/analyzed-sample',
-    icon: 'FileText',
+    title: 'Rejection Entry',
+    path: '/rejection-entry',
+    icon: 'CartonOff',
+    roles: ['admin', 'staff', 'farmer'],
+    category: 'master',
+    order_index: 50,
+    badge: ''
+  },
+  {
+    id: 11,
+    title: 'Transport Entry',
+    path: '/transport-entry',
+    icon: 'Route',
     roles: ['admin', 'staff', 'farmer'],
     category: 'master',
     order_index: 50,
