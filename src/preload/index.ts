@@ -110,8 +110,17 @@ const api = {
   // milk rejection
   getReasons: (): Promise<MilkRejectionResponseDto[]> =>
     ipcRenderer.invoke('procurement-rejection:getReasons'),
-  getPaginatedMilkRejections: (params: PaginationRequestDto): Promise<PaginatedMilkRejectionDto> =>
-    ipcRenderer.invoke('procurement-rejection:getPaginatedMilkRejections', params),
+  getPaginatedMilkRejections: (
+    params: PaginationRequestDto,
+    fromDate?: string,
+    toDate?: string
+  ): Promise<PaginatedMilkRejectionDto> =>
+    ipcRenderer.invoke(
+      'procurement-rejection:getPaginatedMilkRejections',
+      params,
+      fromDate,
+      toDate
+    ),
   saveMilkRejection: (params: MilkRejectionSaveDto): Promise<MilkRejectionResponseDto> =>
     ipcRenderer.invoke('procurement-rejection:saveMilkRejection', params),
 

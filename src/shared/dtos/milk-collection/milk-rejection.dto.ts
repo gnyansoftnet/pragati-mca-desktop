@@ -6,6 +6,7 @@ export interface MilkRejectionResponseDto {
   dskName: string
   dskCode: string
   route: string
+  routeName?: string | null
   supervisor: string
   shift: string
   noOfCanes: string

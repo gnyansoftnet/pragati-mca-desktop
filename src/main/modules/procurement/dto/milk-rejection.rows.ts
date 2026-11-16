@@ -7,6 +7,7 @@ export interface MilkRejectionRow extends RowDataPacket {
   dsk_name: string
   dsk_code: string
   route: string
+  route_name?: string | null
   supervisor: string
   shift: string
   no_of_canes: string
