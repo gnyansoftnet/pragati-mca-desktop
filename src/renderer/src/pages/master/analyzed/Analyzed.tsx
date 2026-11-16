@@ -344,23 +344,7 @@ export const Analyzed: React.FC = () => {
                           })()
                         : ''}
                     </td>
-                    <td className="py-2 px-4">
-                      <span
-                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
-                          String(item.shift) === '1'
-                            ? 'bg-orange-50 text-orange-500 border-orange-200'
-                            : String(item.shift) === '2'
-                              ? 'bg-sky-50 text-sky-500 border-sky-200'
-                              : 'bg-rose-50 text-rose-700 border-rose-200'
-                        }`}
-                      >
-                        {String(item.shift) === '1'
-                          ? 'Morning'
-                          : String(item.shift) === '2'
-                            ? 'Evening'
-                            : `Shift ${item.shift}`}
-                      </span>
-                    </td>
+                    <td className="py-2 px-4 font-semibold text-slate-800">{item.shift}</td>
                     <td className="py-2 px-4 font-semibold text-slate-800">{item.plant}</td>
                     <td className="py-2 px-4 font-semibold text-primary max-w-40 truncate">
                       {item.rootCode}
