@@ -27,6 +27,11 @@ import {
 } from '@shared/dtos/milk-collection/milk-collection.dto'
 import { WeightSystemDto } from '@shared/dtos/milk-collection/weight-system.dto'
 import { SyncSucess } from '@shared/dtos/sync-success.dto'
+import {
+  PaginatedTransportDto,
+  TransportDto,
+  TransportSaveDto as TransportSaveDto
+} from '@shared/dtos/transport/transport.dto'
 
 // Custom APIs for renderer
 
@@ -106,6 +111,16 @@ const api = {
 
   updateMilkSample: (params: MilkSampleUpdateDto): Promise<MilkSampleDto> =>
     ipcRenderer.invoke('procurement-analysis:updateMilkSample', params),
+
+  // trasnport
+  getPaginatedTransports: (
+    params: PaginationRequestDto,
+    fromDate?: string,
+    toDate?: string
+  ): Promise<PaginatedTransportDto> =>
+    ipcRenderer.invoke('transport:getPaginatedTransports', params, fromDate, toDate),
+  saveTransport: (params: TransportSaveDto): Promise<TransportDto> =>
+    ipcRenderer.invoke('transport:saveTransport', params),
 
   // milk rejection
   getReasons: (): Promise<MilkRejectionResponseDto[]> =>

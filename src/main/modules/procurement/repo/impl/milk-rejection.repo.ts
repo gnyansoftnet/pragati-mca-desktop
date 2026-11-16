@@ -118,7 +118,7 @@ export class MilkRejectionRepo implements IMilkRejectionRepo {
       data.aproxQuantity,
       data.reason
     ])
-    console.log(result)
+
     return result[0][0]
   }
 }

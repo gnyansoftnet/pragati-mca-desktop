@@ -35,9 +35,12 @@ export const TOKENS = {
   MilkCollectionService: Symbol('MilkCollectionService'),
   MilkCollectionRepo: Symbol('MilkCollectionRepo'),
 
+  // milk rejection
   MilkRejectionService: Symbol('MilkRejectionService'),
   MilkRejectionRepo: Symbol('MilkRejectionRepo'),
 
-  // api client
-  ApiClient: Symbol('ApiClient')
+  // transport
+  TransportService: Symbol('TransportService'),
+  TransportRepo: Symbol('TransportRepo')
+
 } as const
