@@ -25,13 +25,13 @@ import {
   PaginatedMilkCollectionDto,
   SaveMilkCollectionDto
 } from '@shared/dtos/milk-collection/milk-collection.dto'
-import { WeightSystemDto } from '@shared/dtos/milk-collection/weight-system.dto'
 import { SyncSucess } from '@shared/dtos/sync-success.dto'
 import {
   PaginatedTransportDto,
   TransportDto,
   TransportSaveDto as TransportSaveDto
 } from '@shared/dtos/transport/transport.dto'
+import { CansTypeDto, MilkStatusDto, MilkTypesDto, ReasonDto, ShiftDto, WeightSystemDto } from '@shared/dtos/master/master.dto'
 
 // Custom APIs for renderer
 
@@ -99,12 +99,6 @@ const api = {
   getMilkCollections: (): Promise<MilkCollectionDto[]> =>
     ipcRenderer.invoke('procurement-collection:getMilkCollections'),
 
-  // weight system
-  getWeightSystems: (): Promise<WeightSystemDto[]> =>
-    ipcRenderer.invoke('procurement-collection:getWeightSystems'),
-  saveWeightSystem: (systemList: string, userCode: string): Promise<WeightSystemDto> =>
-    ipcRenderer.invoke('procurement-collection:saveWeightSystem', systemList, userCode),
-
   // milk analysis
   getMilkSamples: (sampleDate: string, shift: number, plant: string): Promise<MilkSampleDto[]> =>
     ipcRenderer.invoke('procurement-analysis:getMilkSamples', sampleDate, shift, plant),
@@ -122,9 +116,15 @@ const api = {
   saveTransport: (params: TransportSaveDto): Promise<TransportDto> =>
     ipcRenderer.invoke('transport:saveTransport', params),
 
+  // master
+  getReasons: (): Promise<ReasonDto[]> => ipcRenderer.invoke('master:getReasons'),
+  getWeightSystems: (): Promise<WeightSystemDto[]> => ipcRenderer.invoke('master:getWeightSystems'),
+  getCanTypes: (): Promise<CansTypeDto[]> => ipcRenderer.invoke('master:getCanTypes'),
+  getMilkStatus: (): Promise<MilkStatusDto[]> => ipcRenderer.invoke('master:getMilkStatus'),
+  getMilkType: (): Promise<MilkTypesDto[]> => ipcRenderer.invoke('master:getMilkType'),
+  getShifts: (): Promise<ShiftDto[]> => ipcRenderer.invoke('master:getShifts'),
+
   // milk rejection
-  getReasons: (): Promise<MilkRejectionResponseDto[]> =>
-    ipcRenderer.invoke('procurement-rejection:getReasons'),
   getPaginatedMilkRejections: (
     params: PaginationRequestDto,
     fromDate?: string,

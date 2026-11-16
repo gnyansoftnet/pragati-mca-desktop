@@ -4,7 +4,6 @@ import { db } from '../../../../core/config/database.config'
 import type { MilkRejectionSaveDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
 import type {
   MilkRejectionRow,
-  ReasonRow,
   CountRow,
   PagedMilkRejectionRows
 } from '../../dto/milk-rejection.rows'
@@ -14,20 +13,10 @@ import { IMilkRejectionRepo } from '../i-milk-rejection.repo'
 const REJECTION_COLUMNS = `id, plant, dsk_name, dsk_code, route, supervisor, shift,
   no_of_canes, aprox_quantity, reason, sync_status, created_at, updated_at`
 
-const SQL_GET_REASONS = `
-  SELECT id, reason
-    FROM rejection_reason
-   ORDER BY id ASC`
-
 const SQL_GET_REJECTION_BY_ID = `
   SELECT ${REJECTION_COLUMNS}
     FROM rejection_milk
    WHERE id = ?`
-
-// const SQL_INSERT_REJECTION = `
-//   INSERT INTO rejection_milk
-//     (plant, dsk_name, dsk_code, route, supervisor, shift, no_of_canes, aprox_quantity, reason)
-//   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
 const USP_M_REJECTION_MILK_IUD = 'CALL USP_M_REJECTION_MILK_IUD(?,?,?,?,?,?,?,?,?,?,?)'
 
@@ -36,10 +25,6 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 @injectable()
 export class MilkRejectionRepo implements IMilkRejectionRepo {
   constructor() {}
-  async getReasons(): Promise<ReasonRow[]> {
-    const [rows] = await db.execute<ReasonRow[]>(SQL_GET_REASONS)
-    return rows
-  }
 
   async getPaginatedMilkRejections(
     search: string | undefined,

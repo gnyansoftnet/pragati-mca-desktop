@@ -1,4 +1,4 @@
-import { PaginatedResponseDto } from "../../../main/utils/pagination.dto"
+import { PaginatedResponseDto } from '../pagination.dto'
 
 export interface UserResponseDto {
   id: number

@@ -33,6 +33,8 @@ import { MilkCollectionRepo } from '../../modules/procurement/repo/impl/milk-col
 import { MilkCollectionService } from '../../modules/procurement/service/impl/milk-collection.service'
 import { TransportRepo } from '../../modules/transport/repo/impl/transport.repo'
 import { TransportService } from '../../modules/transport/service/impl/transport.service'
+import { MasterRepo } from '../../modules/master/repo/impl/master.repo'
+import { MasterService } from '../../modules/master/service/impl/master.service'
 
 export function bootstrapContainer(): void {
   // user
@@ -77,6 +79,9 @@ export function bootstrapContainer(): void {
 
   container.registerSingleton(TOKENS.TransportRepo, TransportRepo)
   container.registerSingleton(TOKENS.TransportService, TransportService)
+
+  container.registerSingleton(TOKENS.MasterRepo, MasterRepo)
+  container.registerSingleton(TOKENS.MasterService, MasterService)
 }
 
 export { container }

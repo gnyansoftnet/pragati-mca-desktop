@@ -5,7 +5,6 @@ import { MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dt
 import { IMilkAnalysisService } from './service/i-milk-analysis.service'
 import { IMilkCollectionService } from './service/i-milk-collection.service'
 import { SaveMilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
-import { WeightSystemDto } from '@shared/dtos/milk-collection/weight-system.dto'
 import { PaginationRequestDto } from '@shared/dtos/pagination.dto'
 import { IMilkRejectionService } from './service/i-milk-rejection.service'
 import { MilkRejectionSaveDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
@@ -35,13 +34,6 @@ export function registerProcurmentIpc(): void {
     ) => collectionService.getPaginatedMilkCollections(params, fromDate, toDate, isAnalyse)
   )
 
-  ipcMain.handle('milk-collection:getWeightSystems', () => collectionService.getWeightSystems())
-  ipcMain.handle(
-    'procurement-collection:saveWeightSystem',
-    (_event, systemList: string, userCode: string): Promise<WeightSystemDto> =>
-      collectionService.saveWeightSystem(systemList, userCode)
-  )
-
   ipcMain.handle('procurement-collection:getMilkCollections', () =>
     collectionService.getMilkCollections()
   )
@@ -56,8 +48,6 @@ export function registerProcurmentIpc(): void {
     (_event, params: PaginationRequestDto, fromDate?: string, toDate?: string) =>
       rejectionService.getPaginatedMilkRejections(params, fromDate, toDate)
   )
-
-  ipcMain.handle('procurement-rejection:getReasons', () => rejectionService.getReasons())
 
   ipcMain.handle(
     'procurement-rejection:saveMilkRejection',
