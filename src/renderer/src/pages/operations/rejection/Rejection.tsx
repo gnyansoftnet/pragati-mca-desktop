@@ -465,7 +465,6 @@ export const Rejection: React.FC = () => {
             </div>
 
             {/* aprox quantity */}
-            {/* aprox quantity */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
                 Aprox Quantity(LTR) <span className="text-rose-500">*</span>
@@ -543,18 +542,18 @@ export const Rejection: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-3 px-2">ID</th>
-                <th className="py-3 px-2">Plant Id</th>
-                <th className="py-3 px-2">Date</th>
-                <th className="py-3 px-2">Shift</th>
-                <th className="py-3 px-2">Route Name</th>
-                <th className="py-3 px-2">DSK Code</th>
-                <th className="py-3 px-2">DSK Name</th>
-                <th className="py-3 px-2">Supervisor</th>
+                <th className="py-2 px-2">ID</th>
+                <th className="py-2 px-2">Plant Id</th>
+                <th className="py-2 px-2">Date</th>
+                <th className="py-2 px-2">Shift</th>
+                <th className="py-2 px-2">Route Name</th>
+                <th className="py-2 px-2">DSK Code</th>
+                <th className="py-2 px-2">DSK Name</th>
+                <th className="py-2 px-2">Supervisor</th>
 
-                <th className="py-3 px-2">No. of Cans</th>
-                <th className="py-3 px-2">Approx Qty (LTR)</th>
-                <th className="py-3 px-2">Reason</th>
+                <th className="py-2 px-2">No. of Cans</th>
+                <th className="py-2 px-2">Approx Qty (LTR)</th>
+                <th className="py-2 px-2">Reason</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">

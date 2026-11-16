@@ -304,6 +304,7 @@ export const Analyzed: React.FC = () => {
                 <th className="py-3 px-2 whitespace-nowrap">Milk Type</th>
                 <th className="py-3 px-2 whitespace-nowrap">Milk Status</th>
                 <th className="py-3 px-2 whitespace-nowrap">No. of Cans</th>
+                <th className="py-3 px-2 whitespace-nowrap">Gross Weight</th>
                 <th className="py-3 px-2 whitespace-nowrap">Net Weight</th>
                 <th className="py-3 px-2 whitespace-nowrap">Tipping Time</th>
                 <th className="py-3 px-2 whitespace-nowrap">FAT (%)</th>
@@ -344,7 +345,23 @@ export const Analyzed: React.FC = () => {
                           })()
                         : ''}
                     </td>
-                    <td className="py-2 px-4 font-semibold text-slate-800">{item.shift}</td>
+                    <td className="py-2 px-4">
+                      <span
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                          String(item.shift) === '1'
+                            ? 'bg-orange-50 text-orange-500 border-orange-200'
+                            : String(item.shift) === '2'
+                              ? 'bg-sky-50 text-sky-500 border-sky-200'
+                              : 'bg-rose-50 text-rose-700 border-rose-200'
+                        }`}
+                      >
+                        {String(item.shift) === '1'
+                          ? 'Morning'
+                          : String(item.shift) === '2'
+                            ? 'Evening'
+                            : `Shift ${item.shift}`}
+                      </span>
+                    </td>
                     <td className="py-2 px-4 font-semibold text-slate-800">{item.plant}</td>
                     <td className="py-2 px-4 font-semibold text-primary max-w-40 truncate">
                       {item.rootCode}
@@ -369,6 +386,9 @@ export const Analyzed: React.FC = () => {
                     </td>
                     <td className="py-2 px-4 font-semibold text-primary">{item.milkStatus}</td>
                     <td className="py-2 px-4 font-semibold text-primary">{item.noOfCans}</td>
+                    <td className="py-2 px-4 font-bold text-emerald-600">
+                      {Number(item.netWeight || item.netLtr || 0).toFixed(1)}
+                    </td>
                     <td className="py-2 px-4 font-bold text-emerald-600">
                       {Number(item.netWeight || item.netLtr || 0).toFixed(1)}
                     </td>

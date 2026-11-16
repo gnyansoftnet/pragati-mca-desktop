@@ -4,12 +4,7 @@ import {
   UserPlus,
   Calendar,
   CheckCircle2,
-  Download,
-  Upload,
-  Search,
-  Eye,
-  Edit2,
-  Trash2
+  UploadCloud
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import Button1 from '../../components/buttons/Button1'
@@ -110,24 +105,6 @@ export const DashboardPage: React.FC = () => {
       f.mobile.includes(filterQuery)
   )
 
-  // const [formData, setFormData] = useState({
-  //   name: '',
-  //   milkQty: '',
-  //   email: '',
-  //   password: '',
-  //   date: '',
-  //   center: '',
-  //   farmerId: '',
-  //   address: '',
-  // });
-  // const handleChange = (e) => {
-  //   setFormData({ ...formData, [e.target.name]: e.target.value });
-  // };
-  // const centerOptions = [
-  //   { value: 'CTR-01', label: 'North Village Center' },
-  //   { value: 'CTR-02', label: 'East Valley Dairy Hub' },
-  //   { value: 'CTR-03', label: 'Central Collection Point' },
-  // ];
 
   return (
     <div className="space-y-3">
@@ -138,65 +115,20 @@ export const DashboardPage: React.FC = () => {
         />
 
         <div className="flex items-center gap-2.5">
-          <Button1
-            variant="outline"
-            icon={<Download className="w-3.5 h-3.5 text-primary" />}
-            label="Export"
-          />
-          <Button1
-            variant="outline"
-            icon={<Upload className="w-3.5 h-3.5 text-primary" />}
-            label="Import"
-          />
-
+          
           {/* <Button1
             variant="primary"
-            icon={<Plus className="w-3.5 h-3.5 text-white" />}
-            label="Add Farmer"
+            icon={<UploadCloud className="w-3.5 h-3.5 text-white" />}
+            label="Sync Analyzed Data"
+          />
+          <Button1
+            variant="primary"
+            icon={<UploadCloud className="w-3.5 h-3.5 text-white" />}
+            label="Sync Rejected Data"
           /> */}
         </div>
       </div>
 
-      {/* <CustomForm onSubmit={(e) => e.preventDefault()} className="max-w-xl space-y-4 p-6 bg-white rounded-2xl border border-slate-100">
-        <CustomForm.CustomTextField
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="e.g. Ramesh Patel"
-        />
-        <CustomForm.CustomNumberField
-          name="milkQty"
-          value={formData.milkQty}
-          onChange={handleChange}
-          placeholder="0.0"
-          unit="Ltr"
-        />
-        <CustomForm.CustomSelectSearchField
-          name="center"
-          value={formData.center}
-          onChange={handleChange}
-          options={centerOptions}
-          placeholder="Select collection center..."
-        />
-        <CustomForm.CustomEmailField
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <CustomForm.CustomPasswordField
-          value={formData.password}
-          onChange={handleChange}
-        />
-        <CustomForm.CustomDateField
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-        />
-        <CustomForm.CustomAddress
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-        />
-      </CustomForm> */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
           <div>
@@ -286,116 +218,9 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-100/90 shadow-xs overflow-hidden">
-        <div className="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={filterQuery}
-              onChange={(e) => setFilterQuery(e.target.value)}
-              placeholder="Search by name, ID, mobile..."
-              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200/80 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-primary outline-none transition"
-            />
-          </div>
-
-          <div className="text-xs font-medium text-slate-400">
-            Showing {filteredFarmers.length} of {farmers.length} farmers
-          </div>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                <th className="py-3.5 px-4">Farmer ID</th>
-                <th className="py-3.5 px-4">Farmer Name</th>
-                <th className="py-3.5 px-4">Cattle</th>
-                <th className="py-3.5 px-4">Gender</th>
-                <th className="py-3.5 px-4">Mobile</th>
-                <th className="py-3.5 px-4">Route</th>
-                <th className="py-3.5 px-4">Last Visit</th>
-                <th className="py-3.5 px-4">Total Tests</th>
-                <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 text-xs">
-              {filteredFarmers.map((farmer) => (
-                <tr key={farmer.id} className="hover:bg-slate-50/70 transition-colors duration-150">
-                  <td className="py-3.5 px-4 font-semibold text-primary">{farmer.id}</td>
-
-                  <td className="py-3.5 px-4">
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        className={`w-7 h-7 rounded-full ${farmer.avatarBg} text-white flex items-center justify-center font-bold text-[10px] shadow-2xs`}
-                      >
-                        {farmer.initials}
-                      </div>
-                      <span className="font-semibold text-slate-800">{farmer.name}</span>
-                    </div>
-                  </td>
-
-                  <td className="py-3.5 px-4 text-slate-600">{farmer.cattleCount}</td>
-
-                  <td className="py-3.5 px-4 text-slate-600">{farmer.gender}</td>
-
-                  <td className="py-3.5 px-4 text-slate-600 font-mono text-[11px]">
-                    {farmer.mobile}
-                  </td>
-
-                  {/* Route Badge */}
-                  <td className="py-3.5 px-4">
-                    <span className="px-2 py-0.5 rounded-md bg-rose-50 text-rose-600 font-semibold text-[10px] border border-rose-100">
-                      {farmer.routeCode}
-                    </span>
-                  </td>
-
-                  {/* Last Visit */}
-                  <td className="py-3.5 px-4 text-slate-600">{farmer.lastVisit}</td>
-
-                  {/* Total Tests */}
-                  <td className="py-3.5 px-4 text-slate-600 font-medium">{farmer.totalTests}</td>
-
-                  {/* Status Pill */}
-                  <td className="py-3.5 px-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200/80">
-                      {farmer.status}
-                    </span>
-                  </td>
-
-                  {/* Actions */}
-                  <td className="py-3.5 px-4">
-                    <div className="flex items-center justify-center gap-2 text-slate-400">
-                      <button
-                        type="button"
-                        className="p-1 hover:text-primary transition cursor-pointer"
-                        title="View details"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        className="p-1 hover:text-blue-600 transition cursor-pointer"
-                        title="Edit farmer"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        className="p-1 hover:text-rose-600 transition cursor-pointer"
-                        title="Delete farmer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* <div className="bg-white rounded-2xl border border-slate-100/90 shadow-xs overflow-hidden">
+        
+      </div> */}
     </div>
   )
 }
