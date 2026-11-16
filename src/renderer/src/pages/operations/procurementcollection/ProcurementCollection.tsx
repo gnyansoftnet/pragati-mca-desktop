@@ -513,8 +513,9 @@ export const ProcurementCollection: React.FC = () => {
     <div className="space-y-3">
       {/* Breadcrumb Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Procurement Collection" 
-        // desc="Record real-time machine tipping" 
+        <PageBreadcrumb
+          title="Procurement Collection"
+          // desc="Record real-time machine tipping"
         />
       </div>
 
@@ -541,7 +542,6 @@ export const ProcurementCollection: React.FC = () => {
                 value={shift}
                 onChange={(e: any) => setShift(e.target.value)}
                 options={shifts}
-                readOnly={true}
                 tabIndex={1}
               />
             </div>
@@ -770,9 +770,13 @@ export const ProcurementCollection: React.FC = () => {
                           const d = new Date(item.sampleDate)
                           return isNaN(d.getTime())
                             ? String(item.sampleDate)
-                            : d.toLocaleDateString()
+                            : d.toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: '2-digit'
+                              })
                         })()
-                      : item.date || ''}
+                      : ''}
                   </td>
                   <td className="py-2 px-4 font-semibold text-slate-800">{item.shift}</td>
                   {/* <td className="py-2 px-4">

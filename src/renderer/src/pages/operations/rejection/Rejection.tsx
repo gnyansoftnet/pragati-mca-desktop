@@ -335,14 +335,34 @@ export const Rejection: React.FC = () => {
   return (
     <div className="space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Rejection"
-        //  desc="Connect you machine before collection" 
-         />
+        <PageBreadcrumb
+          title="Rejection"
+          //  desc="Connect you machine before collection"
+        />
       </div>
 
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
         <CustomForm className="w-full">
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2.5">
+            {/* Date (Read-only, skipped in Tab order) */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700">Date</label>
+              <CustomForm.CustomTextField
+                name="date"
+                value={getCurrentLocalDate()}
+                readOnly={true}
+              />
+            </div>
+            {/* Shift */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700">Select Shift</label>
+              <CustomForm.CustomSelectField
+                name="shift"
+                value={shift}
+                onChange={(e: any) => setShift(e.target.value)}
+                options={shifts}
+              />
+            </div>
             {/* Chilling Center */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
@@ -353,15 +373,7 @@ export const Rejection: React.FC = () => {
                 tabIndex={-1}
               />
             </div>
-            {/* Date (Read-only, skipped in Tab order) */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Date</label>
-              <CustomForm.CustomTextField
-                name="date"
-                value={getCurrentLocalDate()}
-                readOnly={true}
-              />
-            </div>
+
             {/* Dynamic Routes Dropdown (tabIndex: 6) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
@@ -406,17 +418,6 @@ export const Rejection: React.FC = () => {
               <label className="text-xs font-semibold text-slate-700">Supervisor Id</label>
               <CustomForm.CustomTextField name="supervisor" value={supervisor} readOnly={true} />
             </div>
-            {/* Shift */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">Select Shift</label>
-              <CustomForm.CustomSelectField
-                name="shift"
-                value={shift}
-                onChange={(e: any) => setShift(e.target.value)}
-                options={shifts}
-              />
-            </div>
-
             {/* Number of Cans (tabIndex: 8) with Enter handler and Route Total Cans counter */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">

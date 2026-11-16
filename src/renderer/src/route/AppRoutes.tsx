@@ -4,6 +4,7 @@ import { LoginPage } from '../pages/auth/LoginPage'
 import { AdminLayout } from '../layouts/AdminLayout'
 import { DashboardPage } from '../pages/dashboard/DashboardPage'
 import { Rejection } from '../pages/operations/rejection/Rejection'
+import { Transport } from '../pages/operations/transport/Transport'
 import { MilkCollectionPage } from '../pages/operations/MilkCollectionPage'
 import { MacineConnection } from '../pages/operations/macineconnection/MacineConnection'
 import { ProcurementCollection } from '../pages/operations/procurementcollection/ProcurementCollection'
@@ -13,6 +14,7 @@ import { Rootes } from '../pages/master/rootes/Rootes'
 import { Vendors } from '../pages/master/vendors/Vendors'
 import { Supervisors } from '../pages/master/supervisors/Supervisors'
 import { Analyzed } from '../pages/master/analyzed/Analyzed'
+import { Rejected } from '../pages/master/rejected/Rejected'
 import { Users } from '../pages/master/users/Users'
 import { DynamicRoutePage } from '../pages/common/DynamicRoutePage'
 
@@ -28,7 +30,8 @@ export const AppRoutes: React.FC = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="rejection" element={<Rejection />} />
+          <Route path="rejection-entry" element={<Rejection />} />
+          <Route path="transport-entry" element={<Transport />} />
           <Route path="farmers" element={<DashboardPage />} />
           <Route path="collection" element={<MilkCollectionPage />} />
           <Route path="machine-connection" element={<MacineConnection />} />
@@ -39,6 +42,7 @@ export const AppRoutes: React.FC = () => {
           <Route path="vendors" element={<Vendors />} />
           <Route path="supervisors" element={<Supervisors />} />
           <Route path="analyzed-sample" element={<Analyzed />} />
+          <Route path="rejected-sample" element={<Rejected />} />
           <Route path="*" element={<DynamicRoutePage />} />
         </Route>
 
