@@ -251,7 +251,7 @@ export const Analyze: React.FC = () => {
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomTextField
                 name="chilling"
-                value={user?.plantName || user?.plant || ''}
+                value={`${user?.plant || ''}, ${user?.plantName || ''}`} 
                 readOnly={true}
                 tabIndex={-1}
               />

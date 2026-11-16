@@ -354,7 +354,7 @@ export const Transport: React.FC = () => {
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomTextField
                 name="chilling"
-                value={user?.plantName || user?.plant || ''}
+                value={`${user?.plant || ''}, ${user?.plantName || ''}`} 
                 readOnly={true}
                 tabIndex={-1}
               />
@@ -383,7 +383,7 @@ export const Transport: React.FC = () => {
                 name="transporter"
                 value={transporter}
                 onChange={(e: any) => setTransporter(e.target.value)}
-                tabIndex={-1}
+                placeholder='Enter transporter'
               />
             </div>
 
@@ -394,7 +394,7 @@ export const Transport: React.FC = () => {
                 name="rcno"
                 value={rcno}
                 onChange={(e: any) => setRcno(e.target.value)}
-                tabIndex={-1}
+                placeholder='Enter RC number'
               />
             </div>
             {/* Driver Name */}
@@ -404,7 +404,7 @@ export const Transport: React.FC = () => {
                 name="driver"
                 value={driver}
                 onChange={(e: any) => setDriver(e.target.value)}
-                tabIndex={-1}
+                placeholder='Enter driver name'
               />
             </div>
             {/* Is Real field Name */}
@@ -415,7 +415,6 @@ export const Transport: React.FC = () => {
                 value={isRealVehicle}
                 onChange={(e: any) => setIsRealVehicle(e.target.value)}
                 options={isRealVehicleOptions}
-                tabIndex={-1}
               />
             </div>
 
