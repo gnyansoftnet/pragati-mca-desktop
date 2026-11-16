@@ -19,10 +19,7 @@ export interface MilkRejectionResponseDto {
 
 export type PaginatedMilkRejectionDto = PaginatedResponseDto<MilkRejectionResponseDto>
 
-export interface ReasonDto {
-  id: number
-  reason: string
-}
+
 
 export interface MilkRejectionSaveDto {
   plant: string

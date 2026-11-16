@@ -41,6 +41,9 @@ export const TOKENS = {
 
   // transport
   TransportService: Symbol('TransportService'),
-  TransportRepo: Symbol('TransportRepo')
+  TransportRepo: Symbol('TransportRepo'),
 
+  // master
+  MasterService: Symbol('MasterService'),
+  MasterRepo: Symbol('MasterRepo')
 } as const

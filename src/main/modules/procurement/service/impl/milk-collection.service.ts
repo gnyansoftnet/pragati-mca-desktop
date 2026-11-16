@@ -5,7 +5,6 @@ import {
   PaginatedMilkCollectionDto,
   SaveMilkCollectionDto
 } from '../../../../../shared/dtos/milk-collection/milk-collection.dto'
-import { WeightSystemDto } from '../../../../../shared/dtos/milk-collection/weight-system.dto'
 import { AppError, DatabaseError } from '../../../../utils/app-errors'
 import { IMilkCollectionService } from '../i-milk-collection.service'
 import { TOKENS } from '../../../../core/di/token'
@@ -165,32 +164,6 @@ export class MilkCollectionService implements IMilkCollectionService {
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new DatabaseError('Failed to fetch weight systems', { cause: error })
-    }
-  }
-
-  async getWeightSystems(): Promise<WeightSystemDto[]> {
-    try {
-      const rows = await this.milkRepo.getWeightSystems()
-      return rows.map((r) => ({
-        id: r.id,
-        system_list: r.system_list
-      }))
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to fetch weight systems', { cause: error })
-    }
-  }
-
-  async saveWeightSystem(systemList: string, userCode: string): Promise<WeightSystemDto> {
-    try {
-      const rows = await this.milkRepo.saveWeightSystem(systemList, userCode)
-      return {
-        id: rows.id,
-        system_list: rows.system_list
-      }
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to save weight systems', { cause: error })
     }
   }
 }

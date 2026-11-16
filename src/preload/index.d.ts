@@ -32,6 +32,7 @@ import {
   TransportDto,
   TransportSaveDto
 } from '@shared/dtos/transport/transport.dto'
+import { CansTypeDto, MilkStatusDto, MilkTypesDto, ShiftDto } from '@shared/dtos/master/master.dto'
 
 declare global {
   interface Window {
@@ -63,6 +64,14 @@ declare global {
       syncMilkCollection: (fromDate: string, toDate: string) => Promise<any>
       syncMilkRejection: (fromDate: string, toDate: string) => Promise<any>
 
+      // master
+      getWeightSystems: () => Promise<WeightSystemDto[]>
+      getReasons: () => Promise<ReasonDto[]>
+      getCanTypes: () => Promise<CansTypeDto[]>
+      getMilkStatus: () => Promise<MilkStatusDto[]>
+      getMilkType: () => Promise<MilkTypesDto[]>
+      getShifts: () => Promise<ShiftDto[]>
+
       // milk collection
       getPaginatedMilkCollctions: (
         params: PaginationRequestDto,
@@ -72,9 +81,6 @@ declare global {
       ) => Promise<PaginatedMilkCollectionDto>
       saveMilkCollection: (params: SaveMilkCollectionDto) => Promise<MilkCollectionDto>
       getMilkCollections: () => Promise<MilkCollectionDto[]>
-      // weight system
-      getWeightSystems: () => Promise<WeightSystemDto[]>
-      saveWeightSystem: (systemList: string, userCode: string) => Promise<WeightSystemDto>
 
       // milk analysis
       updateMilkSample: (params: MilkSampleUpdateDto) => Promise<MilkSampleDto>
@@ -89,7 +95,6 @@ declare global {
       saveTransport: (params: TransportSaveDto) => Promise<TransportDto>
 
       // milk rejection
-      getReasons: () => Promise<ReasonDto[]>
       getPaginatedMilkRejections: (
         params: PaginationRequestDto,
         fromDate?: string,

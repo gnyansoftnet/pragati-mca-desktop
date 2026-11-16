@@ -19,11 +19,6 @@ export interface MilkRejectionRow extends RowDataPacket {
   d_falg: number
 }
 
-export interface ReasonRow extends RowDataPacket {
-  id: number
-  reason: string
-}
-
 export interface CountRow extends RowDataPacket {
   total: number
 }

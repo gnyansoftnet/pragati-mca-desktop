@@ -4,8 +4,7 @@ import type { PaginationRequestDto } from '@shared/dtos/pagination.dto'
 import type {
   MilkRejectionResponseDto,
   MilkRejectionSaveDto,
-  PaginatedMilkRejectionDto,
-  ReasonDto
+  PaginatedMilkRejectionDto
 } from '@shared/dtos/milk-collection/milk-rejection.dto'
 import { AppError, DatabaseError, ValidationError } from '../../../../utils/app-errors'
 import { IMilkRejectionService } from '../i-milk-rejection.service'
@@ -94,19 +93,6 @@ export class MilkRejectionService implements IMilkRejectionService {
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new DatabaseError('Failed to save milk rejection', { cause: error })
-    }
-  }
-
-  async getReasons(): Promise<ReasonDto[]> {
-    try {
-      const rows = await this.milkRejectionRepo.getReasons()
-      return rows.map((r) => ({
-        id: r.id,
-        reason: r.reason
-      }))
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to fetch rejection reasons', { cause: error })
     }
   }
 }
