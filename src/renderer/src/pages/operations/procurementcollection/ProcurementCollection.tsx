@@ -18,43 +18,6 @@ interface SelectOption {
   label: string
 }
 
-// interface MilkEntry {
-//   id: number
-//   sampleCode?: string | number
-//   farmerId?: string
-//   chillingPlant?: string
-//   plant?: string
-//   date?: string
-//   sampleDate?: string | Date
-//   routes?: string
-//   rootCode?: string
-//   canType?: string
-//   shift?: number | string
-//   shiftName?: string
-//   milkType?: string
-//   milkStatus?: string
-//   tipingTime?: string
-//   vendorCode?: string
-//   noOfCans?: number | string
-//   netWeight?: string | number
-//   grossWeight?: string | number
-//   fatPercent?: number
-//   fat?: string | number
-//   snfPercent?: number
-//   snf?: string | number
-//   clrPercent?: number
-//   clr?: string | number
-//   weightSystem?: string
-// }
-
-// interface PaginationState {
-//   page: number
-//   limit: number
-//   total: number
-//   totalPages: number
-//   hasNextPage: boolean
-//   hasPrevPage: boolean
-// }
 
 // Set to true while testing; set to false in production with real hardware
 const IS_TEST_MODE = true
@@ -552,7 +515,7 @@ export const ProcurementCollection: React.FC = () => {
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomTextField
                 name="chilling"
-                value={`${user?.plant || ''}, ${user?.plantName || ''}`} 
+                value={`${user?.plant || ''}, ${user?.plantName || ''}`}
                 readOnly={true}
                 tabIndex={-1}
               />
@@ -801,7 +764,9 @@ export const ProcurementCollection: React.FC = () => {
                   <td className="py-2 px-2 font-semibold text-primary max-w-40 truncate">
                     {item.rootName}
                   </td>
-                  <td className="py-2 px-2 font-semibold whitespace-nowrap text-primary">{item.dskName}</td>
+                  <td className="py-2 px-2 font-semibold whitespace-nowrap text-primary">
+                    {item.dskName}
+                  </td>
                   <td className="py-2 px-2 font-bold text-slate-900">{item.weightSystem}</td>
 
                   <td className="py-2 px-2 font-semibold text-primary">{item.canType}</td>
