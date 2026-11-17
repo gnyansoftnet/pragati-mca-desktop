@@ -6,7 +6,7 @@ import type {
   MilkRejectionSaveDto,
   PaginatedMilkRejectionDto
 } from '@shared/dtos/milk-collection/milk-rejection.dto'
-import { AppError, DatabaseError, ValidationError } from '../../../../utils/app-errors'
+import { DatabaseError, toAppError, ValidationError } from '../../../../utils/app-errors'
 import { IMilkRejectionService } from '../i-milk-rejection.service'
 import { TOKENS } from '../../../../core/di/token'
 import type { IMilkRejectionRepo } from '../../repo/i-milk-rejection.repo'
@@ -65,8 +65,7 @@ export class MilkRejectionService implements IMilkRejectionService {
         }
       }
     } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to fetch milk rejections', { cause: error })
+      throw toAppError(error, 'Failed')
     }
   }
 
@@ -91,8 +90,7 @@ export class MilkRejectionService implements IMilkRejectionService {
         supervisor: row.supervisor
       }
     } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to save milk rejection', { cause: error })
+      throw toAppError(error, 'Failed')
     }
   }
 }

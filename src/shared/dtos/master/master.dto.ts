@@ -26,3 +26,13 @@ export interface MilkStatusDto {
   id: number
   milkStatus: string
 }
+
+export interface DashboardCountDto {
+  user: string
+  vendor: string
+  route: string
+  supervisor: string
+  collection: string
+  analyze: string
+  rejected: string
+}

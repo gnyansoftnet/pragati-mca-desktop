@@ -40,7 +40,7 @@ export class TransportService implements ITransportService {
       return {
         data: rows.map((row) => ({
           id: row.id,
-          transportCode: row.plant,
+          transportCode: row.transport_code,
           plant: row.plant,
           transportDate: row.transport_date,
           shift: row.shift,

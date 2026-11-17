@@ -41,3 +41,27 @@ export class ExternalApiError extends AppError {
     super(message, 'EXTERNAL_API', options)
   }
 }
+
+interface MysqlErrorLike {
+  errno?: number
+  sqlState?: string
+  sqlMessage?: string
+}
+
+/**
+ * Converts any thrown value into an AppError.
+ * - AppError            -> returned as is
+ * - SIGNAL '45000' (our stored procedures' business rules, errno 1644)
+ *                       -> ValidationError with the readable MySQL message
+ * - anything else       -> DatabaseError with the generic fallback text
+ */
+export const toAppError = (error: unknown, fallback: string): AppError => {
+  if (error instanceof AppError) return error
+
+  const e = error as MysqlErrorLike
+  if (e?.sqlState === '45000' || e?.errno === 1644) {
+    return new ValidationError(e.sqlMessage ?? fallback, { cause: error })
+  }
+
+  return new DatabaseError(fallback, { cause: error })
+}

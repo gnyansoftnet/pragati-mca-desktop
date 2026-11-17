@@ -6,12 +6,19 @@ import type { IMasterRepo } from '../../repo/i-master.repo'
 import { AppError, DatabaseError } from '../../../../utils/app-errors'
 import {
   CansTypeDto,
+  DashboardCountDto,
   MilkStatusDto,
   MilkTypesDto,
   ShiftDto,
   WeightSystemDto
 } from '@shared/dtos/master/master.dto'
-import { CansTypeRow, MilkStatusRow, MilkTypeRow, ShiftRow } from '../../dto/master.row'
+import {
+  CansTypeRow,
+  DashboardCountRow,
+  MilkStatusRow,
+  MilkTypeRow,
+  ShiftRow
+} from '../../dto/master.row'
 
 @injectable()
 export class MasterService implements IMasterService {
@@ -19,6 +26,23 @@ export class MasterService implements IMasterService {
     @inject(TOKENS.MasterRepo)
     private readonly masterRepo: IMasterRepo
   ) {}
+  async getDashboardCount(): Promise<DashboardCountDto> {
+    try {
+      const rows: DashboardCountRow = await this.masterRepo.getDashboardCount()
+      return {
+        user: rows.user,
+        vendor: rows.vendor,
+        route: rows.route,
+        supervisor: rows.supervisor,
+        collection: rows.collection,
+        analyze: rows.analyze,
+        rejected: rows.rejected
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to fetch dashboard count', { cause: error })
+    }
+  }
 
   async getCanTypes(): Promise<CansTypeDto[]> {
     try {

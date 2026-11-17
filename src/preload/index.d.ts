@@ -32,7 +32,13 @@ import {
   TransportDto,
   TransportSaveDto
 } from '@shared/dtos/transport/transport.dto'
-import { CansTypeDto, MilkStatusDto, MilkTypesDto, ShiftDto } from '@shared/dtos/master/master.dto'
+import {
+  CansTypeDto,
+  DashboardCountDto,
+  MilkStatusDto,
+  MilkTypesDto,
+  ShiftDto
+} from '@shared/dtos/master/master.dto'
 
 declare global {
   interface Window {
@@ -65,6 +71,7 @@ declare global {
       syncMilkRejection: (fromDate: string, toDate: string) => Promise<any>
 
       // master
+      getDashboardCount: () => Promise<DashboardCountDto[]>
       getWeightSystems: () => Promise<WeightSystemDto[]>
       getReasons: () => Promise<ReasonDto[]>
       getCanTypes: () => Promise<CansTypeDto[]>

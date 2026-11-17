@@ -1,9 +1,10 @@
 import { injectable, inject } from 'tsyringe'
 import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
-import { AppError, DatabaseError } from '../../../../utils/app-errors'
+import { toAppError } from '../../../../utils/app-errors'
 import { IMilkAnalysisService } from '../i-milk-analysis.service'
 import { TOKENS } from '../../../../core/di/token'
 import type { IMilkAnalysisRepo } from '../../repo/i-milk-analysis.repo'
+import { MilkSampleRow } from '../../dto/milk-analysis.row'
 
 @injectable()
 export class MilkAnalysisService implements IMilkAnalysisService {
@@ -28,15 +29,14 @@ export class MilkAnalysisService implements IMilkAnalysisService {
         isAnalyse: p.is_analyse
       }))
     } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to fetch milk samples', { cause: error })
+      throw toAppError(error, 'Failed to fetch milk sample')
     }
   }
 
-  async updateMilkSample(data: MilkSampleUpdateDto): Promise<any> {
+  async updateMilkSample(data: MilkSampleUpdateDto): Promise<MilkSampleDto> {
     try {
-      const rows = await this.milkAnaRepo.updateMilkSample(data)
-      return rows.map((p) => ({
+      const p: MilkSampleRow = await this.milkAnaRepo.updateMilkSample(data)
+      return {
         id: p.id,
         transCode: p.trans_code,
         plant: p.plant,
@@ -47,10 +47,9 @@ export class MilkAnalysisService implements IMilkAnalysisService {
         fat: p.fat,
         snf: p.snf,
         isAnalyse: p.is_analyse
-      }))
+      }
     } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to update milk samples', { cause: error })
+      throw toAppError(error, 'Failed to update milk sample')
     }
   }
 }

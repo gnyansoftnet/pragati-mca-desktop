@@ -9,7 +9,6 @@ import CustomForm from '@renderer/components/customform/CustomForm'
 import { toast } from 'react-toastify'
 import {
   MilkRejectionSaveDto,
-  ReasonDto,
   MilkRejectionResponseDto
 } from '@shared/dtos/milk-rejection/milk-rejection.dto'
 import { useAuth } from '@renderer/context/AuthContext'
@@ -17,6 +16,7 @@ import TableToolbar from '@renderer/components/table/TableToolbar'
 import TablePagination from '@renderer/components/table/TablePagination'
 import { RouteResponseDto } from '@shared/dtos/route/route-response.dto'
 import { VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
+import { ReasonDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
 
 interface SelectOption {
   value: string
@@ -354,13 +354,12 @@ export const Rejection: React.FC = () => {
     }
   }
 
-
   const handleCancel = () => {
-    setSelectedRoute('');
-    setSelectedVendor('');
-    setSupervisor('');
-    setNoOfCans('');
-    setApproxQuantity('');
+    setSelectedRoute('')
+    setSelectedVendor('')
+    setSupervisor('')
+    setNoOfCans('')
+    setApproxQuantity('')
   }
 
   return (
@@ -399,7 +398,7 @@ export const Rejection: React.FC = () => {
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomTextField
                 name="chilling"
-                value={`${user?.plant || ''}, ${user?.plantName || ''}`} 
+                value={`${user?.plant || ''}, ${user?.plantName || ''}`}
                 readOnly={true}
                 tabIndex={-1}
               />
