@@ -4,7 +4,6 @@ import { MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dt
 import { MilkSampleRow } from '../../dto/milk-analysis.row'
 import { IMilkAnalysisRepo } from '../i-milk-analysis.repo'
 
-//  AND is_analyse = 0
 
 const SQL_GET_MILK_SAMPLES = `
   SELECT id, trans_code, plant, shift, sample_date, sample_code,

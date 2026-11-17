@@ -1,6 +1,6 @@
 import { injectable, inject } from 'tsyringe'
 import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
-import { toAppError } from '../../../../utils/app-errors'
+import { AppError, DatabaseError } from '../../../../utils/app-errors'
 import { IMilkAnalysisService } from '../i-milk-analysis.service'
 import { TOKENS } from '../../../../core/di/token'
 import type { IMilkAnalysisRepo } from '../../repo/i-milk-analysis.repo'
@@ -29,7 +29,8 @@ export class MilkAnalysisService implements IMilkAnalysisService {
         isAnalyse: p.is_analyse
       }))
     } catch (error) {
-      throw toAppError(error, 'Failed to fetch milk sample')
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed ', { cause: error })
     }
   }
 
@@ -49,7 +50,8 @@ export class MilkAnalysisService implements IMilkAnalysisService {
         isAnalyse: p.is_analyse
       }
     } catch (error) {
-      throw toAppError(error, 'Failed to update milk sample')
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed ', { cause: error })
     }
   }
 }

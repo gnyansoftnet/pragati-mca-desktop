@@ -5,7 +5,7 @@ import {
   PaginatedMilkCollectionDto,
   SaveMilkCollectionDto
 } from '../../../../../shared/dtos/milk-collection/milk-collection.dto'
-import { toAppError } from '../../../../utils/app-errors'
+import { AppError, DatabaseError } from '../../../../utils/app-errors'
 import { IMilkCollectionService } from '../i-milk-collection.service'
 import { TOKENS } from '../../../../core/di/token'
 import type { IMilkCollectionRepo } from '../../repo/i-milk-collection.repo'
@@ -52,7 +52,8 @@ export class MilkCollectionService implements IMilkCollectionService {
         dFlag: p.d_flag
       }
     } catch (error) {
-      throw toAppError(error, 'Failed to save milk collection')
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed ', { cause: error })
     }
   }
 
@@ -120,7 +121,8 @@ export class MilkCollectionService implements IMilkCollectionService {
         }
       }
     } catch (error) {
-      throw toAppError(error, 'Failed to fetch milk collection')
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed ', { cause: error })
     }
   }
 
@@ -160,7 +162,8 @@ export class MilkCollectionService implements IMilkCollectionService {
         dFlag: r.d_flag
       }))
     } catch (error) {
-      throw toAppError(error, 'Failed')
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed ', { cause: error })
     }
   }
 }

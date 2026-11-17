@@ -8,6 +8,7 @@ import {
 import { SaveMilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
 
 import { IMilkCollectionRepo } from '../i-milk-collection.repo'
+import { RowDataPacket } from 'mysql2'
 
 const USP_M_MILK_COLLECTION_IUD =
   'CALL USP_M_MILK_COLLECTION_IUD(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
@@ -43,8 +44,6 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
   ): Promise<MilkCollectionPagedRows> {
     let where = 'WHERE m.d_flag = 0'
     const params: (string | number)[] = []
-
-    // ---- date filter ----
     if (fromDate || toDate) {
       let from = (fromDate ?? toDate) as string
       let to = (toDate ?? fromDate) as string
@@ -57,7 +56,6 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
       where += ` AND m.created_at >= ? AND m.created_at < DATE_ADD(?, INTERVAL 1 DAY)`
       params.push(from, to)
     } else {
-      // default: today's data
       where += ` AND m.created_at >= CURDATE() AND m.created_at < CURDATE() + INTERVAL 1 DAY`
     }
 
@@ -97,7 +95,7 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
   }
 
   async saveMilkCollection(data: SaveMilkCollectionDto): Promise<MilkCollectionRow> {
-    const [result] = await db.query<MilkCollectionRow[]>(USP_M_MILK_COLLECTION_IUD, [
+    const [rows] = await db.query<RowDataPacket[][]>(USP_M_MILK_COLLECTION_IUD, [
       'INSERT',
       null,
       data.plant,
@@ -119,6 +117,10 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
       data.clr,
       data.entry
     ])
-    return result[0]
+    const insertedRow = rows?.[0]?.[0]
+    if (!insertedRow) {
+      throw new Error('Milk collection saved but returned row not found')
+    }
+    return insertedRow as unknown as MilkCollectionRow
   }
 }

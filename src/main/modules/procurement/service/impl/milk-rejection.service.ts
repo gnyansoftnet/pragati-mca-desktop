@@ -6,7 +6,7 @@ import type {
   MilkRejectionSaveDto,
   PaginatedMilkRejectionDto
 } from '@shared/dtos/milk-collection/milk-rejection.dto'
-import { DatabaseError, toAppError, ValidationError } from '../../../../utils/app-errors'
+import { AppError, DatabaseError, ValidationError } from '../../../../utils/app-errors'
 import { IMilkRejectionService } from '../i-milk-rejection.service'
 import { TOKENS } from '../../../../core/di/token'
 import type { IMilkRejectionRepo } from '../../repo/i-milk-rejection.repo'
@@ -65,7 +65,8 @@ export class MilkRejectionService implements IMilkRejectionService {
         }
       }
     } catch (error) {
-      throw toAppError(error, 'Failed')
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed ', { cause: error })
     }
   }
 
@@ -90,7 +91,8 @@ export class MilkRejectionService implements IMilkRejectionService {
         supervisor: row.supervisor
       }
     } catch (error) {
-      throw toAppError(error, 'Failed')
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed ', { cause: error })
     }
   }
 }
