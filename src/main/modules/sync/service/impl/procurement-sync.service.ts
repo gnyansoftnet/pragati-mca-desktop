@@ -2,7 +2,7 @@ import { inject, injectable } from 'tsyringe'
 import { IProcurmentSyncService } from '../i-procurement-sync.service'
 import { TOKENS } from '../../../../core/di/token'
 import type { IProcurmentSyncRepo } from '../../repo/i-procurement-sync.repo'
-import { AppError, DatabaseError } from '../../../../utils/app-errors'
+import { AppError, DatabaseError, NotFoundError } from '../../../../utils/app-errors'
 import { MilkCollectionRow } from '../../../procurement/dto/milk-collection.rows'
 import {
   MilkCollectionSyncRequestDto,
@@ -13,12 +13,15 @@ import { ApiService } from '../../../../utils/api-service'
 import { Url } from '../../../../core/constants/url'
 import { MilkRejectionSyncRequestDto, toMilkRejectionSave } from '../../dto/milk-rejection-save'
 import { MilkRejectionRow } from '../../../procurement/dto/milk-rejection.rows'
+import type { IMilkCollectionRepo } from '../../../procurement/repo/i-milk-collection.repo'
 
 @injectable()
 export class ProcurmentSyncService implements IProcurmentSyncService {
   constructor(
     @inject(TOKENS.ProSyncRepo)
     private readonly proSyncRepo: IProcurmentSyncRepo,
+    @inject(TOKENS.MilkCollectionRepo)
+    private readonly milkCollRepo: IMilkCollectionRepo,
     private readonly api: ApiService
   ) {}
 
@@ -40,10 +43,12 @@ export class ProcurmentSyncService implements IProcurmentSyncService {
       if (milkList.length === 0) {
         throw new DatabaseError('As for your date range their is no analyzed data')
       }
-
-      const payload: MilkCollectionSyncRequestDto = milkList.map(toMilkCollectionSave)
-
-      const response: MilkCollectionSyncResultDto = await this.syncUpMilkCollection(payload)
+      const analyzedMilk: MilkCollectionSyncRequestDto = milkList.map(toMilkCollectionSave)
+      const collectionMilk: MilkCollectionRow[] = await this.milkCollRepo.getMilkCollections()
+      if (collectionMilk.length != analyzedMilk.length) {
+        throw new NotFoundError('collection milk and analyzed milk are not equal')
+      }
+      const response: MilkCollectionSyncResultDto = await this.syncUpMilkCollection(analyzedMilk)
 
       if (response.success == 1) {
         const ids: number[] = milkList.map((row) => row.id)
