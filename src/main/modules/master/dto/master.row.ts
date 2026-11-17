@@ -27,3 +27,13 @@ export interface MilkStatusRow extends RowDataPacket {
   id: number
   milk_status: string
 }
+
+export interface DashboardCountRow extends RowDataPacket {
+  user: string
+  vendor: string
+  route: string
+  supervisor: string
+  collection: string
+  analyze: string
+  rejected: string
+}

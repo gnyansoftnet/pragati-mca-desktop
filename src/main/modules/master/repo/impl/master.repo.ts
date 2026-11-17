@@ -2,6 +2,7 @@ import { injectable } from 'tsyringe'
 import { IMasterRepo } from '../i-master.repo'
 import {
   CansTypeRow,
+  DashboardCountRow,
   MilkStatusRow,
   MilkTypeRow,
   ReasonRow,
@@ -43,6 +44,20 @@ const SQL_GET_SHIFT = `
 @injectable()
 export class MasterRepo implements IMasterRepo {
   constructor() {}
+
+  async getDashboardCount(): Promise<DashboardCountRow> {
+    const [rows] = await db.execute<DashboardCountRow[]>(
+      `SELECT
+      (SELECT COUNT(*) FROM milk_collection_details WHERE sample_date = CURDATE() ) AS collection,
+      (SELECT COUNT(*) FROM milk_collection_details WHERE is_analyse = 1) AS analyze,
+      (SELECT COUNT(*) FROM vendor) AS vendor,
+      (SELECT COUNT(*) FROM route) AS route,
+      (SELECT COUNT(*) FROM supervisor) AS supervisor,
+      (SELECT COUNT(*) FROM \`user\`) AS user`
+    )
+
+    return rows[0]
+  }
 
   async getCanTypes(): Promise<CansTypeRow[]> {
     const [rows] = await db.execute<CansTypeRow[]>(SQL_GET_CAN_TYPES)

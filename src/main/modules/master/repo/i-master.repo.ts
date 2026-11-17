@@ -1,5 +1,6 @@
 import {
   CansTypeRow,
+  DashboardCountRow,
   MilkStatusRow,
   MilkTypeRow,
   ReasonRow,
@@ -14,4 +15,5 @@ export interface IMasterRepo {
   getShifts(): Promise<ShiftRow[]>
   getMilkStatus(): Promise<MilkStatusRow[]>
   getMilkType(): Promise<MilkTypeRow[]>
+  getDashboardCount(): Promise<DashboardCountRow>
 }

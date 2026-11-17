@@ -2,5 +2,5 @@ import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection
 
 export interface IMilkAnalysisService {
   getMilkSamples(sampleDate: string, shift: number, plant: string): Promise<MilkSampleDto[]>
-  updateMilkSample(data: MilkSampleUpdateDto): Promise<any>
+  updateMilkSample(data: MilkSampleUpdateDto): Promise<MilkSampleDto>
 }

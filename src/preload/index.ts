@@ -31,7 +31,15 @@ import {
   TransportDto,
   TransportSaveDto as TransportSaveDto
 } from '@shared/dtos/transport/transport.dto'
-import { CansTypeDto, MilkStatusDto, MilkTypesDto, ReasonDto, ShiftDto, WeightSystemDto } from '@shared/dtos/master/master.dto'
+import {
+  CansTypeDto,
+  DashboardCountDto,
+  MilkStatusDto,
+  MilkTypesDto,
+  ReasonDto,
+  ShiftDto,
+  WeightSystemDto
+} from '@shared/dtos/master/master.dto'
 
 // Custom APIs for renderer
 
@@ -118,6 +126,8 @@ const api = {
 
   // master
   getReasons: (): Promise<ReasonDto[]> => ipcRenderer.invoke('master:getReasons'),
+  getDashboardCount: (): Promise<DashboardCountDto> =>
+    ipcRenderer.invoke('master:getDashboardCount'),
   getWeightSystems: (): Promise<WeightSystemDto[]> => ipcRenderer.invoke('master:getWeightSystems'),
   getCanTypes: (): Promise<CansTypeDto[]> => ipcRenderer.invoke('master:getCanTypes'),
   getMilkStatus: (): Promise<MilkStatusDto[]> => ipcRenderer.invoke('master:getMilkStatus'),

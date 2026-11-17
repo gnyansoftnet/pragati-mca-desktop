@@ -4,6 +4,7 @@ import { container } from 'tsyringe'
 import { IMasterService } from './service/i-master.service'
 import {
   CansTypeDto,
+  DashboardCountDto,
   MilkStatusDto,
   MilkTypesDto,
   ShiftDto,
@@ -14,6 +15,9 @@ import { ReasonDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
 export function registerMasterIpc(): void {
   const masterService = container.resolve<IMasterService>(TOKENS.MasterService)
 
+  ipcMain.handle('master:getDashboardCount', (): Promise<DashboardCountDto> =>
+    masterService.getDashboardCount()
+  )
   ipcMain.handle('master:getReasons', (): Promise<ReasonDto[]> => masterService.getReasons())
   ipcMain.handle('master:getCanTypes', (): Promise<CansTypeDto[]> => masterService.getCanTypes())
   ipcMain.handle('master:getMilkStatus', (): Promise<MilkStatusDto[]> =>

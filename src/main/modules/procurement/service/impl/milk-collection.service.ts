@@ -5,7 +5,7 @@ import {
   PaginatedMilkCollectionDto,
   SaveMilkCollectionDto
 } from '../../../../../shared/dtos/milk-collection/milk-collection.dto'
-import { AppError, DatabaseError } from '../../../../utils/app-errors'
+import { toAppError } from '../../../../utils/app-errors'
 import { IMilkCollectionService } from '../i-milk-collection.service'
 import { TOKENS } from '../../../../core/di/token'
 import type { IMilkCollectionRepo } from '../../repo/i-milk-collection.repo'
@@ -20,8 +20,8 @@ export class MilkCollectionService implements IMilkCollectionService {
 
   async saveMilkCollection(data: SaveMilkCollectionDto): Promise<MilkCollectionDto> {
     try {
-      const rows: MilkCollectionRow = await this.milkRepo.saveMilkCollection(data)
-      return rows.map((p) => ({
+      const p: MilkCollectionRow = await this.milkRepo.saveMilkCollection(data)
+      return {
         id: p.id,
         transCode: p.trans_code,
         plant: p.plant,
@@ -50,10 +50,9 @@ export class MilkCollectionService implements IMilkCollectionService {
         createdAt: p.created_at,
         updatedAt: p.updated_at,
         dFlag: p.d_flag
-      }))
+      }
     } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to update Save milk', { cause: error })
+      throw toAppError(error, 'Failed to save milk collection')
     }
   }
 
@@ -121,8 +120,7 @@ export class MilkCollectionService implements IMilkCollectionService {
         }
       }
     } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to fetch milk collections', { cause: error })
+      throw toAppError(error, 'Failed to fetch milk collection')
     }
   }
 
@@ -162,8 +160,7 @@ export class MilkCollectionService implements IMilkCollectionService {
         dFlag: r.d_flag
       }))
     } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to fetch weight systems', { cause: error })
+      throw toAppError(error, 'Failed')
     }
   }
 }
