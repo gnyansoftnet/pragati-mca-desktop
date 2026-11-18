@@ -36,6 +36,7 @@ import {
   CansTypeDto,
   DashboardCountDto,
   LastSampleDateDto,
+  LastSynckedMasterDto,
   MilkStatusDto,
   MilkTypesDto,
   ShiftDto
@@ -80,6 +81,7 @@ declare global {
       getMilkStatus: () => Promise<MilkStatusDto[]>
       getMilkType: () => Promise<MilkTypesDto[]>
       getShifts: () => Promise<ShiftDto[]>
+      getLastSynckedMaster: (masterName: string) => Promise<LastSynckedMasterDto>
 
       // milk collection
       getPaginatedMilkCollctions: (
