@@ -35,6 +35,7 @@ import {
 import {
   CansTypeDto,
   DashboardCountDto,
+  LastSampleDateDto,
   MilkStatusDto,
   MilkTypesDto,
   ShiftDto
@@ -72,6 +73,7 @@ declare global {
 
       // master
       getDashboardCount: () => Promise<DashboardCountDto[]>
+      getLastSampleDate: () => Promise<LastSampleDateDto>
       getWeightSystems: () => Promise<WeightSystemDto[]>
       getReasons: () => Promise<ReasonDto[]>
       getCanTypes: () => Promise<CansTypeDto[]>

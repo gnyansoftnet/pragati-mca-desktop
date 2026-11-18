@@ -889,6 +889,7 @@ export const ProcurementCollection: React.FC = () => {
                   <td className="py-2 px-2 font-semibold whitespace-nowrap text-primary">
                     {item.dskName}
                   </td>
+                  <td className="py-2 px-2 font-bold text-slate-900">{item.weightSystem}</td>
                   <td className="py-2 px-2 font-bold text-slate-900 whitespace-nowrap">
                     {item.weightSystem}
                   </td>

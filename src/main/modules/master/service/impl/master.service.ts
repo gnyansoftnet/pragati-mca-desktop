@@ -7,6 +7,7 @@ import { AppError, DatabaseError } from '../../../../utils/app-errors'
 import {
   CansTypeDto,
   DashboardCountDto,
+  LastSampleDateDto,
   MilkStatusDto,
   MilkTypesDto,
   ShiftDto,
@@ -15,6 +16,7 @@ import {
 import {
   CansTypeRow,
   DashboardCountRow,
+  LastSampleDateRow,
   MilkStatusRow,
   MilkTypeRow,
   ShiftRow
@@ -26,6 +28,19 @@ export class MasterService implements IMasterService {
     @inject(TOKENS.MasterRepo)
     private readonly masterRepo: IMasterRepo
   ) {}
+
+  async getLastSampleDate(): Promise<LastSampleDateDto> {
+    try {
+      const rows: LastSampleDateRow = await this.masterRepo.getLastSampleDate()
+      return {
+        last_sample_date: rows.last_sample_date
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to fetch last date', { cause: error })
+    }
+  }
+
   async getDashboardCount(): Promise<DashboardCountDto> {
     try {
       const rows: DashboardCountRow = await this.masterRepo.getDashboardCount()

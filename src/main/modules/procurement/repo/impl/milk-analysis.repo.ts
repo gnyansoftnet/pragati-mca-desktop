@@ -3,7 +3,13 @@ import { db } from '../../../../core/config/database.config'
 import { MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
 import { MilkSampleRow } from '../../dto/milk-analysis.row'
 import { IMilkAnalysisRepo } from '../i-milk-analysis.repo'
-
+import {
+  AppError,
+  DatabaseError,
+  NotFoundError,
+  ValidationError
+} from '../../../../utils/app-errors'
+import { RowDataPacket } from 'mysql2'
 
 const SQL_GET_MILK_SAMPLES = `
   SELECT id, trans_code, plant, shift, sample_date, sample_code,
@@ -32,14 +38,35 @@ export class MilkAnalysisRepo implements IMilkAnalysisRepo {
   }
 
   async updateMilkSample(data: MilkSampleUpdateDto): Promise<MilkSampleRow> {
-    const [result] = await db.query<MilkSampleRow[]>(USP_M_MILK_SAMPLE_UPDATE, [
-      data.sampleDate,
-      data.shift,
-      data.plant,
-      data.sampleCode,
-      data.fat ?? null,
-      data.snf ?? null
-    ])
-    return result[0]
+    try {
+      const [rows] = await db.query<RowDataPacket[][]>(USP_M_MILK_SAMPLE_UPDATE, [
+        data.sampleDate,
+        data.shift,
+        data.plant,
+        data.sampleCode,
+        data.fat ?? null,
+        data.snf ?? null
+      ])
+      // In mysql2 for stored procedures: rows[0][0] is the returned record
+      const updatedRow = rows?.[0]?.[0]
+      if (!updatedRow) {
+        throw new NotFoundError(
+          `Milk sample not found for Date: ${data.sampleDate}, Shift: ${data.shift}, Sample: #${data.sampleCode}`
+        )
+      }
+      return updatedRow as unknown as MilkSampleRow
+    } catch (error: any) {
+      // 1. Pass through domain errors (e.g., NotFoundError)
+      if (error instanceof AppError) {
+        throw error
+      }
+      // 2. MySQL SIGNAL SQLSTATE '45000' (Business validation errors)
+      if (error?.sqlState === '45000' || error?.errno === 1644) {
+        throw new ValidationError(error.sqlMessage || error.message || 'Validation failed')
+      }
+      // 3. Fallback for unexpected database errors
+      const message = error?.sqlMessage || error?.message || 'Failed to update milk sample'
+      throw new DatabaseError(message, { cause: error })
+    }
   }
 }
