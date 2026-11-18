@@ -87,7 +87,7 @@ export class ProcurmentSyncService implements IProcurmentSyncService {
       const response: MilkCollectionSyncResultDto = await this.syncUpMilkRejection(payload)
       if (response.success == 1) {
         const ids: number[] = milkList.map((row) => row.id)
-        await this.proSyncRepo.markSyncedWithRetryMilkCollection(ids)
+        await this.proSyncRepo.markSyncedWithRetryMilkRejection(ids)
         await this.proSyncRepo.addMilkRejectionSyncLog(fromDate, toDate, 'success')
       } else {
         await this.proSyncRepo.addMilkRejectionSyncLog(fromDate, toDate, 'failed')
