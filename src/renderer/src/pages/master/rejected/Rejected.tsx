@@ -1,16 +1,3 @@
-// import React from 'react'
-
-// export const Rejected: React.FC = () => {
-
-//   return (
-//     <div className="space-y-3">
-//       Rejected List
-//     </div>
-//   )
-// }
-
-// export default Rejected
-
 import React, { useEffect, useState } from 'react'
 import { RefreshCw, UploadCloud, Search } from 'lucide-react'
 import { toast } from 'react-toastify'
@@ -20,10 +7,12 @@ import Button1 from '@renderer/components/buttons/Button1'
 import TableToolbar from '@renderer/components/table/TableToolbar'
 import TablePagination from '@renderer/components/table/TablePagination'
 import { useAuth } from '@renderer/context/AuthContext'
+import { useNetwork } from '@renderer/hooks/useNetwork'
 import type { MilkRejectionResponseDto } from '@shared/dtos/milk-rejection/milk-rejection.dto'
-
 export const Rejected: React.FC = () => {
   const { user } = useAuth()
+  const { verifyConnection } = useNetwork()
+  const [isSyncing, setIsSyncing] = useState<boolean>(false)
 
   // Format today's date as YYYY-MM-DD
   const getCurrentLocalDate = (): string => {
@@ -127,6 +116,47 @@ export const Rejected: React.FC = () => {
     return () => clearTimeout(timer)
   }, [searchQuery, pageSize])
 
+  // Handle Sync to Server
+  const handleStartSync = async () => {
+    // 1. Verify internet connection first
+    const hasNet = await verifyConnection()
+    if (!hasNet) {
+      toast.error('Cannot sync: No internet connection! Please check your network.')
+      setShowConfirm(false)
+      return
+    }
+
+    try {
+      setIsSyncing(true)
+      setShowConfirm(false)
+
+      // 2. Invoke syncMilkRejection with the selected/applied date range
+      const result = await (window.api as any).syncMilkRejection(appliedFromDate, appliedToDate)
+
+      if (
+        result &&
+        (result.success === true || result.success === 1 || result.data?.success === 1)
+      ) {
+        const stats = result.data
+        const summaryMsg = stats?.message || result.message || 'Milk rejection sync completed!'
+        const counts = stats
+          ? ` (Total: ${stats.total ?? 0}, Inserted: ${stats.inserted ?? 0}, Updated: ${stats.updated ?? 0})`
+          : ''
+        toast.success(`${summaryMsg}${counts}`)
+
+        // 3. Refresh list with currently applied dates
+        await fetchPaginatedRejections(1, pageSize, searchQuery, appliedFromDate, appliedToDate)
+      } else {
+        toast.error(result?.message || result?.data?.message || 'Failed to sync milk rejections.')
+      }
+    } catch (error: any) {
+      console.error('Failed to sync milk rejection:', error)
+      toast.error(error?.message || 'An error occurred while syncing milk rejections.')
+    } finally {
+      setIsSyncing(false)
+    }
+  }
+
   return (
     <div className="space-y-3">
       {/* Header */}
@@ -134,10 +164,17 @@ export const Rejected: React.FC = () => {
         <PageBreadcrumb title="Rejected Collections" />
 
         <Button1
+          disabled={isSyncing}
           onClick={() => setShowConfirm(true)}
           variant="primary"
-          icon={<UploadCloud className="w-3.5 h-3.5 text-white" />}
-          label="Sync to server"
+          icon={
+            isSyncing ? (
+              <RefreshCw className="w-3.5 h-3.5 text-white animate-spin" />
+            ) : (
+              <UploadCloud className="w-3.5 h-3.5 text-white" />
+            )
+          }
+          label={isSyncing ? 'Syncing...' : 'Sync to server'}
         />
 
         {showConfirm && (
@@ -177,20 +214,26 @@ export const Rejected: React.FC = () => {
               <div className="flex items-center justify-center gap-3">
                 <button
                   type="button"
+                  disabled={isSyncing}
                   onClick={() => setShowConfirm(false)}
-                  className="w-1/2 py-2.5 px-4 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs hover:bg-slate-100 transition-all cursor-pointer"
+                  className="w-1/2 py-2.5 px-4 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs hover:bg-slate-100 transition-all cursor-pointer disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowConfirm(false)
-                    toast.info('Sync functionality will be configured in the next step.')
-                  }}
-                  className="w-1/2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-bold text-xs shadow-md hover:shadow-lg transition-all cursor-pointer"
+                  disabled={isSyncing}
+                  onClick={handleStartSync}
+                  className="w-1/2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-bold text-xs shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  Yes, Sync to Server
+                  {isSyncing ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Syncing...</span>
+                    </>
+                  ) : (
+                    'Yes, Sync to Server'
+                  )}
                 </button>
               </div>
             </div>

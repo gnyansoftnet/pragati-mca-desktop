@@ -309,6 +309,7 @@ export const Analyzed: React.FC = () => {
                 <th className="py-3 px-2 whitespace-nowrap">Tipping Time</th>
                 <th className="py-3 px-2 whitespace-nowrap">FAT (%)</th>
                 <th className="py-3 px-2 whitespace-nowrap">SNF (%)</th>
+                <th className="py-3 px-2 whitespace-nowrap">CLR (%)</th>
                 <th className="py-3 px-2 whitespace-nowrap text-center">Status</th>
               </tr>
             </thead>
@@ -398,6 +399,10 @@ export const Analyzed: React.FC = () => {
                     </td>
                     <td className="py-2 px-4 font-bold text-slate-800">
                       {Number(item.snf || 0) > 0 ? `${Number(item.snf).toFixed(1)}%` : '0.0%'}
+                    </td>
+                    <td className="py-2 px-4 font-bold text-slate-800">
+                      {/* {Number(item.clr || 0) > 0 ? `${Number(item.snf).toFixed(1)}%` : '0.0%'} */}
+                      {item.clr}
                     </td>
                     <td className="py-2 px-4 text-center">
                       <span
