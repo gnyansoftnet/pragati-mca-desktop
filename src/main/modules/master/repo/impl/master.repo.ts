@@ -68,13 +68,13 @@ export class MasterRepo implements IMasterRepo {
     const [rows] = await db.execute<DashboardCountRow[]>(
       `SELECT
       (SELECT COUNT(*) FROM milk_collection_details WHERE sample_date = CURDATE() ) AS collection,
-      (SELECT COUNT(*) FROM milk_collection_details WHERE is_analyse = 1) AS analyze,
+       (SELECT COUNT(*) FROM milk_collection_details WHERE is_analyse = 1) AS \`analyze\`,
+       (SELECT COUNT(*) FROM rejection_milk) AS rejected,
       (SELECT COUNT(*) FROM vendor) AS vendor,
       (SELECT COUNT(*) FROM route) AS route,
       (SELECT COUNT(*) FROM supervisor) AS supervisor,
       (SELECT COUNT(*) FROM \`user\`) AS user`
     )
-
     return rows[0]
   }
 
