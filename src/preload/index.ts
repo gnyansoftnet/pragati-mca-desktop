@@ -34,6 +34,7 @@ import {
 import {
   CansTypeDto,
   DashboardCountDto,
+  LastSampleDateDto,
   MilkStatusDto,
   MilkTypesDto,
   ReasonDto,
@@ -126,6 +127,8 @@ const api = {
 
   // master
   getReasons: (): Promise<ReasonDto[]> => ipcRenderer.invoke('master:getReasons'),
+  getLastSampleDate: (): Promise<LastSampleDateDto> =>
+    ipcRenderer.invoke('master:getLastSampleDate'),
   getDashboardCount: (): Promise<DashboardCountDto> =>
     ipcRenderer.invoke('master:getDashboardCount'),
   getWeightSystems: (): Promise<WeightSystemDto[]> => ipcRenderer.invoke('master:getWeightSystems'),

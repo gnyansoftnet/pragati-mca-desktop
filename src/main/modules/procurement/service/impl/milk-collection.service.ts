@@ -52,8 +52,10 @@ export class MilkCollectionService implements IMilkCollectionService {
         dFlag: p.d_flag
       }
     } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed ', { cause: error })
+      if (error instanceof AppError) {
+        throw error
+      }
+      throw new DatabaseError('Failed to save milk collection', { cause: error })
     }
   }
 

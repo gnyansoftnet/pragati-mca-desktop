@@ -5,6 +5,7 @@ import { IMasterService } from './service/i-master.service'
 import {
   CansTypeDto,
   DashboardCountDto,
+  LastSampleDateDto,
   MilkStatusDto,
   MilkTypesDto,
   ShiftDto,
@@ -17,6 +18,9 @@ export function registerMasterIpc(): void {
 
   ipcMain.handle('master:getDashboardCount', (): Promise<DashboardCountDto> =>
     masterService.getDashboardCount()
+  )
+  ipcMain.handle('master:getLastSampleDate', (): Promise<LastSampleDateDto> =>
+    masterService.getLastSampleDate()
   )
   ipcMain.handle('master:getReasons', (): Promise<ReasonDto[]> => masterService.getReasons())
   ipcMain.handle('master:getCanTypes', (): Promise<CansTypeDto[]> => masterService.getCanTypes())

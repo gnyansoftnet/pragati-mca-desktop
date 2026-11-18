@@ -37,3 +37,7 @@ export interface DashboardCountRow extends RowDataPacket {
   analyze: string
   rejected: string
 }
+
+export interface LastSampleDateRow extends RowDataPacket {
+  last_sample_date: string
+}

@@ -3,6 +3,7 @@ import { IMasterRepo } from '../i-master.repo'
 import {
   CansTypeRow,
   DashboardCountRow,
+  LastSampleDateRow,
   MilkStatusRow,
   MilkTypeRow,
   ReasonRow,
@@ -10,6 +11,7 @@ import {
   WeightSystemRow
 } from '../../dto/master.row'
 import { db } from '../../../../core/config/database.config'
+import { DatabaseError } from '../../../../utils/app-errors'
 
 const SQL_GET_REASONS = `
   SELECT id, reason
@@ -44,6 +46,23 @@ const SQL_GET_SHIFT = `
 @injectable()
 export class MasterRepo implements IMasterRepo {
   constructor() {}
+
+  async getLastSampleDate(): Promise<LastSampleDateRow> {
+    try {
+      const [rows] = await db.execute<LastSampleDateRow[]>(
+        `SELECT MAX(sample_date) AS last_sample_date 
+      FROM milk_collection_details `
+      )
+      return rows[0]
+    } catch (error: any) {
+      throw new DatabaseError(
+        error.sqlMessage || error.message || 'Failed to fetch last sample date',
+        {
+          cause: error
+        }
+      )
+    }
+  }
 
   async getDashboardCount(): Promise<DashboardCountRow> {
     const [rows] = await db.execute<DashboardCountRow[]>(

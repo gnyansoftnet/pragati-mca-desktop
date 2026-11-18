@@ -9,6 +9,13 @@ import { SaveMilkCollectionDto } from '@shared/dtos/milk-collection/milk-collect
 
 import { IMilkCollectionRepo } from '../i-milk-collection.repo'
 import { RowDataPacket } from 'mysql2'
+import {
+  AppError,
+  DatabaseError,
+  NotFoundError,
+  ValidationError
+} from '../../../../utils/app-errors'
+import { OperationAction } from '../../../../core/constants/operation-action.enum'
 
 const USP_M_MILK_COLLECTION_IUD =
   'CALL USP_M_MILK_COLLECTION_IUD(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
@@ -95,32 +102,48 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
   }
 
   async saveMilkCollection(data: SaveMilkCollectionDto): Promise<MilkCollectionRow> {
-    const [rows] = await db.query<RowDataPacket[][]>(USP_M_MILK_COLLECTION_IUD, [
-      'INSERT',
-      null,
-      data.plant,
-      data.userCode,
-      data.rootCode,
-      data.vendorCode,
-      data.shift,
-      data.canType,
-      data.weightSystem,
-      data.milkType,
-      data.milkStatus,
-      data.tipingTime,
-      data.noOfCans,
-      data.grossWeight,
-      data.netWeight,
-      data.netLtr,
-      data.fat,
-      data.snf,
-      data.clr,
-      data.entry
-    ])
-    const insertedRow = rows?.[0]?.[0]
-    if (!insertedRow) {
-      throw new Error('Milk collection saved but returned row not found')
+    try {
+      const [rows] = await db.query<RowDataPacket[][]>(USP_M_MILK_COLLECTION_IUD, [
+        OperationAction.INSERT,
+        null,
+        data.plant,
+        data.userCode,
+        data.rootCode,
+        data.vendorCode,
+        data.shift,
+        data.canType,
+        data.weightSystem,
+        data.milkType,
+        data.milkStatus,
+        data.tipingTime,
+        data.noOfCans,
+        data.grossWeight,
+        data.netWeight,
+        data.netLtr,
+        data.fat,
+        data.snf,
+        data.clr,
+        data.entry
+      ])
+      const insertedRow = rows?.[0]?.[0]
+      if (!insertedRow) {
+        throw new NotFoundError('Milk collection saved but returned row not found')
+      }
+      return insertedRow as unknown as MilkCollectionRow
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        throw error
+      }
+      if (error.sqlState === '45000') {
+        throw new ValidationError(error.sqlMessage || 'Validation failed', { cause: error })
+      }
+
+      if (error.errno === 1062) {
+        throw new ValidationError('This vendor is already entered for this date and shift', {
+          cause: error
+        })
+      }
+      throw new DatabaseError('Failed to execute milk collection query', { cause: error })
     }
-    return insertedRow as unknown as MilkCollectionRow
   }
 }

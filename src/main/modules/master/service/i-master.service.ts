@@ -1,6 +1,7 @@
 import {
   CansTypeDto,
   DashboardCountDto,
+  LastSampleDateDto,
   MilkStatusDto,
   MilkTypesDto,
   ShiftDto,
@@ -16,4 +17,5 @@ export interface IMasterService {
   getMilkStatus(): Promise<MilkStatusDto[]>
   getMilkType(): Promise<MilkTypesDto[]>
   getDashboardCount(): Promise<DashboardCountDto>
+  getLastSampleDate(): Promise<LastSampleDateDto>
 }

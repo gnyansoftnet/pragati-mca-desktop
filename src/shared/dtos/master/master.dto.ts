@@ -36,3 +36,6 @@ export interface DashboardCountDto {
   analyze: string
   rejected: string
 }
+export interface LastSampleDateDto {
+  last_sample_date: string
+}

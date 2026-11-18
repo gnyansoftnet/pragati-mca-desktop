@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe'
-import type { ResultSetHeader } from 'mysql2'
+import type { RowDataPacket } from 'mysql2'
 import { db } from '../../../../core/config/database.config'
 import type { MilkRejectionSaveDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
 import type {
@@ -9,6 +9,12 @@ import type {
 } from '../../dto/milk-rejection.rows'
 import { OperationAction } from '../../../../core/constants/operation-action.enum'
 import { IMilkRejectionRepo } from '../i-milk-rejection.repo'
+import {
+  AppError,
+  DatabaseError,
+  NotFoundError,
+  ValidationError
+} from '../../../../utils/app-errors'
 
 const REJECTION_COLUMNS = `id, plant, dsk_name, dsk_code, route, supervisor, shift,
   no_of_canes, aprox_quantity, reason, sync_status, created_at, updated_at`
@@ -89,21 +95,42 @@ export class MilkRejectionRepo implements IMilkRejectionRepo {
     return rows[0]
   }
 
-  async saveMilkRejection(data: MilkRejectionSaveDto): Promise<MilkRejectionRow | undefined> {
-    const [result] = await db.execute<ResultSetHeader>(USP_M_REJECTION_MILK_IUD, [
-      OperationAction.INSERT,
-      null,
-      data.plant,
-      data.dskName,
-      data.dskCode,
-      data.route,
-      data.supervisor,
-      data.shift,
-      data.noOfCanes,
-      data.aproxQuantity,
-      data.reason
-    ])
+  async saveMilkRejection(data: MilkRejectionSaveDto): Promise<MilkRejectionRow> {
+    try {
+      const params = [
+        OperationAction.INSERT,
+        null,
+        data.plant,
+        data.dskName,
+        data.dskCode,
+        data.route,
+        data.supervisor,
+        data.shift,
+        data.noOfCanes ?? 0,
+        data.aproxQuantity ?? 0,
+        data.reason || ''
+      ]
+      const [rows] = await db.query<RowDataPacket[][]>(USP_M_REJECTION_MILK_IUD, params)
+      const insertedRow = rows?.[0]?.[0]
+      if (!insertedRow) {
+        throw new NotFoundError('Milk rejection saved but returned row was not found')
+      }
+      return insertedRow as unknown as MilkRejectionRow
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        throw error
+      }
+      if (error?.sqlState === '45000' || error?.errno === 1644) {
+        throw new ValidationError(error.sqlMessage || error.message || 'Validation failed')
+      }
 
-    return result[0][0]
+      if (error?.errno === 1062) {
+        throw new ValidationError('A rejection record already exists for this entry', {
+          cause: error
+        })
+      }
+      const message = error?.sqlMessage || error?.message || 'Failed to save milk rejection'
+      throw new DatabaseError(message, { cause: error })
+    }
   }
 }

@@ -1,6 +1,7 @@
 import {
   CansTypeRow,
   DashboardCountRow,
+  LastSampleDateRow,
   MilkStatusRow,
   MilkTypeRow,
   ReasonRow,
@@ -16,4 +17,5 @@ export interface IMasterRepo {
   getMilkStatus(): Promise<MilkStatusRow[]>
   getMilkType(): Promise<MilkTypeRow[]>
   getDashboardCount(): Promise<DashboardCountRow>
+  getLastSampleDate(): Promise<LastSampleDateRow>
 }

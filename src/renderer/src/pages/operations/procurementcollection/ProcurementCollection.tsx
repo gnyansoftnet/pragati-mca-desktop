@@ -552,7 +552,7 @@ export const ProcurementCollection: React.FC = () => {
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomTextField
                 name="chilling"
-                value={`${user?.plant || ''}, ${user?.plantName || ''}`} 
+                value={`${user?.plant || ''}, ${user?.plantName || ''}`}
                 readOnly={true}
                 tabIndex={-1}
               />
@@ -801,7 +801,9 @@ export const ProcurementCollection: React.FC = () => {
                   <td className="py-2 px-2 font-semibold text-primary max-w-40 truncate">
                     {item.rootName}
                   </td>
-                  <td className="py-2 px-2 font-semibold whitespace-nowrap text-primary">{item.dskName}</td>
+                  <td className="py-2 px-2 font-semibold whitespace-nowrap text-primary">
+                    {item.dskName}
+                  </td>
                   <td className="py-2 px-2 font-bold text-slate-900">{item.weightSystem}</td>
 
                   <td className="py-2 px-2 font-semibold text-primary">{item.canType}</td>
