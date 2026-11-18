@@ -39,3 +39,9 @@ export interface DashboardCountDto {
 export interface LastSampleDateDto {
   last_sample_date: string
 }
+
+export interface LastSynckedMasterDto {
+  id: number
+  masterName: string
+  lastUpdated: string
+}

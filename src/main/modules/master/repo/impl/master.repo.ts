@@ -4,6 +4,7 @@ import {
   CansTypeRow,
   DashboardCountRow,
   LastSampleDateRow,
+  LastSynckedMasterRow,
   MilkStatusRow,
   MilkTypeRow,
   ReasonRow,
@@ -46,6 +47,23 @@ const SQL_GET_SHIFT = `
 @injectable()
 export class MasterRepo implements IMasterRepo {
   constructor() {}
+
+  async getLastSynckedMaster(masterName: string): Promise<LastSynckedMasterRow> {
+    try {
+      const [rows] = await db.execute<LastSynckedMasterRow[]>(
+        `SELECT * FROM master_sync_log WHERE master_name = ? LIMIT 1`,
+        [masterName]
+      )
+      return rows[0] ?? null
+    } catch (error: any) {
+      throw new DatabaseError(
+        error.sqlMessage || error.message || 'Failed to fetch last synced master',
+        {
+          cause: error
+        }
+      )
+    }
+  }
 
   async getLastSampleDate(): Promise<LastSampleDateRow> {
     try {

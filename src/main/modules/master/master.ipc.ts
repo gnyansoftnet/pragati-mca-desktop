@@ -6,6 +6,7 @@ import {
   CansTypeDto,
   DashboardCountDto,
   LastSampleDateDto,
+  LastSynckedMasterDto,
   MilkStatusDto,
   MilkTypesDto,
   ShiftDto,
@@ -29,6 +30,11 @@ export function registerMasterIpc(): void {
   )
   ipcMain.handle('master:getMilkType', (): Promise<MilkTypesDto[]> => masterService.getMilkType())
   ipcMain.handle('master:getShifts', (): Promise<ShiftDto[]> => masterService.getShifts())
+  ipcMain.handle(
+    'master:getLastSynckedMaster',
+    (_event, masterName: string): Promise<LastSynckedMasterDto> =>
+      masterService.getLastSynckedMaster(masterName)
+  )
 
   ipcMain.handle('master:getWeightSystems', (): Promise<WeightSystemDto[]> =>
     masterService.getWeightSystems()

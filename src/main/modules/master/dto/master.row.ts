@@ -41,3 +41,9 @@ export interface DashboardCountRow extends RowDataPacket {
 export interface LastSampleDateRow extends RowDataPacket {
   last_sample_date: string
 }
+
+export interface LastSynckedMasterRow extends RowDataPacket {
+  id: number
+  master_name: string
+  last_updated: string
+}
