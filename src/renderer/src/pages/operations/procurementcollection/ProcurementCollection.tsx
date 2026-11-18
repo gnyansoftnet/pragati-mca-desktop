@@ -18,44 +18,6 @@ interface SelectOption {
   label: string
 }
 
-// interface MilkEntry {
-//   id: number
-//   sampleCode?: string | number
-//   farmerId?: string
-//   chillingPlant?: string
-//   plant?: string
-//   date?: string
-//   sampleDate?: string | Date
-//   routes?: string
-//   rootCode?: string
-//   canType?: string
-//   shift?: number | string
-//   shiftName?: string
-//   milkType?: string
-//   milkStatus?: string
-//   tipingTime?: string
-//   vendorCode?: string
-//   noOfCans?: number | string
-//   netWeight?: string | number
-//   grossWeight?: string | number
-//   fatPercent?: number
-//   fat?: string | number
-//   snfPercent?: number
-//   snf?: string | number
-//   clrPercent?: number
-//   clr?: string | number
-//   weightSystem?: string
-// }
-
-// interface PaginationState {
-//   page: number
-//   limit: number
-//   total: number
-//   totalPages: number
-//   hasNextPage: boolean
-//   hasPrevPage: boolean
-// }
-
 // Set to true while testing; set to false in production with real hardware
 const IS_TEST_MODE = true
 const DEFAULT_TEST_WEIGHT = '25.5'
@@ -77,10 +39,10 @@ export const ProcurementCollection: React.FC = () => {
   // Collection metadata fields
   const [shift, setShift] = useState('1')
   const [plant, setPlant] = useState<string>(user?.plant)
-  const [weightSystem, setWeightSystem] = useState('WeightBowl')
+  // const [weightSystem, setWeightSystem] = useState('WeightBowl')
   const [cansType, setCansType] = useState('Aluminium')
-  const [milkType, setMilkType] = useState('cow')
-  const [milkStatus, setMilkStatus] = useState('good')
+  // const [milkType, setMilkType] = useState('cow')
+  // const [milkStatus, setMilkStatus] = useState('good')
   const [noOfCans, setNoOfCans] = useState('')
   const [weightCans, setWeightCans] = useState('')
 
@@ -231,12 +193,6 @@ export const ProcurementCollection: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    fetchRoutes()
-    // fetchVendors()
-    fetchCollections(1)
-  }, [])
-
   // Auto-capture live weight from connected machine scale (Zero manual input)
   // useEffect(() => {
   //   if (isScaleConnected && snap.readings.weight?.value !== undefined) {
@@ -308,28 +264,139 @@ export const ProcurementCollection: React.FC = () => {
   //   { value: '1103', label: 'Jagatpur' }
   // ]
 
-  const weights = [
-    { value: 'WeightBowl', label: 'WeightBowl' },
-    { value: 'Container', label: 'Container' }
-  ]
+  // Weight Systems state
+  const [weights, setWeights] = useState<SelectOption[]>([])
+  const [weightSystem, setWeightSystem] = useState<string>('')
+  const [loadingWeights, setLoadingWeights] = useState<boolean>(false)
+
+  // Fetch Weight Systems dynamically from API
+  const fetchWeightSystems = async (): Promise<void> => {
+    try {
+      setLoadingWeights(true)
+      const response = await window.api.getWeightSystems()
+      const dataList = Array.isArray(response)
+        ? response
+        : Array.isArray((response as any)?.data)
+          ? (response as any).data
+          : []
+
+      const options: SelectOption[] = dataList.map((item: any) => {
+        const rawName = String(item.systemList ?? item.system_list ?? '').trim()
+        const formattedLabel = rawName ? rawName.charAt(0).toUpperCase() + rawName.slice(1) : ''
+        return {
+          value: rawName,
+          label: formattedLabel
+        }
+      })
+
+      setWeights(options)
+
+      // Set default selected option if not already selected
+      if (options.length > 0) {
+        setWeightSystem((prev) => prev || options[0].value)
+      }
+    } catch (error) {
+      console.error('Failed to fetch weight systems:', error)
+    } finally {
+      setLoadingWeights(false)
+    }
+  }
+  // const weights = [
+  //   { value: 'WeightBowl', label: 'WeightBowl' },
+  //   { value: 'Container', label: 'Container' }
+  // ]
 
   const cans = [
     { value: 'Aluminium', label: 'Aluminium' },
     { value: 'Iron', label: 'Iron' }
   ]
 
-  const mtype = [
-    { value: 'mixed', label: 'Mixed' },
-    { value: 'cow', label: 'Cow' },
-    { value: 'buffalo', label: 'Buffalo' }
-  ]
+  // Milk Type state
+  const [mtype, setMtype] = useState<SelectOption[]>([])
+  const [milkType, setMilkType] = useState<string>('')
+  const [loadingMilkType, setLoadingMilkType] = useState<boolean>(false)
 
-  const mstatus = [
-    { value: 'good', label: 'Good' },
-    { value: 'better', label: 'Better' },
-    { value: 'best', label: 'Best' }
-  ]
+  // Fetch Milk Types dynamically from API
+  const fetchMilkTypes = async (): Promise<void> => {
+    try {
+      setLoadingMilkType(true)
+      const response = await window.api.getMilkType()
+      const dataList = Array.isArray(response)
+        ? response
+        : Array.isArray((response as any)?.data)
+          ? (response as any).data
+          : []
 
+      const options: SelectOption[] = dataList.map((item: any) => ({
+        value: String(item.id),
+        label: String(item.milkType ?? item.milk_type ?? '')
+      }))
+
+      setMtype(options)
+
+      // Set default selected option if not already selected
+      if (options.length > 0) {
+        setMilkType((prev) => prev || options[0].value)
+      }
+    } catch (error) {
+      console.error('Failed to fetch milk types:', error)
+    } finally {
+      setLoadingMilkType(false)
+    }
+  }
+
+  // const mtype = [
+  //   { value: 'mixed', label: 'Mixed' },
+  //   { value: 'cow', label: 'Cow' },
+  //   { value: 'buffalo', label: 'Buffalo' }
+  // ]
+
+  const [mstatus, setMstatus] = useState<SelectOption[]>([])
+  const [milkStatus, setMilkStatus] = useState<string>('')
+  const [loadingMilkStatus, setLoadingMilkStatus] = useState<boolean>(false)
+
+  // Fetch Milk Status dynamically from API
+  const fetchMilkStatus = async (): Promise<void> => {
+    try {
+      setLoadingMilkStatus(true)
+      const response = await window.api.getMilkStatus()
+      const dataList = Array.isArray(response)
+        ? response
+        : Array.isArray((response as any)?.data)
+          ? (response as any).data
+          : []
+
+      const options: SelectOption[] = dataList.map((item: any) => ({
+        value: String(item.id),
+        label: String(item.milkStatus ?? item.milk_status ?? '')
+      }))
+
+      setMstatus(options)
+
+      // Set default selected option if not already selected
+      if (options.length > 0) {
+        setMilkStatus((prev) => prev || options[0].value)
+      }
+    } catch (error) {
+      console.error('Failed to fetch milk status:', error)
+    } finally {
+      setLoadingMilkStatus(false)
+    }
+  }
+
+  // const mstatus = [
+  //   { value: 'good', label: 'Good' },
+  //   { value: 'better', label: 'Better' },
+  //   { value: 'best', label: 'Best' }
+  // ]
+
+  useEffect(() => {
+    fetchRoutes()
+    fetchWeightSystems()
+    fetchMilkStatus()
+    fetchMilkTypes()
+    fetchCollections(1)
+  }, [])
   // Compute Total no. of cans for the active route until route is changed
   const routeTotalCans = useMemo(() => {
     if (!selectedRoute) return 0
@@ -422,7 +489,7 @@ export const ProcurementCollection: React.FC = () => {
         weights.find((w) => w.value === weightSystem)?.label || weightSystem || ''
       const selectedMilkType = mtype.find((m) => m.value === milkType)?.label || milkType || ''
       const selectedMilkStatus =
-        mstatus.find((m) => m.value === milkStatus)?.label || milkStatus || ''
+        mstatus.find((m) => String(m.value) === String(milkStatus))?.label || milkStatus || ''
 
       const weightNum = Number(weightCans) || 0
       const cansNum = Number(noOfCans) || 0
@@ -447,6 +514,8 @@ export const ProcurementCollection: React.FC = () => {
         clr: 0,
         entry: entry
       }
+
+      console.log('payload', payload)
 
       if (typeof window !== 'undefined' && (window as any).api?.saveMilkCollection) {
         await (window as any).api.saveMilkCollection(payload)
@@ -476,7 +545,8 @@ export const ProcurementCollection: React.FC = () => {
       await fetchCollections(1)
     } catch (error) {
       console.error('Failed to save milk collection:', error)
-      toast.error('Failed to save milk collection. Please try again.')
+      // toast.error('Failed to save milk collection. Please try again.')
+      toast.error(error?.message || String(error))
     }
   }
 
@@ -568,16 +638,21 @@ export const ProcurementCollection: React.FC = () => {
               />
             </div>
 
-            {/* Weight System (tabIndex: 2) */}
+            {/* Weight System */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Weight System <span className="text-rose-500">*</span>
+                Weight System <span className="text-rose-500">*</span>{' '}
+                {loadingWeights && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
                 name="weight"
                 value={weightSystem}
                 onChange={(e: any) => setWeightSystem(e.target.value)}
                 options={weights}
+                placeholder={
+                  loadingWeights ? 'Loading weight systems...' : 'Select weight system...'
+                }
+                disabled={loadingWeights}
                 tabIndex={2}
               />
             </div>
@@ -599,13 +674,18 @@ export const ProcurementCollection: React.FC = () => {
             {/* Milk Type (tabIndex: 4) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Milk Type <span className="text-rose-500">*</span>
+                Milk Type <span className="text-rose-500">*</span>{' '}
+                {loadingMilkType && (
+                  <span className="text-slate-400 font-normal">(Loading...)</span>
+                )}
               </label>
               <CustomForm.CustomSelectSearchField
                 name="milktype"
                 value={milkType}
                 onChange={(e: any) => setMilkType(e.target.value)}
                 options={mtype}
+                placeholder={loadingMilkType ? 'Loading milk types...' : 'Select milk type...'}
+                disabled={loadingMilkType}
                 tabIndex={4}
               />
             </div>
@@ -613,13 +693,18 @@ export const ProcurementCollection: React.FC = () => {
             {/* Milk Status (tabIndex: 5) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Milk Status <span className="text-rose-500">*</span>
+                Milk Status <span className="text-rose-500">*</span>{' '}
+                {loadingMilkStatus && (
+                  <span className="text-slate-400 font-normal">(Loading...)</span>
+                )}
               </label>
               <CustomForm.CustomSelectSearchField
                 name="milkstatus"
                 value={milkStatus}
                 onChange={(e: any) => setMilkStatus(e.target.value)}
                 options={mstatus}
+                placeholder={loadingMilkStatus ? 'Loading milk status...' : 'Select milk status...'}
+                disabled={loadingMilkStatus}
                 tabIndex={5}
               />
             </div>
@@ -805,6 +890,9 @@ export const ProcurementCollection: React.FC = () => {
                     {item.dskName}
                   </td>
                   <td className="py-2 px-2 font-bold text-slate-900">{item.weightSystem}</td>
+                  <td className="py-2 px-2 font-bold text-slate-900 whitespace-nowrap">
+                    {item.weightSystem}
+                  </td>
 
                   <td className="py-2 px-2 font-semibold text-primary">{item.canType}</td>
                   <td className="py-2 px-2">
