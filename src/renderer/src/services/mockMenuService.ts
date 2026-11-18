@@ -128,7 +128,7 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     badge: ''
   },
   {
-    id: 11,
+    id: 12,
     title: 'Transport Entry',
     path: '/transport-entry',
     icon: 'Route',
@@ -138,7 +138,7 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     badge: ''
   },
   {
-    id: 12,
+    id: 13,
     title: 'Reports',
     path: '',
     icon: 'Users',
@@ -148,19 +148,19 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     badge: '',
     children: [
       {
-        id: '12-1',
+        id: '13-1',
         title: 'Collection Report',
         path: '/report-collection',
         icon: 'ListFilter'
       },
       {
-        id: '12-2',
+        id: '13-2',
         title: 'Rejection Report',
         path: '/report-rejection',
         icon: 'UserPlus'
       },
       {
-        id: '12-3',
+        id: '13-3',
         title: 'Transport Report',
         path: '/report-transport',
         icon: 'UserPlus'
