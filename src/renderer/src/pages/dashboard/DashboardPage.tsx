@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {
   Users,
-  UserPlus,
+  FileText,
   Calendar,
   CheckCircle2,
   UploadCloud
@@ -173,7 +173,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-pink-600 to-pink-300 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
-            <UserPlus className="w-6 h-6 strokeWidth={2}" />
+            <FileText className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
 

@@ -13,7 +13,7 @@ export const SidebarSignOut: React.FC<SidebarSignOutProps> = ({ isCollapsed }) =
   const location = useLocation()
   const isAnalyzedActive = location.pathname === '/admin/analyzed-sample'
   const isRejectedActive = location.pathname === '/admin/rejected-sample'
-  const isTransportActive = location.pathname === '/admin/transport-sample'
+  // const isTransportActive = location.pathname === '/admin/transport-sample'
 
   const handleSignOut = (): void => {
     logout()
@@ -25,9 +25,9 @@ export const SidebarSignOut: React.FC<SidebarSignOutProps> = ({ isCollapsed }) =
   const handleAnalyzed = (): void => {
     navigate('/admin/analyzed-sample')
   }
-  const handleTransport = () => {
-    navigate('/admin/transport-sample')
-  }
+  // const handleTransport = () => {
+  //   navigate('/admin/transport-sample')
+  // }
 
   return (
     <div className="p-3 border-t border-slate-200 shrink-0 shadow-[0_-4px_8px_rgba(0,0,0,0.08)]">
@@ -58,7 +58,7 @@ export const SidebarSignOut: React.FC<SidebarSignOutProps> = ({ isCollapsed }) =
         {!isCollapsed && <span className="truncate font-medium">Rejected Samples</span>}
       </button>
 
-      <button
+      {/* <button
         type="button"
         onClick={handleTransport}
         title={isCollapsed ? 'Transport Data' : undefined}
@@ -70,7 +70,7 @@ export const SidebarSignOut: React.FC<SidebarSignOutProps> = ({ isCollapsed }) =
       >
         <Car className="w-5 h-5 shrink-0" strokeWidth={2} />
         {!isCollapsed && <span className="truncate font-medium">Transport Data</span>}
-      </button> 
+      </button>  */}
       <button
         type="button"
         onClick={handleSignOut}

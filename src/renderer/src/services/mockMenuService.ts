@@ -77,46 +77,83 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     order_index: 50,
     badge: ''
   },
+
   {
     id: 7,
-    title: 'Routes',
-    path: '/routes',
-    icon: 'Banknote',
-    roles: ['admin', 'staff', 'farmer'],
-    category: 'master',
-    order_index: 50,
-    badge: ''
-  },
-  {
-    id: 8,
-    title: 'Vendors',
-    path: '/vendors',
+    title: 'Masters',
+    path: '',
     icon: 'Users',
-    roles: ['admin', 'staff', 'farmer'],
+    roles: ['admin', 'staff'],
     category: 'master',
-    order_index: 50,
-    badge: ''
+    order_index: 60,
+    badge: '',
+    children: [
+      {
+        id: '7-1',
+        title: 'Routes',
+        path: '/routes',
+        icon: 'Banknote'
+      },
+      {
+        id: '7-2',
+        title: 'Vendors',
+        path: '/vendors',
+        icon: 'Users'
+      },
+      {
+        id: '8-3',
+        title: 'Supervisors',
+        path: '/supervisors',
+        icon: 'FolderUsers'
+      },
+      {
+        id: '7-3',
+        title: 'Users',
+        path: '/users',
+        icon: 'Users'
+      }
+    ]
   },
-  {
-    id: 9,
-    title: 'Supervisors',
-    path: '/supervisors',
-    icon: 'FolderUsers',
-    roles: ['admin', 'staff', 'farmer'],
-    category: 'master',
-    order_index: 50,
-    badge: ''
-  },
-  {
-    id: 10,
-    title: 'Users',
-    path: '/users',
-    icon: 'Users',
-    roles: ['admin', 'staff', 'farmer'],
-    category: 'master',
-    order_index: 50,
-    badge: ''
-  },
+  // {
+  //   id: 7,
+  //   title: 'Routes',
+  //   path: '/routes',
+  //   icon: 'Banknote',
+  //   roles: ['admin', 'staff', 'farmer'],
+  //   category: 'master',
+  //   order_index: 50,
+  //   badge: ''
+  // },
+  // {
+  //   id: 8,
+  //   title: 'Vendors',
+  //   path: '/vendors',
+  //   icon: 'Users',
+  //   roles: ['admin', 'staff', 'farmer'],
+  //   category: 'master',
+  //   order_index: 50,
+  //   badge: ''
+  // },
+  // {
+  //   id: 9,
+  //   title: 'Supervisors',
+  //   path: '/supervisors',
+  //   icon: 'FolderUsers',
+  //   roles: ['admin', 'staff', 'farmer'],
+  //   category: 'master',
+  //   order_index: 50,
+  //   badge: ''
+  // },
+  // {
+  //   id: 10,
+  //   title: 'Users',
+  //   path: '/users',
+  //   icon: 'Users',
+  //   roles: ['admin', 'staff', 'farmer'],
+  //   category: 'master',
+  //   order_index: 50,
+  //   badge: ''
+  // },
   {
     id: 11,
     title: 'Rejection Entry',
@@ -127,21 +164,21 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     order_index: 50,
     badge: ''
   },
-  {
-    id: 12,
-    title: 'Transport Entry',
-    path: '/transport-entry',
-    icon: 'Route',
-    roles: ['admin', 'staff', 'farmer'],
-    category: 'master',
-    order_index: 50,
-    badge: ''
-  },
+  // {
+  //   id: 12,
+  //   title: 'Transport Entry',
+  //   path: '/transport-entry',
+  //   icon: 'Route',
+  //   roles: ['admin', 'staff', 'farmer'],
+  //   category: 'master',
+  //   order_index: 50,
+  //   badge: ''
+  // },
   {
     id: 13,
     title: 'Reports',
     path: '',
-    icon: 'Users',
+    icon: 'FileText',
     roles: ['admin', 'staff'],
     category: 'master',
     order_index: 60,
@@ -164,7 +201,7 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
         title: 'Transport Report',
         path: '/report-transport',
         icon: 'UserPlus'
-      }
+      },
     ]
   },
 ]
