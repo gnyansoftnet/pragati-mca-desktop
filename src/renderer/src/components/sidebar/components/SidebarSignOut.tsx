@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { LogOut, CartonOff, CircleX, CircleCheck, Car } from 'lucide-react'
+import { LogOut, CartonOff, CircleX, CircleCheck, Car, FileCheck, AlertTriangle } from 'lucide-react'
 import { useAuth } from '../../../context/AuthContext'
 
 interface SidebarSignOutProps {
@@ -41,7 +41,7 @@ export const SidebarSignOut: React.FC<SidebarSignOutProps> = ({ isCollapsed }) =
             : 'text-slate-500 hover:text-sky-600 hover:bg-sky-50'
         } ${isCollapsed ? 'justify-center' : ''}`}
       >
-        <CircleCheck className="w-5 h-5 shrink-0" strokeWidth={2} />
+        <FileCheck className="w-5 h-5 shrink-0" strokeWidth={2} />
         {!isCollapsed && <span className="truncate font-medium">Analyzed Samples</span>}
       </button>
       <button
@@ -54,7 +54,7 @@ export const SidebarSignOut: React.FC<SidebarSignOutProps> = ({ isCollapsed }) =
             : 'text-slate-500 hover:text-sky-600 hover:bg-sky-50'
         } ${isCollapsed ? 'justify-center' : ''}`}
       >
-        <CircleX className="w-5 h-5 shrink-0" strokeWidth={2} />
+        <AlertTriangle className="w-5 h-5 shrink-0" strokeWidth={2} />
         {!isCollapsed && <span className="truncate font-medium">Rejected Samples</span>}
       </button>
 

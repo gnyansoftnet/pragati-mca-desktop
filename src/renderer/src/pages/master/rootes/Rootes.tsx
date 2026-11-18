@@ -175,9 +175,9 @@ export const Rootes: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-3 px-2">ID</th>
-                <th className="py-3 px-2">Route Code</th>
-                <th className="py-3 px-2">Route Name</th>
+                <th className="py-2 px-2">ID</th>
+                <th className="py-2 px-2">Route Code</th>
+                <th className="py-2 px-2">Route Name</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -193,9 +193,9 @@ export const Rootes: React.FC = () => {
               )}
               {routes.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-50/70 transition">
-                  <td className="py-2 px-4 font-semibold text-primary">{item.id}</td>
-                  <td className="py-2 px-4 font-semibold text-primary">{item.routeCode}</td>
-                  <td className="py-2 px-4 font-semibold text-primary">{item.routeName}</td>
+                  <td className="py-2 px-2 font-semibold text-primary">{item.id}</td>
+                  <td className="py-2 px-2 font-semibold text-primary">{item.routeCode}</td>
+                  <td className="py-2 px-2 font-semibold text-primary">{item.routeName}</td>
                 </tr>
               ))}
             </tbody>

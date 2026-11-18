@@ -292,18 +292,18 @@ export const Rejected: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-3 px-2 whitespace-nowrap">ID</th>
-                <th className="py-3 px-2 whitespace-nowrap">Date</th>
-                <th className="py-3 px-2 whitespace-nowrap">Shift</th>
-                <th className="py-3 px-2 whitespace-nowrap">Plant</th>
-                <th className="py-3 px-2 whitespace-nowrap">Route Name</th>
-                <th className="py-3 px-2 whitespace-nowrap">DSK Code</th>
-                <th className="py-3 px-2 whitespace-nowrap">DSK Name</th>
-                <th className="py-3 px-2 whitespace-nowrap">Supervisor</th>
-                <th className="py-3 px-2 whitespace-nowrap">No. of Cans</th>
-                <th className="py-3 px-2 whitespace-nowrap">Approx Qty (LTR)</th>
-                <th className="py-3 px-2 whitespace-nowrap">Reason</th>
-                <th className="py-3 px-2 whitespace-nowrap text-center">Status</th>
+                <th className="py-2 px-2 whitespace-nowrap">ID</th>
+                <th className="py-2 px-2 whitespace-nowrap">Date</th>
+                <th className="py-2 px-2 whitespace-nowrap">Shift</th>
+                <th className="py-2 px-2 whitespace-nowrap">Plant</th>
+                <th className="py-2 px-2 whitespace-nowrap">Route Name</th>
+                <th className="py-2 px-2 whitespace-nowrap">DSK Code</th>
+                <th className="py-2 px-2 whitespace-nowrap">DSK Name</th>
+                <th className="py-2 px-2 whitespace-nowrap">Supervisor</th>
+                <th className="py-2 px-2 whitespace-nowrap">No. of Cans</th>
+                <th className="py-2 px-2 whitespace-nowrap">Approx Qty (LTR)</th>
+                <th className="py-2 px-2 whitespace-nowrap">Reason</th>
+                <th className="py-2 px-2 whitespace-nowrap text-center">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">

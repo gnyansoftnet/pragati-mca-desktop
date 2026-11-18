@@ -293,24 +293,24 @@ export const Analyzed: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-3 px-2 whitespace-nowrap">Sample Code</th>
-                <th className="py-3 px-2 whitespace-nowrap">Date</th>
-                <th className="py-3 px-2 whitespace-nowrap">Shift</th>
-                <th className="py-3 px-2 whitespace-nowrap">Plant Id</th>
-                <th className="py-3 px-2 whitespace-nowrap">Route Name</th>
-                <th className="py-3 px-2 whitespace-nowrap">Vendor Name</th>
-                <th className="py-3 px-2 whitespace-nowrap">Weight System</th>
-                <th className="py-3 px-2 whitespace-nowrap">Cans Type</th>
-                <th className="py-3 px-2 whitespace-nowrap">Milk Type</th>
-                <th className="py-3 px-2 whitespace-nowrap">Milk Status</th>
-                <th className="py-3 px-2 whitespace-nowrap">No. of Cans</th>
-                <th className="py-3 px-2 whitespace-nowrap">Gross Weight</th>
-                <th className="py-3 px-2 whitespace-nowrap">Net Weight</th>
-                <th className="py-3 px-2 whitespace-nowrap">Tipping Time</th>
-                <th className="py-3 px-2 whitespace-nowrap">FAT (%)</th>
-                <th className="py-3 px-2 whitespace-nowrap">SNF (%)</th>
-                <th className="py-3 px-2 whitespace-nowrap">CLR (%)</th>
-                <th className="py-3 px-2 whitespace-nowrap text-center">Status</th>
+                <th className="py-2 px-2 whitespace-nowrap">Sample Code</th>
+                <th className="py-2 px-2 whitespace-nowrap">Date</th>
+                <th className="py-2 px-2 whitespace-nowrap">Shift</th>
+                <th className="py-2 px-2 whitespace-nowrap">Plant Id</th>
+                <th className="py-2 px-2 whitespace-nowrap">Route Name</th>
+                <th className="py-2 px-2 whitespace-nowrap">Vendor Name</th>
+                <th className="py-2 px-2 whitespace-nowrap">Weight System</th>
+                <th className="py-2 px-2 whitespace-nowrap">Cans Type</th>
+                <th className="py-2 px-2 whitespace-nowrap">Milk Type</th>
+                <th className="py-2 px-2 whitespace-nowrap">Milk Status</th>
+                <th className="py-2 px-2 whitespace-nowrap">No. of Cans</th>
+                <th className="py-2 px-2 whitespace-nowrap">Gross Weight</th>
+                <th className="py-2 px-2 whitespace-nowrap">Net Weight</th>
+                <th className="py-2 px-2 whitespace-nowrap">Tipping Time</th>
+                <th className="py-2 px-2 whitespace-nowrap">FAT (%)</th>
+                <th className="py-2 px-2 whitespace-nowrap">SNF (%)</th>
+                <th className="py-2 px-2 whitespace-nowrap">CLR (%)</th>
+                <th className="py-2 px-2 whitespace-nowrap text-center">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -331,8 +331,8 @@ export const Analyzed: React.FC = () => {
               {!loading &&
                 collections.map((item, index) => (
                   <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
-                    <td className="py-2 px-4 font-semibold text-primary">{item.sampleCode}</td>
-                    <td className="py-2 px-4 font-semibold text-primary">
+                    <td className="py-2 px-2 font-semibold text-primary">{item.sampleCode}</td>
+                    <td className="py-2 px-2 font-semibold text-primary">
                       {item.sampleDate
                         ? (() => {
                             const d = new Date(item.sampleDate)
@@ -346,8 +346,8 @@ export const Analyzed: React.FC = () => {
                           })()
                         : ''}
                     </td>
-                    <td className="py-2 px-4">
-                      <span
+                    <td className="py-2 px-2">
+                      {/* <span
                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                           String(item.shift) === '1'
                             ? 'bg-orange-50 text-orange-500 border-orange-200'
@@ -361,16 +361,17 @@ export const Analyzed: React.FC = () => {
                           : String(item.shift) === '2'
                             ? 'Evening'
                             : `Shift ${item.shift}`}
-                      </span>
+                      </span> */}
+                      {item.shift}
                     </td>
-                    <td className="py-2 px-4 font-semibold text-slate-800">{item.plant}</td>
-                    <td className="py-2 px-4 font-semibold text-primary max-w-40 truncate">
+                    <td className="py-2 px-2 font-semibold text-slate-800">{item.plant}</td>
+                    <td className="py-2 px-3 font-semibold text-primary max-w-40 truncate">
                       {item.rootCode}
                     </td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
-                    <td className="py-2 px-4 font-bold text-slate-900">{item.weightSystem}</td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.canType}</td>
-                    <td className="py-2 px-4">
+                    <td className="py-2 px-2 font-semibold text-primary">{item.vendorCode}</td>
+                    <td className="py-2 px-2 font-bold text-slate-900">{item.weightSystem}</td>
+                    <td className="py-2 px-2 font-semibold text-primary">{item.canType}</td>
+                    <td className="py-2 px-2">
                       <span
                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                           String(item.milkType).toLowerCase() === 'cow'
@@ -385,26 +386,26 @@ export const Analyzed: React.FC = () => {
                         {item.milkType}
                       </span>
                     </td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.milkStatus}</td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.noOfCans}</td>
-                    <td className="py-2 px-4 font-bold text-emerald-600">
+                    <td className="py-2 px-2 font-semibold text-primary">{item.milkStatus}</td>
+                    <td className="py-2 px-2 font-semibold text-primary">{item.noOfCans}</td>
+                    <td className="py-2 px-2 font-bold text-emerald-600">
                       {Number(item.netWeight || item.netLtr || 0).toFixed(1)}
                     </td>
-                    <td className="py-2 px-4 font-bold text-emerald-600">
+                    <td className="py-2 px-2 font-bold text-emerald-600">
                       {Number(item.netWeight || item.netLtr || 0).toFixed(1)}
                     </td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.tipingTime}</td>
-                    <td className="py-2 px-4 font-bold text-slate-800">
+                    <td className="py-2 px-2 font-semibold text-primary">{item.tipingTime}</td>
+                    <td className="py-2 px-2 font-bold text-slate-800">
                       {Number(item.fat || 0) > 0 ? `${Number(item.fat).toFixed(1)}%` : '0.0%'}
                     </td>
-                    <td className="py-2 px-4 font-bold text-slate-800">
+                    <td className="py-2 px-2 font-bold text-slate-800">
                       {Number(item.snf || 0) > 0 ? `${Number(item.snf).toFixed(1)}%` : '0.0%'}
                     </td>
-                    <td className="py-2 px-4 font-bold text-slate-800">
+                    <td className="py-2 px-2 font-bold text-slate-800">
                       {/* {Number(item.clr || 0) > 0 ? `${Number(item.snf).toFixed(1)}%` : '0.0%'} */}
                       {item.clr}
                     </td>
-                    <td className="py-2 px-4 text-center">
+                    <td className="py-2 px-2 text-center">
                       <span
                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                           Number(item.isAnalyse) === 1

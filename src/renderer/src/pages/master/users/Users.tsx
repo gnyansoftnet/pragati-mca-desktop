@@ -180,12 +180,12 @@ export const Users: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-3 px-3">ID</th>
-                <th className="py-3 px-3">User Code</th>
-                <th className="py-3 px-3">User Name</th>
-                <th className="py-3 px-3">Role</th>
-                <th className="py-3 px-3">Plant</th>
-                <th className="py-3 px-3">Plant Name</th>
+                <th className="py-2 px-2">ID</th>
+                <th className="py-2 px-2">User Code</th>
+                <th className="py-2 px-2">User Name</th>
+                <th className="py-2 px-2">Role</th>
+                <th className="py-2 px-2">Plant</th>
+                <th className="py-2 px-2">Plant Name</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
