@@ -235,7 +235,7 @@ export const Vendors: React.FC = () => {
                   type="button"
                   disabled={isSyncing}
                   onClick={handleStartSync}
-                  className="w-1/2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-bold text-xs shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-50"
+                  className="w-1/2 py-2.5 px-4 rounded-xl bg-l-to-r from-primary to-secondary text-white font-bold text-xs shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-50"
                 >
                   {isSyncing ? 'Syncing...' : 'Yes, Start Sync'}
                 </button>

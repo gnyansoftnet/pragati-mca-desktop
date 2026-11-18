@@ -958,7 +958,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center shadow-md shadow-primary/25">
+          <div className="w-12 h-12 rounded-2xl bg-l-to-br from-primary to-secondary text-white flex items-center justify-center shadow-md shadow-primary/25">
             <Users className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
@@ -979,7 +979,7 @@ export const DashboardPage: React.FC = () => {
               <p className="text-[13px] font-bold text-rose-600 uppercase">{counts.rejected}</p>
             </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-600 to-pink-300 text-white flex items-center justify-center shadow-md shadow-pink-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-l-to-br from-pink-600 to-pink-300 text-white flex items-center justify-center shadow-md shadow-pink-500/20">
             <FileText className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
@@ -996,7 +996,7 @@ export const DashboardPage: React.FC = () => {
               <p className="text-[13px] font-bold text-slate-800 uppercase">{counts.user}</p>
             </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-300 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-l-to-br from-emerald-600 to-emerald-300 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
             <Calendar className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
@@ -1013,7 +1013,7 @@ export const DashboardPage: React.FC = () => {
               <p className="text-[13px] font-bold text-slate-800 uppercase">{connectedAnalyzers}/4</p>
             </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-600 to-orange-300 text-white flex items-center justify-center shadow-md shadow-orange-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-l-to-br from-orange-600 to-orange-300 text-white flex items-center justify-center shadow-md shadow-orange-500/20">
             <CheckCircle2 className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
