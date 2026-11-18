@@ -49,7 +49,7 @@ export class MasterService implements IMasterService {
       const rows: CansTypeRow[] = await this.masterRepo.getCanTypes()
       return rows.map((r) => ({
         id: r.id,
-        cansType: r.cans_type
+        cansType: r.can_name
       }))
     } catch (error) {
       if (error instanceof AppError) throw error

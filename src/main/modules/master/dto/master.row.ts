@@ -11,7 +11,7 @@ export interface WeightSystemRow extends RowDataPacket {
 }
 export interface CansTypeRow extends RowDataPacket {
   id: number
-  cans_type: string
+  can_name: string
 }
 export interface ShiftRow extends RowDataPacket {
   id: number
