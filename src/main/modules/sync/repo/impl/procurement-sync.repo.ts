@@ -50,13 +50,12 @@ export class ProcurmentSyncRepo implements IProcurmentSyncRepo {
     const sql = `
     UPDATE rejection_milk
     SET sync_status = 'synced',
-        sync_date   = NOW()
+        synced_at   = NOW()
     WHERE id IN (${placeholders})
       AND sync_status = 'pending'`
     const [result] = await db.execute<ResultSetHeader>(sql, ids)
     return result.affectedRows
   }
-
 
   // collection
 
