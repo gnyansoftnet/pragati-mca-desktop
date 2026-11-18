@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { RefreshCw } from 'lucide-react'
+import { RefreshCw, Clock } from 'lucide-react'
 import { toast } from 'react-toastify'
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
 import Button1 from '@renderer/components/buttons/Button1'
@@ -17,6 +17,7 @@ export const Users: React.FC = () => {
   const [isSyncing, setIsSyncing] = useState(false)
   const [users, setUsers] = useState<UserResponseDto[]>([])
   const [loadingUsers, setLoadingUsers] = useState<boolean>(false)
+  const [lastUpdated, setLastUpdated] = useState<string>('')
 
   const [pageSize, setPageSize] = useState<number | 'all'>(10)
   const [searchQuery, setSearchQuery] = useState<string>('')
@@ -63,6 +64,39 @@ export const Users: React.FC = () => {
     }
   }
 
+  // Format "YYYY-MM-DD HH:mm:ss" to "DD-MM-YYYY HH:mm:ss"
+  const formatLastUpdated = (dateStr?: string): string => {
+    if (!dateStr) return ''
+    const parts = dateStr.split(' ')
+    if (parts.length === 2) {
+      const [dPart, tPart] = parts
+      const dParts = dPart.split('-')
+      if (dParts.length === 3) {
+        return `${dParts[2]}-${dParts[1]}-${dParts[0]} ${tPart}`
+      }
+    }
+    return dateStr
+  }
+
+  // Fetch last synced time for user master
+  const fetchLastSynced = async () => {
+    try {
+      if (typeof window !== 'undefined' && (window.api as any)?.getLastSynckedMaster) {
+        const res = await (window.api as any).getLastSynckedMaster('user')
+        const item = Array.isArray(res) ? res[0] : res
+        if (item?.lastUpdated) {
+          setLastUpdated(formatLastUpdated(item.lastUpdated))
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch last synced master for user:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchLastSynced()
+  }, [])
+
   const handleStartSync = async () => {
     // 1. Check internet connection first
     const hasNet = await verifyConnection()
@@ -85,6 +119,7 @@ export const Users: React.FC = () => {
         toast.success(result.message || 'Users synced successfully from server!')
         // Refresh users table to display newly synced data
         await fetchPaginatedUsers(1, pageSize, searchQuery)
+        await fetchLastSynced()
       } else {
         toast.error(result?.message || 'Failed to sync users from server.')
       }
@@ -107,18 +142,29 @@ export const Users: React.FC = () => {
     <div className="space-y-3">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Users" 
-        // desc="Sync users with internet connection"
-         />
-        <Button1
-          disabled={isSyncing}
-          onClick={() => setShowConfirm(true)}
-          variant="primary"
-          icon={
-            <RefreshCw className={`w-3.5 h-3.5 text-white ${isSyncing ? 'animate-spin' : ''}`} />
-          }
-          label={isSyncing ? 'Syncing...' : 'Sync User Data'}
+        <PageBreadcrumb
+          title="Users"
+          // desc="Sync users with internet connection"
         />
+
+        <div className="flex items-center justify-end gap-2">
+          {lastUpdated && (
+            <span className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
+              <Clock className="w-3 h-3 text-slate-400" />
+              Last Synced: <strong className="text-slate-700">{lastUpdated}</strong>
+            </span>
+          )}
+          <Button1
+            disabled={isSyncing}
+            onClick={() => setShowConfirm(true)}
+            variant="primary"
+            icon={
+              <RefreshCw className={`w-3.5 h-3.5 text-white ${isSyncing ? 'animate-spin' : ''}`} />
+            }
+            label={isSyncing ? 'Syncing...' : 'Sync User Data'}
+          />
+          
+        </div>
 
         {/* Confirmation Modal */}
         {showConfirm && (

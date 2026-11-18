@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
-import { Bookmark, X, ChevronLeft, ChevronRight, Scale, WifiOff } from 'lucide-react'
+import { Bookmark, X, ChevronLeft, ChevronRight, Scale, WifiOff, Clock } from 'lucide-react'
 import Button1 from '@renderer/components/buttons/Button1'
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
 import CustomForm from '@renderer/components/customform/CustomForm'
@@ -48,6 +48,9 @@ export const ProcurementCollection: React.FC = () => {
 
   const userCode = 'USR0001'
   const entry = 'MACHINE'
+
+  const [lastSampleDate, setLastSampleDate] = useState<string>('')
+  const [loadingLastSampleDate, setLoadingLastSampleDate] = useState<boolean>(false)
 
   // Ref for the Save button (for auto-focus when cans are entered)
   const saveButtonRef = useRef<HTMLButtonElement | null>(null)
@@ -422,12 +425,75 @@ export const ProcurementCollection: React.FC = () => {
   //   { value: 'best', label: 'Best' }
   // ]
 
+  // Fetch Last Sample Date dynamically from API
+  // const fetchLastSampleDate = async (): Promise<void> => {
+  //   try {
+  //     setLoadingLastSampleDate(true)
+  //     if (typeof window !== 'undefined' && (window.api as any)?.getLastSampleDate) {
+  //       const response = await (window.api as any).getLastSampleDate()
+  //       const rawDate = Array.isArray(response)
+  //         ? response[0]?.last_sample_date
+  //         : response?.last_sample_date
+
+  //       if (rawDate) {
+  //         const d = new Date(rawDate)
+  //         if (!isNaN(d.getTime())) {
+  //           const day = String(d.getDate()).padStart(2, '0')
+  //           const month = String(d.getMonth() + 1).padStart(2, '0')
+  //           const year = d.getFullYear()
+  //           setLastSampleDate(`${day}-${month}-${year}`)
+  //         } else {
+  //           setLastSampleDate(String(rawDate))
+  //         }
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to fetch last sample date:', error)
+  //   } finally {
+  //     setLoadingLastSampleDate(false)
+  //   }
+  // }
+    // Fetch Last Sample Date & Time dynamically from API
+  const fetchLastSampleDate = async (): Promise<void> => {
+    try {
+      setLoadingLastSampleDate(true)
+      if (typeof window !== 'undefined' && (window.api as any)?.getLastSampleDate) {
+        const response = await (window.api as any).getLastSampleDate()
+        const rawDate = Array.isArray(response)
+          ? response[0]?.last_sample_date
+          : response?.last_sample_date
+
+        if (rawDate) {
+          const d = new Date(rawDate)
+          if (!isNaN(d.getTime())) {
+            const day = String(d.getDate()).padStart(2, '0')
+            const month = String(d.getMonth() + 1).padStart(2, '0')
+            const year = d.getFullYear()
+            const hours = String(d.getHours()).padStart(2, '0')
+            const minutes = String(d.getMinutes()).padStart(2, '0')
+            const seconds = String(d.getSeconds()).padStart(2, '0')
+
+            // Displays: 18-11-2026 00:00:00
+            setLastSampleDate(`${day}-${month}-${year} ${hours}:${minutes}:${seconds}`)
+          } else {
+            setLastSampleDate(String(rawDate))
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch last sample date:', error)
+    } finally {
+      setLoadingLastSampleDate(false)
+    }
+  }
+
   useEffect(() => {
     fetchRoutes()
     fetchWeightSystems()
     fetchMilkStatus()
     fetchMilkTypes()
     fetchCanTypes()
+    fetchLastSampleDate()
     fetchCollections(1)
   }, [])
   // Compute Total no. of cans for the active route until route is changed
@@ -577,11 +643,12 @@ export const ProcurementCollection: React.FC = () => {
       }
 
       await fetchCollections(1)
+      await fetchLastSampleDate()
     } catch (error) {
       console.error('Failed to save milk collection:', error)
       // toast.error('Failed to save milk collection. Please try again.')
       toast.error(error?.message || String(error))
-    }finally{
+    } finally {
       await fetchCollections(1)
     }
   }
@@ -624,6 +691,13 @@ export const ProcurementCollection: React.FC = () => {
           title="Procurement Collection"
           // desc="Record real-time machine tipping"
         />
+
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-secondary border border-secondary/30">
+            <Clock className="w-3.5 h-3.5 text-secondary" />
+            Last Sync: {loadingLastSampleDate ? 'Loading...' : lastSampleDate || '-'}
+          </span>
+        </div>
       </div>
 
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">

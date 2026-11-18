@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { RefreshCw } from 'lucide-react'
+import { RefreshCw, Clock } from 'lucide-react'
 import { toast } from 'react-toastify'
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
 import Button1 from '@renderer/components/buttons/Button1'
@@ -28,6 +28,7 @@ export const Vendors: React.FC = () => {
   const [isSyncing, setIsSyncing] = useState(false)
   const [vendors, setVendors] = useState<VendoreResponseDto[]>([])
   const [loadingVendors, setLoadingVendors] = useState<boolean>(false)
+  const [lastUpdated, setLastUpdated] = useState<string>('')
 
   // Filter & Pagination States
   const [pageSize, setPageSize] = useState<number | 'all'>(10)
@@ -86,6 +87,39 @@ export const Vendors: React.FC = () => {
     }
   }
 
+  // Format "YYYY-MM-DD HH:mm:ss" to "DD-MM-YYYY HH:mm:ss"
+  const formatLastUpdated = (dateStr?: string): string => {
+    if (!dateStr) return ''
+    const parts = dateStr.split(' ')
+    if (parts.length === 2) {
+      const [dPart, tPart] = parts
+      const dParts = dPart.split('-')
+      if (dParts.length === 3) {
+        return `${dParts[2]}-${dParts[1]}-${dParts[0]} ${tPart}`
+      }
+    }
+    return dateStr
+  }
+
+  // Fetch last synced time for vendor master
+  const fetchLastSynced = async () => {
+    try {
+      if (typeof window !== 'undefined' && (window.api as any)?.getLastSynckedMaster) {
+        const res = await (window.api as any).getLastSynckedMaster('vendor')
+        const item = Array.isArray(res) ? res[0] : res
+        if (item?.lastUpdated) {
+          setLastUpdated(formatLastUpdated(item.lastUpdated))
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch last synced master for vendor:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchLastSynced()
+  }, [])
+
   const handleStartSync = async () => {
     // Check internet connection first
     const hasNet = await verifyConnection()
@@ -109,6 +143,7 @@ export const Vendors: React.FC = () => {
         toast.success(result.message || 'Vendors synced successfully from server!')
         // Refresh routes table to display newly synced data
         await fetchPaginatedVendors(1, pageSize, searchQuery)
+        await fetchLastSynced()
       } else {
         toast.error(result?.message || 'Failed to sync vendors from server.')
       }
@@ -144,19 +179,29 @@ export const Vendors: React.FC = () => {
     <div className="space-y-3">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Vendors"
-        //  desc="Sync vendors with internet connection" 
-         />
-
-        <Button1
-          disabled={isSyncing}
-          onClick={() => setShowConfirm(true)}
-          variant="primary"
-          icon={
-            <RefreshCw className={`w-3.5 h-3.5 text-white ${isSyncing ? 'animate-spin' : ''}`} />
-          }
-          label={isSyncing ? 'Syncing...' : 'Sync Vendor Data'}
+        <PageBreadcrumb
+          title="Vendors"
+          //  desc="Sync vendors with internet connection"
         />
+
+        <div className="flex items-center justify-end gap-2">
+          {lastUpdated && (
+            <span className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
+              <Clock className="w-3 h-3 text-slate-400" />
+              Last Synced: <strong className="text-slate-700">{lastUpdated}</strong>
+            </span>
+          )}
+          <Button1
+            disabled={isSyncing}
+            onClick={() => setShowConfirm(true)}
+            variant="primary"
+            icon={
+              <RefreshCw className={`w-3.5 h-3.5 text-white ${isSyncing ? 'animate-spin' : ''}`} />
+            }
+            label={isSyncing ? 'Syncing...' : 'Sync Vendor Data'}
+          />
+        </div>
+
         {showConfirm && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs transition-opacity animate-fade-in">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-100 p-6 text-center transform transition-all scale-100">
