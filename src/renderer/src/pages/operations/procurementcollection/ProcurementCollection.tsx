@@ -581,6 +581,8 @@ export const ProcurementCollection: React.FC = () => {
       console.error('Failed to save milk collection:', error)
       // toast.error('Failed to save milk collection. Please try again.')
       toast.error(error?.message || String(error))
+    }finally{
+      await fetchCollections(1)
     }
   }
 
@@ -869,20 +871,20 @@ export const ProcurementCollection: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-3 px-2 whitespace-nowrap">Sample No</th>
-                <th className="py-3 px-2 whitespace-nowrap">Date</th>
-                <th className="py-3 px-2 whitespace-nowrap">Shift</th>
-                <th className="py-3 px-2 whitespace-nowrap">Plant Id</th>
-                <th className="py-3 px-2 whitespace-nowrap">Route Name</th>
-                <th className="py-3 px-2 whitespace-nowrap">Vendor Name</th>
-                <th className="py-3 px-2 whitespace-nowrap">Weight System</th>
-                <th className="py-3 px-2 whitespace-nowrap">Cans Type</th>
-                <th className="py-3 px-2 whitespace-nowrap">Milk Type</th>
-                <th className="py-3 px-2 whitespace-nowrap">Milk Status</th>
-                <th className="py-3 px-2 whitespace-nowrap">No. of Cans</th>
-                <th className="py-3 px-2 whitespace-nowrap">Gross Weight</th>
-                <th className="py-3 px-2 whitespace-nowrap">Net Weight</th>
-                <th className="py-3 px-2 whitespace-nowrap">Tipping Time</th>
+                <th className="py-2 px-2 whitespace-nowrap">Sample No</th>
+                <th className="py-2 px-2 whitespace-nowrap">Date</th>
+                <th className="py-2 px-2 whitespace-nowrap">Shift</th>
+                <th className="py-2 px-2 whitespace-nowrap">Plant Id</th>
+                <th className="py-2 px-2 whitespace-nowrap">Route Name</th>
+                <th className="py-2 px-2 whitespace-nowrap">Vendor Name</th>
+                <th className="py-2 px-2 whitespace-nowrap">Weight System</th>
+                <th className="py-2 px-2 whitespace-nowrap">Cans Type</th>
+                <th className="py-2 px-2 whitespace-nowrap">Milk Type</th>
+                <th className="py-2 px-2 whitespace-nowrap">Milk Status</th>
+                <th className="py-2 px-2 whitespace-nowrap">No. of Cans</th>
+                <th className="py-2 px-2 whitespace-nowrap">Gross Weight</th>
+                <th className="py-2 px-2 whitespace-nowrap">Net Weight</th>
+                <th className="py-2 px-2 whitespace-nowrap">Tipping Time</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -904,7 +906,7 @@ export const ProcurementCollection: React.FC = () => {
                       : ''}
                   </td>
                   <td className="py-2 px-2 font-semibold text-slate-800">{item.shift}</td>
-                  {/* <td className="py-2 px-4">
+                  {/* <td className="py-2 px-2">
                     <span
                       className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                         String(item.shift) === '1'
@@ -929,9 +931,6 @@ export const ProcurementCollection: React.FC = () => {
                     {item.dskName}
                   </td>
                   <td className="py-2 px-2 font-bold text-slate-900">{item.weightSystem}</td>
-                  <td className="py-2 px-2 font-bold text-slate-900 whitespace-nowrap">
-                    {item.weightSystem}
-                  </td>
 
                   <td className="py-2 px-2 font-semibold text-primary">{item.canType}</td>
                   <td className="py-2 px-2">

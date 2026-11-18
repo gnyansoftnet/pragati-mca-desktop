@@ -65,7 +65,7 @@ export const Analyze: React.FC = () => {
   }
 
   // Set to true while testing without physical hardware, false in production
-  const IS_TEST_MODE = false
+  const IS_TEST_MODE = true
   const DEFAULT_TEST_FAT = 4.2
   const DEFAULT_TEST_SNF = 8.5
 
@@ -277,13 +277,13 @@ export const Analyze: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-3 px-3 whitespace-nowrap">Sample No</th>
-                <th className="py-3 px-3 whitespace-nowrap min-w-30">Analyzer Port</th>
-                <th className="py-3 px-3 whitespace-nowrap">Net Weight (LTR)</th>
-                <th className="py-3 px-3 whitespace-nowrap">FAT (%)</th>
-                <th className="py-3 px-3 whitespace-nowrap">SNF (%)</th>
-                <th className="py-3 px-3 whitespace-nowrap text-center">Status</th>
-                <th className="py-3 px-3 whitespace-nowrap text-center">Action</th>
+                <th className="py-2 px-2 whitespace-nowrap">Sample No</th>
+                <th className="py-2 px-2 whitespace-nowrap min-w-30">Analyzer Port</th>
+                <th className="py-2 px-2 whitespace-nowrap">Net Weight (LTR)</th>
+                <th className="py-2 px-2 whitespace-nowrap">FAT (%)</th>
+                <th className="py-2 px-2 whitespace-nowrap">SNF (%)</th>
+                <th className="py-2 px-2 whitespace-nowrap text-center">Status</th>
+                <th className="py-2 px-2 whitespace-nowrap text-center">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">

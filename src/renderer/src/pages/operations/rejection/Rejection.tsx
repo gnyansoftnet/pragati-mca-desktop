@@ -350,6 +350,7 @@ export const Rejection: React.FC = () => {
       console.error('Failed to save milk rejection:', error)
       toast.error(error?.message || 'Failed to save milk rejection.')
     } finally {
+      fetchPaginatedRejections()
       setLoadingSave(false)
     }
   }
