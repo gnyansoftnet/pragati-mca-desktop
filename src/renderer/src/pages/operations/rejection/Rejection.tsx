@@ -229,8 +229,8 @@ export const Rejection: React.FC = () => {
   const [fromDate, setFromDate] = useState<string>(getCurrentDateISO())
   const [toDate, setToDate] = useState<string>(getCurrentDateISO())
 
-  console.log('fromDate', fromDate)
-  console.log('toDate', toDate)
+  // console.log('fromDate', fromDate)
+  // console.log('toDate', toDate)
 
   const fetchPaginatedRejections = async (
     pageNo = pagination.page,

@@ -40,7 +40,7 @@ export const ProcurementCollection: React.FC = () => {
   const [shift, setShift] = useState('1')
   const [plant, setPlant] = useState<string>(user?.plant)
   // const [weightSystem, setWeightSystem] = useState('WeightBowl')
-  const [cansType, setCansType] = useState('Aluminium')
+  // const [cansType, setCansType] = useState('Aluminium')
   // const [milkType, setMilkType] = useState('cow')
   // const [milkStatus, setMilkStatus] = useState('good')
   const [noOfCans, setNoOfCans] = useState('')
@@ -306,10 +306,42 @@ export const ProcurementCollection: React.FC = () => {
   //   { value: 'Container', label: 'Container' }
   // ]
 
-  const cans = [
-    { value: 'Aluminium', label: 'Aluminium' },
-    { value: 'Iron', label: 'Iron' }
-  ]
+  // const cans = [
+  //   { value: 'Aluminium', label: 'Aluminium' },
+  //   { value: 'Iron', label: 'Iron' }
+  // ]
+  const [cans, setCans] = useState<SelectOption[]>([])
+  const [cansType, setCansType] = useState<string>('')
+  const [loadingCansType, setLoadingCansType] = useState<boolean>(false)
+
+  // Fetch Can Types dynamically from API
+  const fetchCanTypes = async (): Promise<void> => {
+    try {
+      setLoadingCansType(true)
+      const response = await window.api.getCanTypes()
+      const dataList = Array.isArray(response)
+        ? response
+        : Array.isArray((response as any)?.data)
+          ? (response as any).data
+          : []
+
+      const options: SelectOption[] = dataList.map((item: any) => ({
+        value: String(item.id),
+        label: String(item.cansType ?? item.canType ?? item.cans_type ?? '')
+      }))
+
+      setCans(options)
+
+      // Set default selected option if not already selected
+      if (options.length > 0) {
+        setCansType((prev) => prev || options[0].value)
+      }
+    } catch (error) {
+      console.error('Failed to fetch can types:', error)
+    } finally {
+      setLoadingCansType(false)
+    }
+  }
 
   // Milk Type state
   const [mtype, setMtype] = useState<SelectOption[]>([])
@@ -395,6 +427,7 @@ export const ProcurementCollection: React.FC = () => {
     fetchWeightSystems()
     fetchMilkStatus()
     fetchMilkTypes()
+    fetchCanTypes()
     fetchCollections(1)
   }, [])
   // Compute Total no. of cans for the active route until route is changed
@@ -484,12 +517,13 @@ export const ProcurementCollection: React.FC = () => {
       )
       const vendorCode = currentVendor?.vendorCode || selectedVendor || 'VEND001'
 
-      const selectedCan = cans.find((c) => c.value === cansType)?.label || cansType || ''
+      const selectedCan =
+        cans.find((c) => String(c.value) === String(cansType))?.label || cansType || ''
       const selectedWeight =
         weights.find((w) => w.value === weightSystem)?.label || weightSystem || ''
-      const selectedMilkType = mtype.find((m) => m.value === milkType)?.label || milkType || ''
-      const selectedMilkStatus =
-        mstatus.find((m) => String(m.value) === String(milkStatus))?.label || milkStatus || ''
+      // const selectedMilkType = mtype.find((m) => m.value === milkType)?.label || milkType || ''
+      // const selectedMilkStatus =
+      //   mstatus.find((m) => String(m.value) === String(milkStatus))?.label || milkStatus || ''
 
       const weightNum = Number(weightCans) || 0
       const cansNum = Number(noOfCans) || 0
@@ -502,8 +536,8 @@ export const ProcurementCollection: React.FC = () => {
         shift: Number(shift),
         canType: selectedCan,
         weightSystem: selectedWeight,
-        milkType: selectedMilkType,
-        milkStatus: selectedMilkStatus,
+        milkType: String(milkType),
+        milkStatus: String(milkStatus),
         tipingTime: currentTime,
         noOfCans: cansNum,
         grossWeight: weightNum,
@@ -660,13 +694,18 @@ export const ProcurementCollection: React.FC = () => {
             {/* Cans Type (tabIndex: 3) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Cans Type <span className="text-rose-500">*</span>
+                Cans Type <span className="text-rose-500">*</span>{' '}
+                {loadingCansType && (
+                  <span className="text-slate-400 font-normal">(Loading...)</span>
+                )}
               </label>
               <CustomForm.CustomSelectSearchField
                 name="cans"
                 value={cansType}
                 onChange={(e: any) => setCansType(e.target.value)}
                 options={cans}
+                placeholder={loadingCansType ? 'Loading can types...' : 'Select can type...'}
+                disabled={loadingCansType}
                 tabIndex={3}
               />
             </div>
@@ -898,11 +937,11 @@ export const ProcurementCollection: React.FC = () => {
                   <td className="py-2 px-2">
                     <span
                       className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
-                        String(item.milkType).toLowerCase() === 'cow'
+                        String(item.milkType).toLowerCase() === '1'
                           ? 'bg-amber-50 text-amber-700 border-amber-200'
-                          : String(item.milkType).toLowerCase() === 'buffalo'
+                          : String(item.milkType).toLowerCase() === '2'
                             ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-                            : String(item.milkType).toLowerCase() === 'mixed'
+                            : String(item.milkType).toLowerCase() === '3'
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                               : 'bg-gray-50 text-gray-700 border-gray-200'
                       }`}

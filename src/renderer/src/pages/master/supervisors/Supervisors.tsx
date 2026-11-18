@@ -136,7 +136,7 @@ export const Supervisors: React.FC = () => {
     }, 300)
 
     return () => clearTimeout(timer)
-    console.log('supervisors', supervisors)
+    // console.log('supervisors', supervisors)
   }, [searchQuery, pageSize])
 
   // Handle Entries Per Page Dropdown Change
