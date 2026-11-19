@@ -9,6 +9,7 @@ export interface MilkRejectionResponseDto {
   routeName?: string | null
   supervisor: string
   shift: string
+  shiftName?: string | null
   noOfCanes: string
   aproxQuantity: string
   reason: string

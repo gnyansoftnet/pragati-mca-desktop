@@ -77,9 +77,11 @@ export class MilkRejectionRepo implements IMilkRejectionRepo {
       ),
       db.query<MilkRejectionRow[]>(
         `SELECT rm.*,
-                r.route_name
+                r.route_name,
+                sh.shift_name
            FROM rejection_milk rm
            LEFT JOIN route r ON r.route_code = rm.route
+           LEFT JOIN shift sh ON sh.id = rm.shift
            ${where}
           ORDER BY rm.id ASC
           LIMIT ? OFFSET ?`,

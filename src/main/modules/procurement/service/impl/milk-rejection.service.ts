@@ -50,6 +50,7 @@ export class MilkRejectionService implements IMilkRejectionService {
           route: r.route,
           routeName: r.route_name,
           shift: r.shift,
+          shiftName: r.shift_name,
           supervisor: r.supervisor,
           createdAt: r.created_at,
           syncStatus: r.sync_status,
