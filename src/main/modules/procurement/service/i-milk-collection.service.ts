@@ -9,9 +9,9 @@ export interface IMilkCollectionService {
   saveMilkCollection(data: SaveMilkCollectionDto): Promise<MilkCollectionDto>
   getPaginatedMilkCollections(
     data: PaginationRequestDto,
-    fromDate?: string,
-    toDate?: string,
+    shift?: number,
+    date?: string,
     isAnalyse?: number
   ): Promise<PaginatedMilkCollectionDto>
-  getMilkCollections(): Promise<MilkCollectionDto[]>
+  getMilkCollections(date: string, shift: number): Promise<MilkCollectionDto[]>
 }

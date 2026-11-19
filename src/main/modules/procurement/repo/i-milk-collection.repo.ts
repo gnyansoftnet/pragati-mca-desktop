@@ -6,11 +6,11 @@ export interface IMilkCollectionRepo {
     search: string | undefined,
     limit: number,
     offset: number,
-    fromDate?: string,
-    toDate?: string,
+    shift?: number,
+    date?: string,
     isAnalyse?: number
   ): Promise<MilkCollectionPagedRows>
 
-  getMilkCollections(): Promise<MilkCollectionRow[]>
+  getMilkCollections(date: string, shift: number): Promise<MilkCollectionRow[]>
   saveMilkCollection(data: SaveMilkCollectionDto): Promise<MilkCollectionRow>
 }

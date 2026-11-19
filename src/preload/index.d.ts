@@ -71,7 +71,7 @@ declare global {
       syncRoutes: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       syncVendors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       syncSupervisors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
-      syncMilkCollection: (fromDate: string, toDate: string) => Promise<any>
+      syncMilkCollection: (date: string, shift: number) => Promise<any>
       syncMilkRejection: (fromDate: string, toDate: string) => Promise<any>
 
       // master
@@ -91,12 +91,12 @@ declare global {
       // milk collection
       getPaginatedMilkCollctions: (
         params: PaginationRequestDto,
-        fromDate?: string,
-        toDate?: string,
+        shift?: number,
+        date?: string,
         isAnalyse?: number
       ) => Promise<PaginatedMilkCollectionDto>
       saveMilkCollection: (params: SaveMilkCollectionDto) => Promise<MilkCollectionDto>
-      getMilkCollections: () => Promise<MilkCollectionDto[]>
+      getMilkCollections: (date: string, shift: number) => Promise<MilkCollectionDto[]>
 
       // milk analysis
       updateMilkSample: (params: MilkSampleUpdateDto) => Promise<MilkSampleDto>

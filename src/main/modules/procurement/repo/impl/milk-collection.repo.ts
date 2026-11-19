@@ -26,23 +26,34 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 export class MilkCollectionRepo implements IMilkCollectionRepo {
   constructor() {}
 
-  async getMilkCollections(): Promise<MilkCollectionRow[]> {
+  async getMilkCollections(date: string, shift: number): Promise<MilkCollectionRow[]> {
+    // 1. Mandatory validations
+    if (!date || !DATE_RE.test(date)) {
+      throw new Error('Valid date is required. Use format YYYY-MM-DD.')
+    }
+    if (shift === undefined || shift === null || Number(shift) <= 0) {
+      throw new Error('Valid shift is required.')
+    }
+    // 2. Query with dynamic date and shift
     const [rows] = await db.query<MilkCollectionRow[]>(
       `SELECT m.*,
-              r.route_name,
-              v.dsk_name,
-              sh.shift_name,
-              ms.milk_status AS milk_status_name,
-              mt.milk_type AS milk_type_name
-       FROM milk_collection_details m
-       LEFT JOIN route r  ON r.route_code  = m.root_code
-       LEFT JOIN vendor v ON v.dsk_code = m.vendor_code
-       LEFT JOIN shift sh ON sh.id=m.shift
-       LEFT JOIN milk_status ms ON ms.id=m.milk_status
-       LEFT JOIN milk_type mt ON mt.id=m.milk_type
-       WHERE m.sample_date = CURDATE()
-         AND m.d_flag = 0
-       ORDER BY m.id DESC`
+            r.route_name,
+            v.dsk_name,
+            sh.shift_name,
+            ms.milk_status AS milk_status_name,
+            mt.milk_type AS milk_type_name
+     FROM milk_collection_details m
+     LEFT JOIN route r        ON r.route_code = m.root_code
+     LEFT JOIN vendor v       ON v.dsk_code   = m.vendor_code
+     LEFT JOIN shift sh       ON sh.id        = m.shift
+     LEFT JOIN milk_status ms ON ms.id        = m.milk_status
+     LEFT JOIN milk_type mt   ON mt.id        = m.milk_type
+     WHERE m.sample_date = ?
+       AND m.shift = ?
+       AND m.is_analyse=0
+       AND m.d_flag = 0
+     ORDER BY m.id DESC`,
+      [date, shift]
     )
     return rows
   }
@@ -51,38 +62,33 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
     search: string | undefined,
     limit: number,
     offset: number,
-    fromDate?: string,
-    toDate?: string,
-    isAnalyse: number = 0
+    shift?: number,
+    date?: string,
+    isAnalyse?: number
   ): Promise<MilkCollectionPagedRows> {
     let where = 'WHERE m.d_flag = 0'
     const params: (string | number)[] = []
-    if (fromDate || toDate) {
-      let from = (fromDate ?? toDate) as string
-      let to = (toDate ?? fromDate) as string
 
-      if (!DATE_RE.test(from) || !DATE_RE.test(to)) {
+    if (date && date.trim() !== '') {
+      if (!DATE_RE.test(date)) {
         throw new Error('Invalid date format. Use YYYY-MM-DD.')
       }
-      if (from > to) [from, to] = [to, from]
-
-      where += ` AND m.created_at >= ? AND m.created_at < DATE_ADD(?, INTERVAL 1 DAY)`
-      params.push(from, to)
-    } else {
-      where += ` AND m.created_at >= CURDATE() AND m.created_at < CURDATE() + INTERVAL 1 DAY`
+      where += ` AND m.sample_date = ?`
+      params.push(date)
     }
-
-    // ---- analyse filter (default 0) ----
-    where += ` AND m.is_analyse = ?`
-    params.push(isAnalyse === 1 ? 1 : 0)
-
-    // ---- search filter ----
-    if (search) {
+    if (shift !== undefined && shift !== null && shift > 0) {
+      where += ` AND m.shift = ?`
+      params.push(shift)
+    }
+    if (isAnalyse !== undefined && isAnalyse !== null) {
+      where += ` AND m.is_analyse = ?`
+      params.push(Number(isAnalyse) === 1 ? 1 : 0)
+    }
+    if (search && search.trim() !== '') {
       where += ` AND (m.trans_code LIKE ? OR m.user_code LIKE ? OR m.root_code LIKE ? OR m.vendor_code LIKE ?)`
-      const like = `%${search}%`
+      const like = `%${search.trim()}%`
       params.push(like, like, like, like)
     }
-
     const [[countRows], [rows]] = await Promise.all([
       db.query<CountRow[]>(
         `SELECT COUNT(*) AS total
@@ -98,19 +104,18 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
               ms.milk_status AS milk_status_name,
               mt.milk_type AS milk_type_name
        FROM milk_collection_details m
-       LEFT JOIN route r  ON r.route_code = m.root_code
-       LEFT JOIN vendor v ON v.dsk_code   = m.vendor_code
-       LEFT JOIN milk_status ms ON ms.id=m.milk_status
-       LEFT JOIN milk_type mt ON mt.id=m.milk_type
-       LEFT JOIN shift sh ON sh.id=m.shift
+       LEFT JOIN route r        ON r.route_code = m.root_code
+       LEFT JOIN vendor v       ON v.dsk_code   = m.vendor_code
+       LEFT JOIN milk_status ms ON ms.id        = m.milk_status
+       LEFT JOIN milk_type mt   ON mt.id        = m.milk_type
+       LEFT JOIN shift sh       ON sh.id        = m.shift
        ${where}
        ORDER BY m.id ASC
        LIMIT ? OFFSET ?`,
         [...params, limit, offset]
       )
     ])
-
-    return { rows, total: Number(countRows[0].total) }
+    return { rows, total: Number(countRows[0]?.total ?? 0) }
   }
 
   async saveMilkCollection(data: SaveMilkCollectionDto): Promise<MilkCollectionRow> {

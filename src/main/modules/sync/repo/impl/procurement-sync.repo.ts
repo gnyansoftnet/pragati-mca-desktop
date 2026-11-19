@@ -4,6 +4,8 @@ import { IProcurmentSyncRepo } from '../i-procurement-sync.repo'
 import { db } from '../../../../core/config/database.config'
 import { injectable } from 'tsyringe'
 import { MilkRejectionRow } from '../../../procurement/dto/milk-rejection.rows'
+
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 @injectable()
 export class ProcurmentSyncRepo implements IProcurmentSyncRepo {
   constructor() {}
@@ -57,19 +59,41 @@ export class ProcurmentSyncRepo implements IProcurmentSyncRepo {
     return result.affectedRows
   }
 
+  
   // collection
-
-  async getMilkCollectionsByDate(fromDate: string, toDate: string): Promise<MilkCollectionRow[]> {
+  async getMilkCollectionsByDate(
+    date: string,
+    shift: number,
+    syncStatus?: 'pending' | 'synced', // Optional: omit to get all statuses
+    isAnalyse?: number // Optional: omit to get all (0 and 1)
+  ): Promise<MilkCollectionRow[]> {
+    // 1. Mandatory validations
+    if (!date || !DATE_RE.test(date)) {
+      throw new Error('Valid date is required. Use format YYYY-MM-DD.')
+    }
+    if (shift === undefined || shift === null || Number(shift) <= 0) {
+      throw new Error('Valid shift is required.')
+    }
+    // 2. Base query & params
+    let where = 'WHERE d_flag = 0 AND shift = ? AND sample_date = ?'
+    const params: (string | number)[] = [shift, date]
+    // 3. Dynamic sync_status filter
+    if (syncStatus) {
+      where += ' AND sync_status = ?'
+      params.push(syncStatus)
+    }
+    // 4. Dynamic is_analyse filter (checks for null/undefined so 0 is recognized)
+    if (isAnalyse !== undefined && isAnalyse !== null) {
+      where += ' AND is_analyse = ?'
+      params.push(Number(isAnalyse) === 1 ? 1 : 0)
+    }
+    // 5. Query execution
     const sql = `
     SELECT *
     FROM milk_collection_details
-    WHERE sync_status = 'pending'
-      AND is_analyse = 1
-      AND d_flag = 0
-      AND created_at >= ?
-      AND created_at <  DATE_ADD(?, INTERVAL 1 DAY)
-    ORDER BY created_at ASC`
-    const [rows] = await db.execute<MilkCollectionRow[]>(sql, [fromDate, toDate])
+    ${where}
+    ORDER BY id ASC`
+    const [rows] = await db.execute<MilkCollectionRow[]>(sql, params)
     return rows
   }
 
