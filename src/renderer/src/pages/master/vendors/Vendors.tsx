@@ -260,7 +260,7 @@ export const Vendors: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-2 px-2">ID</th>
+                {/* <th className="py-2 px-2">ID</th> */}
                 <th className="py-2 px-2">DSK Code</th>
                 <th className="py-2 px-2">DSK Name</th>
                 <th className="py-2 px-2">Vendor Code</th>
@@ -286,7 +286,7 @@ export const Vendors: React.FC = () => {
               )}
               {vendors.map((item) => (
                 <tr key={item.id} className="hover:bg-secondary/5 transition">
-                  <td className="py-2 px-2 font-semibold text-primary">{item.id}</td>
+                  {/* <td className="py-2 px-2 font-semibold text-primary">{item.id}</td> */}
                   <td className="py-2 px-2 font-semibold text-primary">{item.dskCode}</td>
                   <td className="py-2 px-2 font-semibold text-primary">{item.dskName}</td>
                   <td className="py-2 px-2 font-semibold text-primary">{item.vendorCode}</td>

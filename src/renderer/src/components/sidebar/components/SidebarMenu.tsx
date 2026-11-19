@@ -61,7 +61,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed, onCloseMo
   return (
     <div className="flex-1 overflow-y-scroll px-3 py-4 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
       {menus.length === 0 ? (
-        <div className="p-4 text-center text-xs text-slate-400">Loading menus...</div>
+        <div className="p-4 text-center text-xs text-slate-800">Loading menus...</div>
       ) : (
         menus.map((item) => {
           const target = item.path.startsWith('/admin') ? item.path : `/admin${item.path}`
@@ -95,7 +95,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed, onCloseMo
                     ? 'bg-linear-to-r from-primary to-secondary text-white shadow-md shadow-primary/25 font-semibold'
                     : isParentActive && hasChildren
                       ? 'bg-teal-50/70 text-primary font-semibold'
-                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                      : 'text-slate-800 hover:text-slate-800 hover:bg-slate-50'
                 }`}
               >
                 <div
@@ -104,7 +104,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed, onCloseMo
                       ? 'text-white'
                       : isParentActive
                         ? 'text-primary'
-                        : 'text-slate-400 group-hover:text-slate-600'
+                        : 'text-slate-800 group-hover:text-slate-600'
                   }`}
                 >
                   <DynamicIcon name={item.icon} className="w-5 h-5 strokeWidth={2}" />
@@ -128,7 +128,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed, onCloseMo
 
                       {/* Submenu Expand Chevron */}
                       {hasChildren && (
-                        <div className="text-slate-400 group-hover:text-slate-600 transition-transform duration-200">
+                        <div className="text-slate-800 group-hover:text-slate-600 transition-transform duration-200">
                           {isExpanded ? (
                             <ChevronDown className="w-4 h-4 text-primary" />
                           ) : (

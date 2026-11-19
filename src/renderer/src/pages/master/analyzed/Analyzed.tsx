@@ -15,7 +15,7 @@ export const Analyzed: React.FC = () => {
   const { verifyConnection } = useNetwork()
   const [isSyncing, setIsSyncing] = useState<boolean>(false)
 
-  // Format today's date as YYYY-MM-DD
+  
   const getCurrentLocalDate = (): string => {
     const today = new Date()
     const year = today.getFullYear()
@@ -24,11 +24,11 @@ export const Analyzed: React.FC = () => {
     return `${year}-${month}-${day}`
   }
 
-  // Date Filter states (default: today's date)
+  
   const [fromDate, setFromDate] = useState<string>(getCurrentLocalDate())
   const [toDate, setToDate] = useState<string>(getCurrentLocalDate())
 
-  // Applied date filters (locked until user clicks Submit)
+  
   const [appliedFromDate, setAppliedFromDate] = useState<string>(getCurrentLocalDate())
   const [appliedToDate, setAppliedToDate] = useState<string>(getCurrentLocalDate())
   const [appliedIsAnalyse, setAppliedIsAnalyse] = useState<number>(1)
@@ -48,7 +48,7 @@ export const Analyzed: React.FC = () => {
     hasPrevPage: false
   })
 
-  // Fetch paginated collections with applied date filters
+  
   const fetchPaginatedCollections = async (
     pageNo = pagination.page,
     limitVal = pageSize,
@@ -285,7 +285,7 @@ export const Analyzed: React.FC = () => {
           onPageSizeChange={(val) => setPageSize(val === 'all' ? 'all' : Number(val))}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
-          searchPlaceholder="Search sample code, route or vendor..."
+          searchPlaceholder="Search sample no, route or vendor..."
         />
 
         {/* Table Following Rearranged Header & Body */}
@@ -293,7 +293,7 @@ export const Analyzed: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-2 px-2 whitespace-nowrap">Sample Code</th>
+                <th className="py-2 px-2 whitespace-nowrap">Sample No</th>
                 <th className="py-2 px-2 whitespace-nowrap">Date</th>
                 <th className="py-2 px-2 whitespace-nowrap">Shift</th>
                 <th className="py-2 px-2 whitespace-nowrap">Plant Id</th>

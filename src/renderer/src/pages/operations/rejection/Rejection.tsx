@@ -457,8 +457,18 @@ export const Rejection: React.FC = () => {
               <CustomForm.CustomNumberField
                 name="noOfCans"
                 value={noOfCans}
-                onChange={(e: any) => setNoOfCans(e.target.value)}
-                // onKeyDown={handleNoOfCansKeyDown}
+                onChange={(e: any) => {
+                  const val = e.target.value.replace(/\D/g, '').slice(0, 2)
+                  setNoOfCans(val)
+                }}
+                onInput={(e: any) => {
+                  if (e.target.value.length > 2) {
+                    e.target.value = e.target.value.slice(0, 2)
+                  }
+                }}
+                max={99}
+                min={1}
+                maxLength={2}
                 placeholder="e.g. 1"
                 // tabIndex={8}
               />

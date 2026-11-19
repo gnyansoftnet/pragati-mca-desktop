@@ -1079,7 +1079,7 @@ export const DashboardPage: React.FC = () => {
           onSearchChange={setSearchQuery}
           searchPlaceholder={
             activeTab === 'analyzed'
-              ? 'Search sample code, route or vendor...'
+              ? 'Search sample no, route or vendor...'
               : 'Search DSK, route or supervisor...'
           }
         />
@@ -1090,7 +1090,7 @@ export const DashboardPage: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                  <th className="py-2.5 px-2 whitespace-nowrap">Sample Code</th>
+                  <th className="py-2.5 px-2 whitespace-nowrap">Sample No</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Shift</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Plant</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Route Name</th>
