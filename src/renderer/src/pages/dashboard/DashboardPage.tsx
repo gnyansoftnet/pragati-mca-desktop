@@ -717,17 +717,8 @@
 
 // export default DashboardPage
 
-
-
 import React, { useState, useEffect } from 'react'
-import {
-  Users,
-  FileText,
-  Calendar,
-  CheckCircle2,
-  FileCheck,
-  AlertTriangle
-} from 'lucide-react'
+import { Users, FileText, Calendar, CheckCircle2, FileCheck, AlertTriangle } from 'lucide-react'
 import { useSerialSnapshot } from '../../hooks/useSerial'
 import { isAnalyzer } from '@shared/dtos/connection/serial-com-port.dto'
 import PageBreadcrumb from '../../components/breadcrumbs/PageBreadcrumb'
@@ -949,16 +940,20 @@ export const DashboardPage: React.FC = () => {
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">Total Routes:</p>
+              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
+                Total Routes:
+              </p>
               <p className="text-[13px] font-bold text-slate-800 uppercase">{counts.route}</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">Total Vendors:</p>
+              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
+                Total Vendors:
+              </p>
               <p className="text-[13px] font-bold text-slate-800 uppercase">{counts.vendor}</p>
             </div>
           </div>
 
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center shadow-md shadow-primary/25">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white flex items-center justify-center shadow-md shadow-primary/25">
             <Users className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
@@ -967,19 +962,25 @@ export const DashboardPage: React.FC = () => {
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">Milk Collected:</p>
+              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
+                Milk Collected:
+              </p>
               <p className="text-[13px] font-bold text-slate-800 uppercase">{counts.collection}</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">Milk Analyzed:</p>
+              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
+                Milk Analyzed:
+              </p>
               <p className="text-[13px] font-bold text-emerald-600 uppercase">{counts.analyze}</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">Milk Rejected:</p>
+              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
+                Milk Rejected:
+              </p>
               <p className="text-[13px] font-bold text-rose-600 uppercase">{counts.rejected}</p>
             </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-600 to-pink-300 text-white flex items-center justify-center shadow-md shadow-pink-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-pink-600 to-pink-300 text-white flex items-center justify-center shadow-md shadow-pink-500/20">
             <FileText className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
@@ -988,15 +989,19 @@ export const DashboardPage: React.FC = () => {
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">Total Supervisors:</p>
+              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
+                Total Supervisors:
+              </p>
               <p className="text-[13px] font-bold text-slate-800 uppercase">{counts.supervisor}</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">Total Users:</p>
+              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
+                Total Users:
+              </p>
               <p className="text-[13px] font-bold text-slate-800 uppercase">{counts.user}</p>
             </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-300 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-r  from-emerald-600 to-emerald-300 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
             <Calendar className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
@@ -1005,15 +1010,21 @@ export const DashboardPage: React.FC = () => {
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">Weight Scale:</p>
+              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
+                Weight Scale:
+              </p>
               <p className="text-[13px] font-bold text-slate-800 uppercase">{connectedScales}/1</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">Milk Analyzer:</p>
-              <p className="text-[13px] font-bold text-slate-800 uppercase">{connectedAnalyzers}/4</p>
+              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
+                Milk Analyzer:
+              </p>
+              <p className="text-[13px] font-bold text-slate-800 uppercase">
+                {connectedAnalyzers}/4
+              </p>
             </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-600 to-orange-300 text-white flex items-center justify-center shadow-md shadow-orange-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-orange-600 to-orange-300 text-white flex items-center justify-center shadow-md shadow-orange-500/20">
             <CheckCircle2 className="w-6 h-6 strokeWidth={2}" />
           </div>
         </div>
@@ -1068,7 +1079,7 @@ export const DashboardPage: React.FC = () => {
           onSearchChange={setSearchQuery}
           searchPlaceholder={
             activeTab === 'analyzed'
-              ? 'Search sample code, route or vendor...'
+              ? 'Search sample no, route or vendor...'
               : 'Search DSK, route or supervisor...'
           }
         />
@@ -1079,7 +1090,7 @@ export const DashboardPage: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                  <th className="py-2.5 px-2 whitespace-nowrap">Sample Code</th>
+                  <th className="py-2.5 px-2 whitespace-nowrap">Sample No</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Shift</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Plant</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Route Name</th>

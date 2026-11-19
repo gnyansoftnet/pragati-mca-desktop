@@ -869,7 +869,7 @@ export const ProcurementCollection: React.FC = () => {
             </div>
 
             {/* Number of Cans (tabIndex: 8) */}
-            <div className="space-y-1.5">
+            {/* <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
                 No. of Cans <span className="text-rose-500">*</span>
               </label>
@@ -878,6 +878,34 @@ export const ProcurementCollection: React.FC = () => {
                 id="no-of-cans-input"
                 value={noOfCans}
                 onChange={(e: any) => setNoOfCans(e.target.value)}
+                onKeyDown={handleNoOfCansKeyDown}
+                placeholder="e.g. 4"
+                tabIndex={8}
+              />
+              <p className="text-xs font-semibold text-slate-700">
+                Total no. cans: <span className="text-primary font-bold">{routeTotalCans}</span>
+              </p>
+            </div> */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700">
+                No. of Cans <span className="text-rose-500">*</span>
+              </label>
+              <CustomForm.CustomNumberField
+                name="noOfCans"
+                id="no-of-cans-input"
+                value={noOfCans}
+                onChange={(e: any) => {
+                  const val = e.target.value.replace(/\D/g, '').slice(0, 2)
+                  setNoOfCans(val)
+                }}
+                onInput={(e: any) => {
+                  if (e.target.value.length > 2) {
+                    e.target.value = e.target.value.slice(0, 2)
+                  }
+                }}
+                max={99}
+                min={1}
+                maxLength={2}
                 onKeyDown={handleNoOfCansKeyDown}
                 placeholder="e.g. 4"
                 tabIndex={8}
@@ -1002,7 +1030,7 @@ export const ProcurementCollection: React.FC = () => {
                     {item.rootName}
                   </td>
                   <td className="py-2 px-2 font-semibold whitespace-nowrap text-primary">
-                    {item.dskName}
+                    {item.vendorCode} - {item.dskName}
                   </td>
                   <td className="py-2 px-2 font-bold text-slate-900">{item.weightSystem}</td>
 

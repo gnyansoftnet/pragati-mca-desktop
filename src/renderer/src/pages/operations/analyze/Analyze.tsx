@@ -95,9 +95,9 @@ export const Analyze: React.FC = () => {
     }
     setSelectedPorts((prev) => ({ ...prev, [sample.id]: chosenAnalyzer }))
     setActiveSampleId(sample.id)
-    toast.info(
-      `${analyzerName(chosenAnalyzer)} selected for Sample #${sample.sampleCode}. Ready for reading.`
-    )
+    // toast.info(
+    //   `${analyzerName(chosenAnalyzer)} selected for Sample #${sample.sampleCode}. Ready for reading.`
+    // )
   }
 
   // 2. Global Enter key listener: saves the active sample with machine readings
