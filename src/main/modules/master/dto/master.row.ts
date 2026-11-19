@@ -47,3 +47,14 @@ export interface LastSynckedMasterRow extends RowDataPacket {
   master_name: string
   last_updated: string
 }
+
+export interface LastSynckedMilkCollectionRow extends RowDataPacket {
+  id: number
+  lastSycfrom: string
+  lastSyncTO: string
+}
+export interface LastSynckedMilkRejectionRow extends RowDataPacket {
+  id: number
+  lastSycfrom: string
+  lastSyncTO: string
+}

@@ -30,10 +30,16 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
     const [rows] = await db.query<MilkCollectionRow[]>(
       `SELECT m.*,
               r.route_name,
-              v.dsk_name
+              v.dsk_name,
+              sh.shift_name,
+              ms.milk_status AS milk_status_name,
+              mt.milk_type AS milk_type_name
        FROM milk_collection_details m
        LEFT JOIN route r  ON r.route_code  = m.root_code
        LEFT JOIN vendor v ON v.dsk_code = m.vendor_code
+       LEFT JOIN shift sh ON sh.id=m.shift
+       LEFT JOIN milk_status ms ON ms.id=m.milk_status
+       LEFT JOIN milk_type mt ON mt.id=m.milk_type
        WHERE m.sample_date = CURDATE()
          AND m.d_flag = 0
        ORDER BY m.id DESC`
@@ -87,10 +93,16 @@ export class MilkCollectionRepo implements IMilkCollectionRepo {
       db.query<MilkCollectionRow[]>(
         `SELECT m.*,
               r.route_name,
-              v.dsk_name
+              v.dsk_name,
+              sh.shift_name,
+              ms.milk_status AS milk_status_name,
+              mt.milk_type AS milk_type_name
        FROM milk_collection_details m
        LEFT JOIN route r  ON r.route_code = m.root_code
        LEFT JOIN vendor v ON v.dsk_code   = m.vendor_code
+       LEFT JOIN milk_status ms ON ms.id=m.milk_status
+       LEFT JOIN milk_type mt ON mt.id=m.milk_type
+       LEFT JOIN shift sh ON sh.id=m.shift
        ${where}
        ORDER BY m.id ASC
        LIMIT ? OFFSET ?`,

@@ -9,6 +9,8 @@ import {
   DashboardCountDto,
   LastSampleDateDto,
   LastSynckedMasterDto,
+  LastSynckedMilkCollectionDto,
+  LastSynckedMilkRejectionDto,
   MilkStatusDto,
   MilkTypesDto,
   ShiftDto,
@@ -30,6 +32,33 @@ export class MasterService implements IMasterService {
     @inject(TOKENS.MasterRepo)
     private readonly masterRepo: IMasterRepo
   ) {}
+
+  async getLastSynckedMilkCollection(): Promise<LastSynckedMilkCollectionDto> {
+    try {
+      const rows = await this.masterRepo.getLastSynckedMilkCollection()
+      return {
+        id: rows.id,
+        lastSycfrom: rows.lastSycfrom,
+        lastSyncTO: rows.lastSyncTO
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to fetch last date', { cause: error })
+    }
+  }
+  async getLastSynckedMilkRejection(): Promise<LastSynckedMilkRejectionDto> {
+    try {
+      const rows = await this.masterRepo.getLastSynckedMilkRejection()
+      return {
+        id: rows.id,
+        lastSycfrom: rows.lastSycfrom,
+        lastSyncTO: rows.lastSyncTO
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to fetch last date', { cause: error })
+    }
+  }
   async getLastSynckedMaster(masterName: string): Promise<LastSynckedMasterDto> {
     try {
       const rows: LastSynckedMasterRow = await this.masterRepo.getLastSynckedMaster(masterName)

@@ -5,6 +5,8 @@ import {
   DashboardCountRow,
   LastSampleDateRow,
   LastSynckedMasterRow,
+  LastSynckedMilkCollectionRow,
+  LastSynckedMilkRejectionRow,
   MilkStatusRow,
   MilkTypeRow,
   ReasonRow,
@@ -47,6 +49,42 @@ const SQL_GET_SHIFT = `
 @injectable()
 export class MasterRepo implements IMasterRepo {
   constructor() {}
+  async getLastSynckedMilkCollection(): Promise<LastSynckedMilkCollectionRow> {
+    try {
+      const [rows] = await db.execute<LastSynckedMilkCollectionRow[]>(
+        `SELECT id, lastSycfrom, lastSyncTo 
+       FROM milk_collection_sync_log 
+       ORDER BY lastSyncTo DESC 
+       LIMIT 1`
+      )
+      return rows[0] ?? null
+    } catch (error: any) {
+      throw new DatabaseError(
+        error.sqlMessage || error.message || 'Failed to fetch last syncked date',
+        {
+          cause: error
+        }
+      )
+    }
+  }
+  async getLastSynckedMilkRejection(): Promise<LastSynckedMilkRejectionRow> {
+    try {
+      const [rows] = await db.execute<LastSynckedMilkRejectionRow[]>(
+        `SELECT id, lastSycfrom, lastSyncTo 
+       FROM milk_rejection_sync_log 
+       ORDER BY lastSyncTo DESC 
+       LIMIT 1`
+      )
+      return rows[0]
+    } catch (error: any) {
+      throw new DatabaseError(
+        error.sqlMessage || error.message || 'Failed to fetch last syncked date',
+        {
+          cause: error
+        }
+      )
+    }
+  }
 
   async getLastSynckedMaster(masterName: string): Promise<LastSynckedMasterRow> {
     try {

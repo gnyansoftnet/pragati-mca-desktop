@@ -10,12 +10,15 @@ export interface MilkCollectionDto {
   vendorCode: string
   dskName?: string | null
   shift: number
+  shiftName?: string | null
   sampleDate: string
   sampleCode: number
   canType: string
   weightSystem: string
   milkType: string
+  milkTypeName?: string | null
   milkStatus: string
+  milkStatusName?: string | null
   tipingTime: string
   noOfCans: number
   grossWeight: number

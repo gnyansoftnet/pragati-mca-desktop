@@ -7,6 +7,8 @@ import {
   DashboardCountDto,
   LastSampleDateDto,
   LastSynckedMasterDto,
+  LastSynckedMilkCollectionDto,
+  LastSynckedMilkRejectionDto,
   MilkStatusDto,
   MilkTypesDto,
   ShiftDto,
@@ -20,9 +22,7 @@ export function registerMasterIpc(): void {
   ipcMain.handle('master:getDashboardCount', (): Promise<DashboardCountDto> =>
     masterService.getDashboardCount()
   )
-  ipcMain.handle('master:getLastSampleDate', (): Promise<LastSampleDateDto> =>
-    masterService.getLastSampleDate()
-  )
+
   ipcMain.handle('master:getReasons', (): Promise<ReasonDto[]> => masterService.getReasons())
   ipcMain.handle('master:getCanTypes', (): Promise<CansTypeDto[]> => masterService.getCanTypes())
   ipcMain.handle('master:getMilkStatus', (): Promise<MilkStatusDto[]> =>
@@ -30,13 +30,23 @@ export function registerMasterIpc(): void {
   )
   ipcMain.handle('master:getMilkType', (): Promise<MilkTypesDto[]> => masterService.getMilkType())
   ipcMain.handle('master:getShifts', (): Promise<ShiftDto[]> => masterService.getShifts())
+
+  ipcMain.handle('master:getWeightSystems', (): Promise<WeightSystemDto[]> =>
+    masterService.getWeightSystems()
+  )
+
   ipcMain.handle(
     'master:getLastSynckedMaster',
     (_event, masterName: string): Promise<LastSynckedMasterDto> =>
       masterService.getLastSynckedMaster(masterName)
   )
-
-  ipcMain.handle('master:getWeightSystems', (): Promise<WeightSystemDto[]> =>
-    masterService.getWeightSystems()
+  ipcMain.handle('master:getLastSampleDate', (): Promise<LastSampleDateDto> =>
+    masterService.getLastSampleDate()
+  )
+  ipcMain.handle('master:getLastSynckedMilkCollection', (): Promise<LastSynckedMilkCollectionDto> =>
+    masterService.getLastSynckedMilkCollection()
+  )
+  ipcMain.handle('master:getLastSynckedMilkRejection', (): Promise<LastSynckedMilkRejectionDto> =>
+    masterService.getLastSynckedMilkRejection()
   )
 }
