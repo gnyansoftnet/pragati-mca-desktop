@@ -44,15 +44,19 @@ import {
   ShiftDto,
   WeightSystemDto
 } from '@shared/dtos/master/master.dto'
+import { PeriodicReportDto } from '@shared/dtos/reports/periodic-report.dto'
 
 // Custom APIs for renderer
 
 const api = {
-  // user
+  // ==============================USER============================
   login: (userName: string, password: string): Promise<UserResponseDto> =>
     ipcRenderer.invoke('user:login', userName, password),
+  usersExist: (): Promise<boolean> => ipcRenderer.invoke('user:usersExist'),
+  getPaginatedUsers: (params: PaginationRequestDto): Promise<PaginatedUsersDto> =>
+    ipcRenderer.invoke('user:getPaginatedUsers', params),
 
-  // sync
+  // ===================================SYNC PROCESS====================================
   syncRoutes: (plant: string, org: string, branch: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('route-sync:syncRoutes', plant, org, branch),
 
@@ -71,76 +75,26 @@ const api = {
   syncUser: (plant: string, intial: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('user:syncUser', plant, intial),
 
-  usersExist: (): Promise<boolean> => ipcRenderer.invoke('user:usersExist'),
-  getPaginatedUsers: (params: PaginationRequestDto): Promise<PaginatedUsersDto> =>
-    ipcRenderer.invoke('user:getPaginatedUsers', params),
-
-  // routes
+  // ==============================ROUTES==================================
   getRoutes: (): Promise<RouteResponseDto[]> => ipcRenderer.invoke('route:getRoutes'),
   getPaginatedRoutes: (params: PaginationRequestDto): Promise<PaginatedRoutesDto> =>
     ipcRenderer.invoke('route:getPaginatedRoutes', params),
 
-  // vendor
+  // ============================VENDOR===================================================
   getVendors: (): Promise<VendoreResponseDto[]> => ipcRenderer.invoke('vendor:getVendors'),
   getVendorsByRoute: (routeCode: String): Promise<VendoreResponseDto[]> =>
     ipcRenderer.invoke('vendor:getVendorsByRoute', routeCode),
   getPaginatedVendors: (params: PaginationRequestDto): Promise<PaginatedVendorsDto> =>
     ipcRenderer.invoke('vendor:getPaginatedVendors', params),
 
+  // =============================SUPERVISOR========================
   getSupervisors: (): Promise<SupervisorResponseDto[]> =>
     ipcRenderer.invoke('supervisor:getSupervisors'),
   getPaginatedSupervisors: (params: PaginationRequestDto): Promise<PaginatedSupervisorDto> =>
     ipcRenderer.invoke('supervisor:getPaginatedSupervisors', params),
 
-  // procurement
-  getPaginatedMilkCollctions: (
-    params: PaginationRequestDto,
-    shift?: number,
-    date?: string,
-    isAnalyse?: number
-  ): Promise<PaginatedMilkCollectionDto> =>
-    ipcRenderer.invoke(
-      'procurement-collection:getPaginatedMilkCollctions',
-      params,
-      shift,
-      date,
-      isAnalyse
-    ),
-  saveMilkCollection: (params: SaveMilkCollectionDto): Promise<MilkCollectionDto> =>
-    ipcRenderer.invoke('procurement-collection:saveMilkCollection', params),
-  getMilkCollections: (date: string, shift: number): Promise<MilkCollectionDto[]> =>
-    ipcRenderer.invoke('procurement-collection:getMilkCollections', date, shift),
-
-  // milk analysis
-  getMilkSamples: (sampleDate: string, shift: number, plant: string): Promise<MilkSampleDto[]> =>
-    ipcRenderer.invoke('procurement-analysis:getMilkSamples', sampleDate, shift, plant),
-
-  updateMilkSample: (params: MilkSampleUpdateDto): Promise<MilkSampleDto> =>
-    ipcRenderer.invoke('procurement-analysis:updateMilkSample', params),
-
-  // milk rejection
-  getPaginatedMilkRejections: (
-    params: PaginationRequestDto,
-    shift?: string | number,
-    date?: string
-  ): Promise<PaginatedMilkRejectionDto> =>
-    ipcRenderer.invoke('procurement-rejection:getPaginatedMilkRejections', params, shift, date),
-  saveMilkRejection: (params: MilkRejectionSaveDto): Promise<MilkRejectionResponseDto> =>
-    ipcRenderer.invoke('procurement-rejection:saveMilkRejection', params),
-
-  // trasnport
-  getPaginatedTransports: (
-    params: PaginationRequestDto,
-    fromDate?: string,
-    toDate?: string
-  ): Promise<PaginatedTransportDto> =>
-    ipcRenderer.invoke('transport:getPaginatedTransports', params, fromDate, toDate),
-  saveTransport: (params: TransportSaveDto): Promise<TransportDto> =>
-    ipcRenderer.invoke('transport:saveTransport', params),
-
-  // master
+  // ===============================MASTER=======================
   getReasons: (): Promise<ReasonDto[]> => ipcRenderer.invoke('master:getReasons'),
-
   getDashboardCount: (): Promise<DashboardCountDto> =>
     ipcRenderer.invoke('master:getDashboardCount'),
   getWeightSystems: (): Promise<WeightSystemDto[]> => ipcRenderer.invoke('master:getWeightSystems'),
@@ -159,7 +113,64 @@ const api = {
   getLastSynckedMilkRejection: (): Promise<LastSynckedMilkRejectionDto> =>
     ipcRenderer.invoke('master:getLastSynckedMilkRejection'),
 
-  // serial port
+  // ===============================REPORT===========================================
+  getPeriodicReport: (fromDate: string, toDate: string): Promise<PeriodicReportDto[]> =>
+    ipcRenderer.invoke('report:getPeriodicReport', fromDate, toDate),
+  getTruckSheetReport: (
+    params: PaginationRequestDto,
+    shift?: number,
+    date?: string,
+    isAnalyse?: number
+  ): Promise<PaginatedMilkCollectionDto> =>
+    ipcRenderer.invoke('report:getTruckSheetReport', params, shift, date, isAnalyse),
+
+  // ==============================MILK COLLECTION===============================
+  getPaginatedMilkCollctions: (
+    params: PaginationRequestDto,
+    shift?: number,
+    date?: string,
+    isAnalyse?: number
+  ): Promise<PaginatedMilkCollectionDto> =>
+    ipcRenderer.invoke(
+      'procurement-collection:getPaginatedMilkCollctions',
+      params,
+      shift,
+      date,
+      isAnalyse
+    ),
+  saveMilkCollection: (params: SaveMilkCollectionDto): Promise<MilkCollectionDto> =>
+    ipcRenderer.invoke('procurement-collection:saveMilkCollection', params),
+  getMilkCollections: (date: string, shift: number): Promise<MilkCollectionDto[]> =>
+    ipcRenderer.invoke('procurement-collection:getMilkCollections', date, shift),
+
+  // ==================================MILK ANALYSIS==========================
+  getMilkSamples: (sampleDate: string, shift: number, plant: string): Promise<MilkSampleDto[]> =>
+    ipcRenderer.invoke('procurement-analysis:getMilkSamples', sampleDate, shift, plant),
+
+  updateMilkSample: (params: MilkSampleUpdateDto): Promise<MilkSampleDto> =>
+    ipcRenderer.invoke('procurement-analysis:updateMilkSample', params),
+
+  // ===============================MILK REJECTION======================
+  getPaginatedMilkRejections: (
+    params: PaginationRequestDto,
+    shift?: string | number,
+    date?: string
+  ): Promise<PaginatedMilkRejectionDto> =>
+    ipcRenderer.invoke('procurement-rejection:getPaginatedMilkRejections', params, shift, date),
+  saveMilkRejection: (params: MilkRejectionSaveDto): Promise<MilkRejectionResponseDto> =>
+    ipcRenderer.invoke('procurement-rejection:saveMilkRejection', params),
+
+  // ==========================TRANSPORT======================
+  getPaginatedTransports: (
+    params: PaginationRequestDto,
+    fromDate?: string,
+    toDate?: string
+  ): Promise<PaginatedTransportDto> =>
+    ipcRenderer.invoke('transport:getPaginatedTransports', params, fromDate, toDate),
+  saveTransport: (params: TransportSaveDto): Promise<TransportDto> =>
+    ipcRenderer.invoke('transport:saveTransport', params),
+
+  // ============================================SERIAL PORT==================
   getSerialPorts: (): Promise<PortListItem[]> => ipcRenderer.invoke('serial:list'),
   connectSerial: (cfg: PortConfig): Promise<SerialResult> =>
     ipcRenderer.invoke('serial:connect', cfg),

@@ -35,6 +35,8 @@ import { TransportRepo } from '../../modules/transport/repo/impl/transport.repo'
 import { TransportService } from '../../modules/transport/service/impl/transport.service'
 import { MasterRepo } from '../../modules/master/repo/impl/master.repo'
 import { MasterService } from '../../modules/master/service/impl/master.service'
+import { ReportRepo } from '../../modules/reports/repo/impl/report.repo'
+import { ReportService } from '../../modules/reports/service/impl/report.service'
 
 export function bootstrapContainer(): void {
   // user
@@ -83,5 +85,7 @@ export function bootstrapContainer(): void {
   container.registerSingleton(TOKENS.MasterRepo, MasterRepo)
   container.registerSingleton(TOKENS.MasterService, MasterService)
 }
+container.registerSingleton(TOKENS.ReportRepo, ReportRepo)
+container.registerSingleton(TOKENS.ReportService, ReportService)
 
 export { container }

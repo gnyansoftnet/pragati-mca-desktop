@@ -45,5 +45,9 @@ export const TOKENS = {
 
   // master
   MasterService: Symbol('MasterService'),
-  MasterRepo: Symbol('MasterRepo')
+  MasterRepo: Symbol('MasterRepo'),
+
+  // reports
+  ReportService: Symbol('ReportService'),
+  ReportRepo: Symbol('ReportRepo')
 } as const

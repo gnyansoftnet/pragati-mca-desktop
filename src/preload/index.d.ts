@@ -43,40 +43,40 @@ import {
   MilkTypesDto,
   ShiftDto
 } from '@shared/dtos/master/master.dto'
+import { PeriodicReportDto } from '@shared/dtos/reports/periodic-report.dto'
 
 declare global {
   interface Window {
     electron: ElectronAPI
     api: {
-      // user
+      // =============================USER==========================
       login: (userName: string, password: string) => Promise<UserResponseDto>
       syncUser: (plant: string, intial: string) => Promise<SyncSucess>
       usersExist: () => Promise<boolean>
       getPaginatedUsers: (params: PaginationRequestDto) => Promise<PaginatedUsersDto>
 
-      // routes
+      // =====================ROUTES====================
       getRoutes: () => Promise<RouteResponseDto[]>
       getPaginatedRoutes: (params: PaginationRequestDto) => Promise<PaginatedRoutesDto>
 
-      // supervisor
+      // =================================SUPERVISOR======================
       getSupervisors: () => Promise<SupervisorResponseDto[]>
       getPaginatedSupervisors: (params: PaginationRequestDto) => Promise<PaginatedSupervisorDto>
 
-      // vendor
+      // =================================VENDOR==========================
       getVendors: () => Promise<VendoreResponseDto[]>
       getVendorsByRoute: (routeCode: string) => Promise<VendoreResponseDto[]>
       getPaginatedVendors: (params: PaginationRequestDto) => Promise<PaginatedVendorsDto>
 
-      // sync process
+      // ===========================SYNC PROCESS=========================
       syncRoutes: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       syncVendors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       syncSupervisors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       syncMilkCollection: (date: string, shift: number) => Promise<any>
       syncMilkRejection: (date: string, shift: number) => Promise<any>
 
-      // master
+      // ================================MASTER========================
       getDashboardCount: () => Promise<DashboardCountDto[]>
-
       getWeightSystems: () => Promise<WeightSystemDto[]>
       getReasons: () => Promise<ReasonDto[]>
       getCanTypes: () => Promise<CansTypeDto[]>
@@ -88,7 +88,16 @@ declare global {
       getLastSynckedMilkCollection: () => Promise<LastSynckedMilkCollectionDto>
       getLastSynckedMilkRejection: () => Promise<LastSynckedMilkRejectionDto>
 
-      // milk collection
+      // ====================================REPORT=====================================
+      getTruckSheetReport: (
+        params: PaginationRequestDto,
+        shift?: number,
+        date?: string,
+        isAnalyse?: number
+      ) => Promise<PaginatedMilkCollectionDto>
+      getPeriodicReport: (fromDate: string, toDate: string) => Promise<PeriodicReportDto[]>
+
+      // =========================MILK COLLECTION=========================
       getPaginatedMilkCollctions: (
         params: PaginationRequestDto,
         shift?: number,
@@ -98,11 +107,11 @@ declare global {
       saveMilkCollection: (params: SaveMilkCollectionDto) => Promise<MilkCollectionDto>
       getMilkCollections: (date: string, shift: number) => Promise<MilkCollectionDto[]>
 
-      // milk analysis
+      // ===================MILK ANALYSIS======================
       updateMilkSample: (params: MilkSampleUpdateDto) => Promise<MilkSampleDto>
       getMilkSamples: (sampleDate: string, shift: number, plant: string) => Promise<MilkSampleDto[]>
 
-      // milk rejection
+      // =======================MILK REJECTION====================
       getPaginatedMilkRejections: (
         params: PaginationRequestDto,
         shift?: string | number,
@@ -110,7 +119,7 @@ declare global {
       ) => Promise<PaginatedMilkRejectionDto>
       saveMilkRejection: (params: MilkRejectionSaveDto) => Promise<MilkRejectionResponseDto>
 
-      // transport
+      // ========================TRANSPORT=========================
       getPaginatedTransports: (
         params: PaginationRequestDto,
         fromDate?: string,
@@ -118,7 +127,7 @@ declare global {
       ) => Promise<PaginatedTransportDto>
       saveTransport: (params: TransportSaveDto) => Promise<TransportDto>
 
-      // serial port
+      // =============================SERIAL PORT=====================
       getSerialPorts: () => Promise<PortListItem[]>
       connectSerial: (cfg: PortConfig) => Promise<SerialResult>
       disconnectSerial: (path: string) => Promise<SerialResult>
@@ -126,7 +135,7 @@ declare global {
       clearSerialReadings: (keys?: string[]) => Promise<void>
       onSerialSnapshot: (cb: (s: SerialSnapshot) => void) => () => void
 
-      // network
+      // ===============================INTERNET===========================
       checkInternet: () => Promise<boolean>
     }
   }
