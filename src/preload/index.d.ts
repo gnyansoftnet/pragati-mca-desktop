@@ -72,7 +72,7 @@ declare global {
       syncVendors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       syncSupervisors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       syncMilkCollection: (date: string, shift: number) => Promise<any>
-      syncMilkRejection: (fromDate: string, toDate: string) => Promise<any>
+      syncMilkRejection: (date: string, shift: number) => Promise<any>
 
       // master
       getDashboardCount: () => Promise<DashboardCountDto[]>
@@ -102,6 +102,14 @@ declare global {
       updateMilkSample: (params: MilkSampleUpdateDto) => Promise<MilkSampleDto>
       getMilkSamples: (sampleDate: string, shift: number, plant: string) => Promise<MilkSampleDto[]>
 
+      // milk rejection
+      getPaginatedMilkRejections: (
+        params: PaginationRequestDto,
+        shift?: string | number,
+        date?: string
+      ) => Promise<PaginatedMilkRejectionDto>
+      saveMilkRejection: (params: MilkRejectionSaveDto) => Promise<MilkRejectionResponseDto>
+
       // transport
       getPaginatedTransports: (
         params: PaginationRequestDto,
@@ -109,14 +117,6 @@ declare global {
         toDate?: string
       ) => Promise<PaginatedTransportDto>
       saveTransport: (params: TransportSaveDto) => Promise<TransportDto>
-
-      // milk rejection
-      getPaginatedMilkRejections: (
-        params: PaginationRequestDto,
-        fromDate?: string,
-        toDate?: string
-      ) => Promise<PaginatedMilkRejectionDto>
-      saveMilkRejection: (params: MilkRejectionSaveDto) => Promise<MilkRejectionResponseDto>
 
       // serial port
       getSerialPorts: () => Promise<PortListItem[]>

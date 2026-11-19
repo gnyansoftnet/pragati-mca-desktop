@@ -20,8 +20,8 @@ export class MilkRejectionService implements IMilkRejectionService {
 
   async getPaginatedMilkRejections(
     data: PaginationRequestDto,
-    fromDate?: string,
-    toDate?: string
+    shift?: string | number,
+    date?: string
   ): Promise<PaginatedMilkRejectionDto> {
     const page = Math.max(1, Math.trunc(Number(data.page)) || 1)
     const limit = Math.max(1, Math.trunc(Number(data.limit)) || 10)
@@ -33,8 +33,8 @@ export class MilkRejectionService implements IMilkRejectionService {
         search,
         limit,
         offset,
-        fromDate,
-        toDate
+        shift,
+        date
       )
       const totalPages = Math.ceil(total / limit)
 

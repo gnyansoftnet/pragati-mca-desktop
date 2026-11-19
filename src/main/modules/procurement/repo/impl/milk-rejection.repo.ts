@@ -36,60 +36,62 @@ export class MilkRejectionRepo implements IMilkRejectionRepo {
     search: string | undefined,
     limit: number,
     offset: number,
-    fromDate?: string,
-    toDate?: string
+    shift?: string | number,
+    date?: string
   ): Promise<PagedMilkRejectionRows> {
-    const conditions: string[] = []
+    const conditions: string[] = ['rm.d_flag = 0']
     const params: (string | number)[] = []
-
-    // ---- date filter ----
-    if (fromDate || toDate) {
-      let from = (fromDate ?? toDate) as string
-      let to = (toDate ?? fromDate) as string
-
-      if (!DATE_RE.test(from) || !DATE_RE.test(to)) {
+    // ---- 1. Single Date Filter (Optional) ----
+    if (date && date.trim() !== '') {
+      if (!DATE_RE.test(date)) {
         throw new Error('Invalid date format. Use YYYY-MM-DD.')
       }
-      if (from > to) [from, to] = [to, from]
-
       conditions.push(`rm.created_at >= ? AND rm.created_at < DATE_ADD(?, INTERVAL 1 DAY)`)
-      params.push(from, to)
+      params.push(date, date)
     }
-
-    // ---- search filter ----
-    if (search) {
+    // If date is omitted, no date filter is applied -> returns all dates
+    // ---- 2. Shift Filter (Optional) ----
+    if (
+      shift !== undefined &&
+      shift !== null &&
+      String(shift).trim() !== '' &&
+      String(shift) !== '0'
+    ) {
+      conditions.push(`rm.shift = ?`)
+      params.push(String(shift).trim())
+    }
+    // If shift is omitted or '0', no shift filter is applied -> returns all shifts
+    // ---- 3. Search Filter (Optional) ----
+    if (search && search.trim() !== '') {
       conditions.push(
         `(rm.dsk_name LIKE ? OR rm.route LIKE ? OR r.route_name LIKE ? OR rm.supervisor LIKE ?)`
       )
-      const like = `%${search}%`
+      const like = `%${search.trim()}%`
       params.push(like, like, like, like)
     }
-
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
-
     const [[countRows], [rows]] = await Promise.all([
       db.query<CountRow[]>(
         `SELECT COUNT(*) AS total
-           FROM rejection_milk rm
-           LEFT JOIN route r ON r.route_code = rm.route
-           ${where}`,
+       FROM rejection_milk rm
+       LEFT JOIN route r ON r.route_code = rm.route
+       ${where}`,
         params
       ),
       db.query<MilkRejectionRow[]>(
         `SELECT rm.*,
-                r.route_name,
-                sh.shift_name
-           FROM rejection_milk rm
-           LEFT JOIN route r ON r.route_code = rm.route
-           LEFT JOIN shift sh ON sh.id = rm.shift
-           ${where}
-          ORDER BY rm.id ASC
-          LIMIT ? OFFSET ?`,
+              r.route_name,
+              sh.shift_name
+       FROM rejection_milk rm
+       LEFT JOIN route r  ON r.route_code = rm.route
+       LEFT JOIN shift sh ON sh.id = rm.shift
+       ${where}
+       ORDER BY rm.id ASC
+       LIMIT ? OFFSET ?`,
         [...params, limit, offset]
       )
     ])
-
-    return { rows, total: Number(countRows[0].total) }
+    return { rows, total: Number(countRows[0]?.total ?? 0) }
   }
 
   async getRejectionMilk(id: number): Promise<MilkRejectionRow | undefined> {

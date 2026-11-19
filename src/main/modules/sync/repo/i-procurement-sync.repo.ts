@@ -11,7 +11,11 @@ export interface IProcurmentSyncRepo {
   markSyncedWithRetryMilkCollection(ids: number[]): Promise<number>
   addMilkCollectionSyncLog(fromDate: string, toDate: string, status: string): Promise<number>
 
-  getMilkRejectionByDate(fromDate: string, toDate: string): Promise<MilkRejectionRow[]>
+  getMilkRejectionByDate(
+    date: string,
+    shift: number,
+    syncStatus: string
+  ): Promise<MilkRejectionRow[]>
   markSyncedWithRetryMilkRejection(ids: number[]): Promise<number>
   addMilkRejectionSyncLog(fromDate: string, toDate: string, status: string): Promise<number>
 }
