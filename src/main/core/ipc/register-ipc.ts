@@ -8,6 +8,7 @@ import { registerSyncIpc } from '../../modules/sync/sync.ipc'
 import { registerProcurmentIpc } from '../../modules/procurement/procurement.ipc'
 import { registerTransportIpc } from '../../modules/transport/transport.ipc'
 import { registerMasterIpc } from '../../modules/master/master.ipc'
+import { registerReportIpc } from '../../modules/reports/report.ipc'
 
 const PROBE_URLS = [
   'https://clients3.google.com/generate_204',
@@ -53,4 +54,5 @@ export function registerIpcHandlers(): void {
   registerSyncIpc()
   registerTransportIpc()
   registerMasterIpc()
+  registerReportIpc()
 }
