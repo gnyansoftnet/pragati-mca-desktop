@@ -65,8 +65,8 @@ const api = {
   syncMilkCollection: (date: string, shift: number): Promise<SyncSucess> =>
     ipcRenderer.invoke('procurement-sync:syncMilkCollection', date, shift),
 
-  syncMilkRejection: (fromDate: string, toDate: string): Promise<SyncSucess> =>
-    ipcRenderer.invoke('procurement-sync:syncMilkRejection', fromDate, toDate),
+  syncMilkRejection: (date: string, shift: number): Promise<SyncSucess> =>
+    ipcRenderer.invoke('procurement-sync:syncMilkRejection', date, shift),
 
   syncUser: (plant: string, intial: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('user:syncUser', plant, intial),
@@ -118,6 +118,16 @@ const api = {
   updateMilkSample: (params: MilkSampleUpdateDto): Promise<MilkSampleDto> =>
     ipcRenderer.invoke('procurement-analysis:updateMilkSample', params),
 
+  // milk rejection
+  getPaginatedMilkRejections: (
+    params: PaginationRequestDto,
+    shift?: string | number,
+    date?: string
+  ): Promise<PaginatedMilkRejectionDto> =>
+    ipcRenderer.invoke('procurement-rejection:getPaginatedMilkRejections', params, shift, date),
+  saveMilkRejection: (params: MilkRejectionSaveDto): Promise<MilkRejectionResponseDto> =>
+    ipcRenderer.invoke('procurement-rejection:saveMilkRejection', params),
+
   // trasnport
   getPaginatedTransports: (
     params: PaginationRequestDto,
@@ -148,21 +158,6 @@ const api = {
     ipcRenderer.invoke('master:getLastSynckedMilkCollection'),
   getLastSynckedMilkRejection: (): Promise<LastSynckedMilkRejectionDto> =>
     ipcRenderer.invoke('master:getLastSynckedMilkRejection'),
-
-  // milk rejection
-  getPaginatedMilkRejections: (
-    params: PaginationRequestDto,
-    fromDate?: string,
-    toDate?: string
-  ): Promise<PaginatedMilkRejectionDto> =>
-    ipcRenderer.invoke(
-      'procurement-rejection:getPaginatedMilkRejections',
-      params,
-      fromDate,
-      toDate
-    ),
-  saveMilkRejection: (params: MilkRejectionSaveDto): Promise<MilkRejectionResponseDto> =>
-    ipcRenderer.invoke('procurement-rejection:saveMilkRejection', params),
 
   // serial port
   getSerialPorts: (): Promise<PortListItem[]> => ipcRenderer.invoke('serial:list'),

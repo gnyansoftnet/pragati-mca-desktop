@@ -10,27 +10,36 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 export class ProcurmentSyncRepo implements IProcurmentSyncRepo {
   constructor() {}
 
-  async addMilkRejectionSyncLog(fromDate: string, toDate: string, status: string): Promise<number> {
-    const sql = `
-    INSERT INTO milk_rejection_sync_log (lastSycfrom, lastSyncTO, status)
-    VALUES (?, ?, ?)`
-    const [result] = await db.execute<ResultSetHeader>(sql, [
-      `${fromDate} 00:00:00`,
-      `${toDate} 23:59:59`,
-      status
-    ])
-    return result.insertId
-  }
-  async getMilkRejectionByDate(fromDate: string, toDate: string): Promise<MilkRejectionRow[]> {
+  async getMilkRejectionByDate(
+    date: string,
+    shift: string | number,
+    syncStatus: 'pending' | 'synced'
+  ): Promise<MilkRejectionRow[]> {
+    if (!date || !DATE_RE.test(date)) {
+      throw new Error('Valid date is required. Use format YYYY-MM-DD.')
+    }
+    if (shift === undefined || shift === null || String(shift).trim() === '') {
+      throw new Error('Shift is required.')
+    }
+    if (!syncStatus || syncStatus.trim() === '') {
+      throw new Error('Sync status is required.')
+    }
+
     const sql = `
     SELECT *
     FROM rejection_milk
-    WHERE sync_status = 'pending'
+    WHERE sync_status = ?
+      AND shift = ?
       AND d_flag = 0
       AND created_at >= ?
-      AND created_at <  DATE_ADD(?, INTERVAL 1 DAY)
+      AND created_at < DATE_ADD(?, INTERVAL 1 DAY)
     ORDER BY created_at ASC`
-    const [rows] = await db.execute<MilkRejectionRow[]>(sql, [fromDate, toDate])
+    const [rows] = await db.execute<MilkRejectionRow[]>(sql, [
+      syncStatus.trim(),
+      String(shift).trim(),
+      date,
+      date
+    ])
     return rows
   }
 
@@ -59,7 +68,18 @@ export class ProcurmentSyncRepo implements IProcurmentSyncRepo {
     return result.affectedRows
   }
 
-  
+  async addMilkRejectionSyncLog(fromDate: string, toDate: string, status: string): Promise<number> {
+    const sql = `
+    INSERT INTO milk_rejection_sync_log (lastSycfrom, lastSyncTO, status)
+    VALUES (?, ?, ?)`
+    const [result] = await db.execute<ResultSetHeader>(sql, [
+      `${fromDate} 00:00:00`,
+      `${toDate} 23:59:59`,
+      status
+    ])
+    return result.insertId
+  }
+
   // collection
   async getMilkCollectionsByDate(
     date: string,

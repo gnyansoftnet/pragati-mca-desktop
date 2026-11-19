@@ -72,26 +72,24 @@ export class ProcurmentSyncService implements IProcurmentSyncService {
     return response.data
   }
 
-  async syncToWebMilkRejection(
-    fromDate: string,
-    toDate: string
-  ): Promise<MilkCollectionSyncResultDto> {
+  async syncToWebMilkRejection(date: string, shift: number): Promise<MilkCollectionSyncResultDto> {
     try {
       const milkList: MilkRejectionRow[] = await this.proSyncRepo.getMilkRejectionByDate(
-        fromDate,
-        toDate
+        date,
+        shift,
+        AppConstant.pending
       )
       if (milkList.length === 0) {
-        throw new DatabaseError('As for your date range their is no analyzed data')
+        throw new DatabaseError('As for your date range their is no milk rejection data')
       }
       const payload: MilkRejectionSyncRequestDto = milkList.map(toMilkRejectionSave)
       const response: MilkCollectionSyncResultDto = await this.syncUpMilkRejection(payload)
       if (response.success == 1) {
         const ids: number[] = milkList.map((row) => row.id)
         await this.proSyncRepo.markSyncedWithRetryMilkRejection(ids)
-        await this.proSyncRepo.addMilkRejectionSyncLog(fromDate, toDate, 'success')
+        await this.proSyncRepo.addMilkRejectionSyncLog(date, date, AppConstant.sucess)
       } else {
-        await this.proSyncRepo.addMilkRejectionSyncLog(fromDate, toDate, 'failed')
+        await this.proSyncRepo.addMilkRejectionSyncLog(date, date, AppConstant.failed)
       }
       return response
     } catch (error) {

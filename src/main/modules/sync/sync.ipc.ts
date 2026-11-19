@@ -35,7 +35,7 @@ export function registerSyncIpc(): void {
   )
   ipcMain.handle(
     'procurement-sync:syncMilkRejection',
-    (_event, fromDate: string, toDate: string): Promise<any> =>
-      proService.syncToWebMilkRejection(fromDate, toDate)
+    (_event, date: string, shift: number): Promise<any> =>
+      proService.syncToWebMilkRejection(date, shift)
   )
 }
