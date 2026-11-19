@@ -13,15 +13,13 @@ import { ApiService } from '../../../../utils/api-service'
 import { Url } from '../../../../core/constants/url'
 import { MilkRejectionSyncRequestDto, toMilkRejectionSave } from '../../dto/milk-rejection-save'
 import { MilkRejectionRow } from '../../../procurement/dto/milk-rejection.rows'
-import type { IMilkCollectionRepo } from '../../../procurement/repo/i-milk-collection.repo'
+import { AppConstant } from '../../../../core/constants/app-constants'
 
 @injectable()
 export class ProcurmentSyncService implements IProcurmentSyncService {
   constructor(
     @inject(TOKENS.ProSyncRepo)
     private readonly proSyncRepo: IProcurmentSyncRepo,
-    @inject(TOKENS.MilkCollectionRepo)
-    private readonly milkCollRepo: IMilkCollectionRepo,
     private readonly api: ApiService
   ) {}
 
@@ -31,31 +29,34 @@ export class ProcurmentSyncService implements IProcurmentSyncService {
     const response = await this.api.http.post<MilkCollectionSyncResultDto>(Url.milkCollection, data)
     return response.data
   }
-  async syncToWebMilkCollection(
-    fromDate: string,
-    toDate: string
-  ): Promise<MilkCollectionSyncResultDto> {
+  async syncToWebMilkCollection(date: string, shift: number): Promise<MilkCollectionSyncResultDto> {
     try {
       const milkList: MilkCollectionRow[] = await this.proSyncRepo.getMilkCollectionsByDate(
-        fromDate,
-        toDate
+        date,
+        shift,
+        AppConstant.pending,
+        AppConstant.analyze_true
       )
       if (milkList.length === 0) {
         throw new DatabaseError('As for your date range their is no analyzed data')
       }
       const analyzedMilk: MilkCollectionSyncRequestDto = milkList.map(toMilkCollectionSave)
-      const collectionMilk: MilkCollectionRow[] = await this.milkCollRepo.getMilkCollections()
+      const collectionMilk: MilkCollectionRow[] = await this.proSyncRepo.getMilkCollectionsByDate(
+        date,
+        shift,
+        AppConstant.pending,
+        AppConstant.analyze_false
+      )
       if (collectionMilk.length != analyzedMilk.length) {
         throw new NotFoundError('collection milk and analyzed milk are not equal')
       }
       const response: MilkCollectionSyncResultDto = await this.syncUpMilkCollection(analyzedMilk)
-
       if (response.success == 1) {
         const ids: number[] = milkList.map((row) => row.id)
         await this.proSyncRepo.markSyncedWithRetryMilkCollection(ids)
-        await this.proSyncRepo.addMilkCollectionSyncLog(fromDate, toDate, 'success')
+        await this.proSyncRepo.addMilkCollectionSyncLog(date, date, AppConstant.sucess)
       } else {
-        await this.proSyncRepo.addMilkCollectionSyncLog(fromDate, toDate, 'failed')
+        await this.proSyncRepo.addMilkCollectionSyncLog(date, date, AppConstant.failed)
       }
       return response
     } catch (error) {

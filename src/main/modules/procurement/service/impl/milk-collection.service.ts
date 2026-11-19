@@ -64,8 +64,8 @@ export class MilkCollectionService implements IMilkCollectionService {
 
   async getPaginatedMilkCollections(
     data: PaginationRequestDto,
-    fromDate?: string,
-    toDate?: string,
+    shift?: number,
+    date?: string,
     isAnalyse?: number
   ): Promise<PaginatedMilkCollectionDto> {
     const page = Math.max(1, Math.trunc(Number(data.page)) || 1)
@@ -78,8 +78,8 @@ export class MilkCollectionService implements IMilkCollectionService {
         search,
         limit,
         offset,
-        fromDate,
-        toDate,
+        shift,
+        date,
         isAnalyse
       )
       const totalPages = Math.ceil(total / limit)
@@ -134,9 +134,9 @@ export class MilkCollectionService implements IMilkCollectionService {
     }
   }
 
-  async getMilkCollections(): Promise<MilkCollectionDto[]> {
+  async getMilkCollections(date: string, shift: number): Promise<MilkCollectionDto[]> {
     try {
-      const rows: MilkCollectionRow[] = await this.milkRepo.getMilkCollections()
+      const rows: MilkCollectionRow[] = await this.milkRepo.getMilkCollections(date, shift)
       return rows.map((r) => ({
         id: r.id,
         transCode: r.trans_code,

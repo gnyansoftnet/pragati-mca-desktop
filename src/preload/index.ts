@@ -62,8 +62,8 @@ const api = {
   syncSupervisors: (plant: string, org: string, branch: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('supervisor-sync:syncSupervisors', plant, org, branch),
 
-  syncMilkCollection: (fromDate: string, toDate: string): Promise<SyncSucess> =>
-    ipcRenderer.invoke('procurement-sync:syncMilkCollection', fromDate, toDate),
+  syncMilkCollection: (date: string, shift: number): Promise<SyncSucess> =>
+    ipcRenderer.invoke('procurement-sync:syncMilkCollection', date, shift),
 
   syncMilkRejection: (fromDate: string, toDate: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('procurement-sync:syncMilkRejection', fromDate, toDate),
@@ -95,21 +95,21 @@ const api = {
   // procurement
   getPaginatedMilkCollctions: (
     params: PaginationRequestDto,
-    fromDate?: string,
-    toDate?: string,
+    shift?: number,
+    date?: string,
     isAnalyse?: number
   ): Promise<PaginatedMilkCollectionDto> =>
     ipcRenderer.invoke(
       'procurement-collection:getPaginatedMilkCollctions',
       params,
-      fromDate,
-      toDate,
+      shift,
+      date,
       isAnalyse
     ),
   saveMilkCollection: (params: SaveMilkCollectionDto): Promise<MilkCollectionDto> =>
     ipcRenderer.invoke('procurement-collection:saveMilkCollection', params),
-  getMilkCollections: (): Promise<MilkCollectionDto[]> =>
-    ipcRenderer.invoke('procurement-collection:getMilkCollections'),
+  getMilkCollections: (date: string, shift: number): Promise<MilkCollectionDto[]> =>
+    ipcRenderer.invoke('procurement-collection:getMilkCollections', date, shift),
 
   // milk analysis
   getMilkSamples: (sampleDate: string, shift: number, plant: string): Promise<MilkSampleDto[]> =>

@@ -54,6 +54,7 @@ export class MasterRepo implements IMasterRepo {
       const [rows] = await db.execute<LastSynckedMilkCollectionRow[]>(
         `SELECT id, lastSycfrom, lastSyncTo 
        FROM milk_collection_sync_log 
+       WHERE status ='success'
        ORDER BY lastSyncTo DESC 
        LIMIT 1`
       )
@@ -72,6 +73,7 @@ export class MasterRepo implements IMasterRepo {
       const [rows] = await db.execute<LastSynckedMilkRejectionRow[]>(
         `SELECT id, lastSycfrom, lastSyncTo 
        FROM milk_rejection_sync_log 
+        WHERE status ='success'
        ORDER BY lastSyncTo DESC 
        LIMIT 1`
       )
