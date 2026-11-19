@@ -45,3 +45,13 @@ export interface LastSynckedMasterDto {
   masterName: string
   lastUpdated: string
 }
+export interface LastSynckedMilkCollectionDto {
+  id: number
+  lastSycfrom: string
+  lastSyncTO: string
+}
+export interface LastSynckedMilkRejectionDto {
+  id: number
+  lastSycfrom: string
+  lastSyncTO: string
+}

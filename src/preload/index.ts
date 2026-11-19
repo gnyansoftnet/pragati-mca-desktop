@@ -36,6 +36,8 @@ import {
   DashboardCountDto,
   LastSampleDateDto,
   LastSynckedMasterDto,
+  LastSynckedMilkCollectionDto,
+  LastSynckedMilkRejectionDto,
   MilkStatusDto,
   MilkTypesDto,
   ReasonDto,
@@ -128,8 +130,7 @@ const api = {
 
   // master
   getReasons: (): Promise<ReasonDto[]> => ipcRenderer.invoke('master:getReasons'),
-  getLastSampleDate: (): Promise<LastSampleDateDto> =>
-    ipcRenderer.invoke('master:getLastSampleDate'),
+
   getDashboardCount: (): Promise<DashboardCountDto> =>
     ipcRenderer.invoke('master:getDashboardCount'),
   getWeightSystems: (): Promise<WeightSystemDto[]> => ipcRenderer.invoke('master:getWeightSystems'),
@@ -137,8 +138,16 @@ const api = {
   getMilkStatus: (): Promise<MilkStatusDto[]> => ipcRenderer.invoke('master:getMilkStatus'),
   getMilkType: (): Promise<MilkTypesDto[]> => ipcRenderer.invoke('master:getMilkType'),
   getShifts: (): Promise<ShiftDto[]> => ipcRenderer.invoke('master:getShifts'),
+
+  getLastSampleDate: (): Promise<LastSampleDateDto> =>
+    ipcRenderer.invoke('master:getLastSampleDate'),
   getLastSynckedMaster: (masterName: string): Promise<LastSynckedMasterDto> =>
     ipcRenderer.invoke('master:getLastSynckedMaster', masterName),
+
+  getLastSynckedMilkCollection: (): Promise<LastSynckedMilkCollectionDto> =>
+    ipcRenderer.invoke('master:getLastSynckedMilkCollection'),
+  getLastSynckedMilkRejection: (): Promise<LastSynckedMilkRejectionDto> =>
+    ipcRenderer.invoke('master:getLastSynckedMilkRejection'),
 
   // milk rejection
   getPaginatedMilkRejections: (

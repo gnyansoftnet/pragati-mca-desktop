@@ -10,12 +10,15 @@ export interface MilkCollectionRow extends RowDataPacket {
   vendor_code: string
   dsk_name?: string | null
   shift: number
+  shift_name?: string | null
   sample_date: string
   sample_code: number
   can_type: string
   weight_system: string
   milk_type: string
+  milk_type_name?: string | null
   milk_status: string
+  milk_status_name?: string | null
   tiping_time: string
   no_of_cans: number
   gross_weight: number
