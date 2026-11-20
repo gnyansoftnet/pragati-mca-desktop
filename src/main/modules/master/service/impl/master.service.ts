@@ -25,6 +25,7 @@ import {
   MilkTypeRow,
   ShiftRow
 } from '../../dto/master.row'
+import { toDateStr } from '../../../../utils/utils'
 
 @injectable()
 export class MasterService implements IMasterService {
@@ -77,7 +78,7 @@ export class MasterService implements IMasterService {
     try {
       const rows: LastSampleDateRow = await this.masterRepo.getLastSampleDate()
       return {
-        last_sample_date: rows.last_sample_date
+        last_sample_date: toDateStr(rows.last_sample_date)
       }
     } catch (error) {
       if (error instanceof AppError) throw error
