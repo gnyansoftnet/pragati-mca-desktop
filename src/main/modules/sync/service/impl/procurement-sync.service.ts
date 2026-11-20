@@ -44,10 +44,10 @@ export class ProcurmentSyncService implements IProcurmentSyncService {
       const collectionMilk: MilkCollectionRow[] = await this.proSyncRepo.getMilkCollectionsByDate(
         date,
         shift,
-        AppConstant.pending,
-        AppConstant.analyze_false
+        AppConstant.pending
       )
-      if (collectionMilk.length != analyzedMilk.length && collectionMilk.length != 0) {
+
+      if (collectionMilk.length != analyzedMilk.length) {
         throw new NotFoundError('collection milk and analyzed milk are not equal')
       }
       const response: MilkCollectionSyncResultDto = await this.syncUpMilkCollection(analyzedMilk)
