@@ -17,7 +17,7 @@ export interface MilkRejectionRow extends RowDataPacket {
   sync_status: string
   created_at: string
   updated_at: string
-  d_falg: number
+  d_flag: number
 }
 
 export interface CountRow extends RowDataPacket {
