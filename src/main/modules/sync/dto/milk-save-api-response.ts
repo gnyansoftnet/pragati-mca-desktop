@@ -10,7 +10,7 @@ export interface MilkCollectionSyncResultDto {
   rejected_rows: any[]
 }
 
-export interface MilkCollectionSave {
+export interface MilkCollectionAPISave {
   trans_code: string
   plant: string
   user_code: string
@@ -24,6 +24,8 @@ export interface MilkCollectionSave {
   milk_type: string
   milk_status: string
   tiping_time: string
+  start_time: string
+  end_time: string
   no_of_cans: number
   gross_weight: number
   net_weight: number
@@ -34,28 +36,39 @@ export interface MilkCollectionSave {
   is_analyse: number
   entry: string
 }
-export type MilkCollectionSyncRequestDto = MilkCollectionSave[]
+export type MilkCollectionSyncRequestDto = MilkCollectionAPISave[]
 
+const pad = (n: number): string => String(n).padStart(2, '0')
 const toDateStr = (d: Date | string): string => {
   if (typeof d === 'string') return d.slice(0, 10)
   const pad = (n: number): string => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
 
-export const toMilkCollectionSave = (row: MilkCollectionRow): MilkCollectionSave => ({
+const toMySQLDateTime = (d: Date | string): string => {
+  const x = typeof d === 'string' ? new Date(d) : d
+  return (
+    `${x.getFullYear()}-${pad(x.getMonth() + 1)}-${pad(x.getDate())} ` +
+    `${pad(x.getHours())}:${pad(x.getMinutes())}:${pad(x.getSeconds())}`
+  )
+}
+
+export const toMilkCollectionSave = (row: MilkCollectionRow): MilkCollectionAPISave => ({
   trans_code: row.trans_code,
   plant: row.plant,
   user_code: row.user_code,
   root_code: row.root_code,
   vendor_code: row.vendor_code,
   shift: Number(row.shift),
-  sample_date: toDateStr(row.sample_date as unknown as Date | string),
+  sample_date: toDateStr(row.sample_date),
   sample_code: Number(row.sample_code),
   can_type: row.can_type,
   weight_system: row.weight_system,
   milk_type: row.milk_type,
   milk_status: row.milk_status,
   tiping_time: row.tiping_time,
+  start_time: toMySQLDateTime(row.created_at),
+  end_time: toMySQLDateTime(row.updated_at),
   no_of_cans: Number(row.no_of_cans),
   gross_weight: Number(row.gross_weight),
   net_weight: Number(row.net_weight),
