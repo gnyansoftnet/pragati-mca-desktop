@@ -716,22 +716,26 @@
 // }
 
 // export default DashboardPage
-
 import React, { useState, useEffect } from 'react'
 import { Users, FileText, Calendar, CheckCircle2, FileCheck, AlertTriangle } from 'lucide-react'
+import { useAuth } from '../../context/AuthContext'
 import { useSerialSnapshot } from '../../hooks/useSerial'
+import { useShift } from '../../hooks/useShift'
 import { isAnalyzer } from '@shared/dtos/connection/serial-com-port.dto'
 import PageBreadcrumb from '../../components/breadcrumbs/PageBreadcrumb'
 import TableToolbar from '../../components/table/TableToolbar'
 import TablePagination from '../../components/table/TablePagination'
+import CustomForm from '../../components/customform/CustomForm'
 import type { MilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
-import type { MilkRejectionResponseDto } from '@shared/dtos/milk-rejection/milk-rejection.dto'
+import type { MilkRejectionResponseDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
 import type { DashboardCountDto } from '@shared/dtos/master/master.dto'
 
 export type DashboardTab = 'analyzed' | 'rejected'
 
 export const DashboardPage: React.FC = () => {
+  const { user } = useAuth()
   const snap = useSerialSnapshot()
+  const { shiftOptions, currentShiftId, loadingShifts, getShiftLabel } = useShift(user?.plant)
 
   // Hardware connections count
   const connectedScales = snap.ports.filter(
@@ -775,6 +779,37 @@ export const DashboardPage: React.FC = () => {
 
   // Active tab state
   const [activeTab, setActiveTab] = useState<DashboardTab>('analyzed')
+
+  // Shift filter state (defaults to currentShiftId from useShift)
+  const [shift, setShift] = useState<string>(currentShiftId)
+  // Automatically sync shift when currentShiftId is resolved
+  // useEffect(() => {
+  //   if (currentShiftId) {
+  //     setShift(currentShiftId)
+  //   }
+  // }, [currentShiftId])
+  useEffect(() => {
+    if (currentShiftId) {
+      setShift(currentShiftId)
+      if (activeTab === 'analyzed') {
+        fetchAnalyzedCollections(1, pageSize, searchQuery, currentShiftId)
+      } else {
+        fetchRejectedCollections(1, pageSize, searchQuery, currentShiftId)
+      }
+    }
+  }, [currentShiftId])
+
+  // Handle Shift dropdown change & immediately re-fetch the active list with the new shift ID
+  const handleShiftChange = (e: any) => {
+    const newShift = e?.target ? e.target.value : (e?.value ?? e)
+    setShift(newShift)
+
+    if (activeTab === 'analyzed') {
+      fetchAnalyzedCollections(1, pageSize, searchQuery, newShift)
+    } else {
+      fetchRejectedCollections(1, pageSize, searchQuery, newShift)
+    }
+  }
 
   // Search & Page size
   const [pageSize, setPageSize] = useState<number | 'all'>(10)
@@ -828,7 +863,8 @@ export const DashboardPage: React.FC = () => {
   const fetchAnalyzedCollections = async (
     pageNo = analyzedPagination.page,
     limitVal = pageSize,
-    searchVal = searchQuery
+    searchVal = searchQuery,
+    shiftVal = shift
   ) => {
     try {
       setLoading(true)
@@ -839,7 +875,7 @@ export const DashboardPage: React.FC = () => {
           limit: actualLimit,
           search: searchVal.trim()
         },
-        todayDate,
+        shiftVal ? Number(shiftVal) : undefined,
         todayDate,
         1
       )
@@ -867,7 +903,8 @@ export const DashboardPage: React.FC = () => {
   const fetchRejectedCollections = async (
     pageNo = rejectedPagination.page,
     limitVal = pageSize,
-    searchVal = searchQuery
+    searchVal = searchQuery,
+    shiftVal = shift
   ) => {
     try {
       setLoading(true)
@@ -878,7 +915,7 @@ export const DashboardPage: React.FC = () => {
           limit: actualLimit,
           search: searchVal.trim()
         },
-        todayDate,
+        shiftVal ? Number(shiftVal) : undefined,
         todayDate
       )
 
@@ -1032,7 +1069,7 @@ export const DashboardPage: React.FC = () => {
 
       {/* Today's Data Card (Tabbed View) */}
       <div className="p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs space-y-4">
-        {/* Card Title & Navigation Tabs */}
+        {/* Card Header & Navigation Tabs */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-3">
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold text-slate-800">Today's Data</h2>
@@ -1048,7 +1085,7 @@ export const DashboardPage: React.FC = () => {
               onClick={() => handleTabSwitch('analyzed')}
               className={`pb-1 px-1 text-xs font-bold flex items-center gap-1.5 border-b-2 transition-all cursor-pointer ${
                 activeTab === 'analyzed'
-                  ? 'border-green-700 text-green-700'
+                  ? 'border-primary text-primary'
                   : 'border-transparent text-slate-400 hover:text-slate-600'
               }`}
             >
@@ -1071,7 +1108,25 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Table Toolbar */}
+        {/* Shift Filter Bar (No Date Field, No Search Button - auto-triggers on onChange) */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="w-full sm:w-60 space-y-1">
+            <label className="text-xs font-semibold text-slate-700 block">
+              Shift{' '}
+              {loadingShifts && <span className="text-slate-400 font-normal">(Loading...)</span>}
+            </label>
+            <CustomForm.CustomSelectSearchField
+              name="shift"
+              value={shift}
+              onChange={handleShiftChange}
+              options={shiftOptions}
+              placeholder={loadingShifts ? 'Loading shifts...' : 'Select shift...'}
+              disabled={loadingShifts}
+            />
+          </div>
+        </div>
+
+        {/* Table Toolbar (Page size & Search) */}
         <TableToolbar
           pageSize={pageSize}
           onPageSizeChange={(val) => setPageSize(val === 'all' ? 'all' : Number(val))}
@@ -1079,7 +1134,7 @@ export const DashboardPage: React.FC = () => {
           onSearchChange={setSearchQuery}
           searchPlaceholder={
             activeTab === 'analyzed'
-              ? 'Search sample no, route or vendor...'
+              ? 'Search sample code, route or vendor...'
               : 'Search DSK, route or supervisor...'
           }
         />
@@ -1128,22 +1183,9 @@ export const DashboardPage: React.FC = () => {
                     <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
                       <td className="py-2 px-2 font-semibold text-primary">{item.sampleCode}</td>
                       <td className="py-2 px-2">
-                        {/* <span
-                          className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
-                            String(item.shift) === '1'
-                              ? 'bg-orange-50 text-orange-500 border-orange-200'
-                              : String(item.shift) === '2'
-                                ? 'bg-sky-50 text-sky-500 border-sky-200'
-                                : 'bg-rose-50 text-rose-700 border-rose-200'
-                          }`}
-                        >
-                          {String(item.shift) === '1'
-                            ? 'Morning'
-                            : String(item.shift) === '2'
-                              ? 'Evening'
-                              : `Shift ${item.shift}`}
-                        </span> */}
-                        {item.shift}
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-rose-50 text-rose-500 border-rose-200">
+                          {item.shiftName}
+                        </span>
                       </td>
                       <td className="py-2 px-2 font-semibold text-slate-800">{item.plant}</td>
                       <td className="py-2 px-2 font-semibold text-primary max-w-36 truncate">
@@ -1236,7 +1278,11 @@ export const DashboardPage: React.FC = () => {
                   rejections.map((item, index) => (
                     <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
                       <td className="py-2 px-2 font-semibold text-primary">{item.id}</td>
-                      <td className="py-2 px-2 font-semibold text-primary">{item.shift}</td>
+                      <td className="py-2 px-2">
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-rose-50 text-rose-500 border-rose-200">
+                          {item.shiftName}
+                        </span>
+                      </td>
                       <td className="py-2 px-2 font-semibold text-slate-800">{item.plant}</td>
                       <td className="py-2 px-2 font-semibold text-primary">
                         {(item as any).routeName || item.route}
@@ -1279,9 +1325,9 @@ export const DashboardPage: React.FC = () => {
           itemName={activeTab === 'analyzed' ? 'collections' : 'rejections'}
           onPageChange={(newPage) => {
             if (activeTab === 'analyzed') {
-              fetchAnalyzedCollections(newPage, pageSize, searchQuery)
+              fetchAnalyzedCollections(newPage, pageSize, searchQuery, shift)
             } else {
-              fetchRejectedCollections(newPage, pageSize, searchQuery)
+              fetchRejectedCollections(newPage, pageSize, searchQuery, shift)
             }
           }}
         />

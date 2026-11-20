@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Bookmark, X } from 'lucide-react'
 import api from '@renderer/services'
 import Button1 from '@renderer/components/buttons/Button1'
@@ -17,6 +17,7 @@ import TablePagination from '@renderer/components/table/TablePagination'
 import { RouteResponseDto } from '@shared/dtos/route/route-response.dto'
 import { VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
 import { ReasonDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
+import useShift from '@renderer/hooks/useShift'
 
 interface SelectOption {
   value: string
@@ -24,6 +25,10 @@ interface SelectOption {
 }
 export const Rejection: React.FC = () => {
   const { user } = useAuth()
+  const { shiftOptions, currentShiftId, getShiftLabel } = useShift(user?.plant)
+  const shouldFocusDskRef = useRef(false)
+
+  const shifts = shiftOptions
   //save
   const [loadingSave, setLoadingSave] = useState<boolean>(false)
   // Routes state
@@ -43,17 +48,23 @@ export const Rejection: React.FC = () => {
   const [selectedReason, setSelectedReason] = useState<string>('')
   const [loadingReasons, setLoadingReasons] = useState<boolean>(false)
 
-  const [shift, setShift] = useState('1')
+  const [shift, setShift] = useState<string>(currentShiftId || '1')
   const [plant, setPlant] = useState(user?.plant)
   const [noOfCans, setNoOfCans] = useState('')
   const [approxQuantity, setApproxQuantity] = useState('')
   const [supervisor, setSupervisor] = useState('')
 
+  useEffect(() => {
+    if (currentShiftId) {
+      setShift(currentShiftId)
+    }
+  }, [currentShiftId])
+
   // Options configuration
-  const shifts = [
-    { value: '1', label: 'Morning' },
-    { value: '2', label: 'Evening' }
-  ]
+  // const shifts = [
+  //   { value: '1', label: 'Morning' },
+  //   { value: '2', label: 'Evening' }
+  // ]
   // const plantOptions = [
   //   { value: '1102', label: 'Raipur' },
   //   { value: '1103', label: 'Jagatpur' }
@@ -147,18 +158,31 @@ export const Rejection: React.FC = () => {
         setVendorOptions([])
       } finally {
         setLoadingVendors(false)
+        if (shouldFocusDskRef.current) {
+          shouldFocusDskRef.current = false
+          setTimeout(() => {
+            const dskInput = document.getElementById('dsk-select-input') as HTMLInputElement | null
+            dskInput?.focus()
+          }, 80)
+        }
       }
     }
 
     fetchVendorsBySelectedRoute()
   }, [selectedRoute, routes])
 
-  // Set selected DSK and auto-populate supervisorEmpId
+  // Set selected DSK and auto-populate supervisorEmpId & focus No. of Cans
   const handleVendorChange = (dskCode: string | number) => {
     const value = String(dskCode ?? '')
     setSelectedVendor(value)
     const chosenVendor = vendors.find((v) => String(v.dskCode) === value)
     setSupervisor(chosenVendor?.supervisorEmpId || '')
+    if (value) {
+      setTimeout(() => {
+        const cansInput = document.getElementById('no-of-cans-input') as HTMLInputElement | null
+        cansInput?.focus()
+      }, 60)
+    }
   }
 
   useEffect(() => {
@@ -180,6 +204,19 @@ export const Rejection: React.FC = () => {
     if (!Number.isFinite(num) || num < 0) return ''
     const [intPart, decPart = ''] = num.toString().split('.')
     return `${intPart}.${(decPart + '0').slice(0, 1)}`
+  }
+
+  // Handle route change and flag that DSK should be focused
+  const handleRouteChange = (e: any) => {
+    const val = e?.target?.value ?? ''
+    setSelectedRoute(val)
+    if (val) {
+      shouldFocusDskRef.current = true
+      setTimeout(() => {
+        const dskInput = document.getElementById('dsk-select-input') as HTMLInputElement | null
+        dskInput?.focus()
+      }, 100)
+    }
   }
 
   const handleApproxQuantityChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -225,33 +262,26 @@ export const Rejection: React.FC = () => {
     return `${year}-${month}-${day}`
   }
 
-  // Default fromDate and toDate set to today's date
-  const [fromDate, setFromDate] = useState<string>(getCurrentDateISO())
-  const [toDate, setToDate] = useState<string>(getCurrentDateISO())
-
-  // console.log('fromDate', fromDate)
-  // console.log('toDate', toDate)
-
+  // Fetch paginated milk rejections automatically filtered by current date and current shift
   const fetchPaginatedRejections = async (
     pageNo = pagination.page,
     limitVal = pageSize,
-    searchVal = searchQuery,
-    fdate = fromDate,
-    tDate = toDate
+    searchVal = searchQuery
   ): Promise<void> => {
     try {
       setLoadingRejections(true)
       const actualLimit = limitVal === 'all' ? 10000000000000 : limitVal
+      const todayDate = getCurrentDateISO()
+      const activeShift = currentShiftId || '1'
       const response = await window.api.getPaginatedMilkRejections(
         {
           page: pageNo,
           limit: actualLimit,
           search: searchVal.trim()
         },
-        fdate,
-        tDate
+        activeShift,
+        todayDate
       )
-
       if (response) {
         const dataList = Array.isArray(response.data)
           ? response.data
@@ -259,13 +289,13 @@ export const Rejection: React.FC = () => {
             ? response
             : []
         setRejections(dataList)
-
         if (response.pagination) {
           setPagination(response.pagination)
         }
       }
     } catch (error) {
       console.error('Failed to fetch milk rejections:', error)
+      toast.error('Failed to fetch milk rejections.')
     } finally {
       setLoadingRejections(false)
     }
@@ -373,18 +403,20 @@ export const Rejection: React.FC = () => {
       </div>
 
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
-        <CustomForm className="w-full">
+        <CustomForm onSubmit={(e) => e.preventDefault()} className="w-full">
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2.5">
-            {/* Date (Read-only, skipped in Tab order) */}
+            {/* Date (Read-only, skipped from Tab order) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Date</label>
               <CustomForm.CustomTextField
                 name="date"
                 value={getCurrentLocalDate()}
                 readOnly={true}
+                tabIndex={-1}
               />
             </div>
-            {/* Shift */}
+
+            {/* Shift (tabIndex: 1) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Select Shift</label>
               <CustomForm.CustomSelectField
@@ -392,9 +424,11 @@ export const Rejection: React.FC = () => {
                 value={shift}
                 onChange={(e: any) => setShift(e.target.value)}
                 options={shifts}
+                tabIndex={1}
               />
             </div>
-            {/* Chilling Center */}
+
+            {/* Chilling Center (Read-only, skipped from Tab order) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomTextField
@@ -405,7 +439,7 @@ export const Rejection: React.FC = () => {
               />
             </div>
 
-            {/* Dynamic Routes Dropdown (tabIndex: 6) */}
+            {/* Routes Dropdown (tabIndex: 2) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
                 Routes <span className="text-rose-500">*</span>{' '}
@@ -413,15 +447,17 @@ export const Rejection: React.FC = () => {
               </label>
               <CustomForm.CustomSelectSearchField
                 name="route"
+                inputId="route-select-input"
                 placeholder={loadingRoutes ? 'Loading routes...' : 'Select & search route...'}
                 value={selectedRoute}
-                onChange={(e: any) => setSelectedRoute(e.target.value)}
+                onChange={handleRouteChange}
                 options={routeOptions}
                 disabled={loadingRoutes}
+                tabIndex={2}
               />
             </div>
 
-            {/* DSK Name (tabIndex: 7) */}
+            {/* DSK Name (tabIndex: 3) - Automatically focused after selecting route */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
                 DSK Name <span className="text-rose-500">*</span>{' '}
@@ -429,6 +465,7 @@ export const Rejection: React.FC = () => {
               </label>
               <CustomForm.CustomSelectSearchField
                 name="vendor"
+                inputId="dsk-select-input"
                 placeholder={
                   !selectedRoute
                     ? 'Please select a route first...'
@@ -442,20 +479,29 @@ export const Rejection: React.FC = () => {
                 onChange={(e: any) => handleVendorChange(e.target.value)}
                 options={vendorOptions}
                 disabled={loadingVendors || !selectedRoute}
+                tabIndex={3}
               />
             </div>
-            {/* Chilling Center */}
+
+            {/* Supervisor Id (Read-only, skipped from Tab order) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Supervisor Id</label>
-              <CustomForm.CustomTextField name="supervisor" value={supervisor} readOnly={true} />
+              <CustomForm.CustomTextField
+                name="supervisor"
+                value={supervisor}
+                readOnly={true}
+                tabIndex={-1}
+              />
             </div>
-            {/* Number of Cans (tabIndex: 8) with Enter handler and Route Total Cans counter */}
+
+            {/* No. of Cans (tabIndex: 4) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
                 No. of Cans <span className="text-rose-500">*</span>
               </label>
               <CustomForm.CustomNumberField
                 name="noOfCans"
+                id="no-of-cans-input"
                 value={noOfCans}
                 onChange={(e: any) => {
                   const val = e.target.value.replace(/\D/g, '').slice(0, 2)
@@ -466,21 +512,28 @@ export const Rejection: React.FC = () => {
                     e.target.value = e.target.value.slice(0, 2)
                   }
                 }}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    document.getElementById('approx-quantity-input')?.focus()
+                  }
+                }}
                 max={99}
                 min={1}
                 maxLength={2}
                 placeholder="e.g. 1"
-                // tabIndex={8}
+                tabIndex={4}
               />
             </div>
 
-            {/* aprox quantity */}
+            {/* Approx Quantity (tabIndex: 5) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
                 Aprox Quantity(LTR) <span className="text-rose-500">*</span>
               </label>
               <CustomForm.CustomNumberField
                 name="approxQuantity"
+                id="approx-quantity-input"
                 min="0"
                 step="0.1"
                 value={approxQuantity}
@@ -489,6 +542,10 @@ export const Rejection: React.FC = () => {
                   if (['-', '+', 'e', 'E'].includes(e.key)) {
                     e.preventDefault()
                   }
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    document.getElementById('reason-select-input')?.focus()
+                  }
                 }}
                 onBlur={() => {
                   if (!approxQuantity) return
@@ -496,12 +553,13 @@ export const Rejection: React.FC = () => {
                   setApproxQuantity(formatted)
                 }}
                 placeholder="e.g. 4.5"
+                tabIndex={5}
               />
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 grid-cols-1 gap-2.5">
-            {/* Dynamic Reason Dropdown (tabIndex: 6) */}
+            {/* Select Reason (tabIndex: 6) - Pressing Enter saves entry if reason is selected */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
                 Select Reason <span className="text-rose-500">*</span>{' '}
@@ -509,23 +567,33 @@ export const Rejection: React.FC = () => {
               </label>
               <CustomForm.CustomSelectSearchField
                 name="reason"
-                placeholder={loadingReasons ? 'Loading routes...' : 'Select & search reason...'}
+                inputId="reason-select-input"
+                placeholder={loadingReasons ? 'Loading reasons...' : 'Select & search reason...'}
                 value={selectedReason}
                 onChange={(e: any) => setSelectedReason(e.target.value)}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === 'Enter') {
+                    if (selectedReason) {
+                      e.preventDefault()
+                      handleSaveRejection()
+                    }
+                  }
+                }}
                 options={reasonOptions}
                 disabled={loadingReasons}
                 tabIndex={6}
               />
             </div>
           </div>
-          {/* Find Button (Saves Analysis) */}
+
+          {/* Action Buttons (tabIndex: 7 & 8) */}
           <div className="flex justify-end items-center gap-2.5 mt-3 pt-2 border-t border-slate-100">
             <Button1
               variant="outline"
               icon={<X className="w-3.5 h-3.5 text-primary" />}
               label="Clear"
               onClick={handleCancel}
-              tabIndex={9}
+              tabIndex={8}
             />
             <Button1
               variant="primary"
@@ -533,12 +601,15 @@ export const Rejection: React.FC = () => {
               label={loadingSave ? 'Saving...' : 'Save'}
               onClick={handleSaveRejection}
               disabled={loadingSave}
+              tabIndex={7}
             />
           </div>
         </CustomForm>
       </div>
 
+      {/* Bottom Card: Display List (Automatically filtered by Current Date and Current Shift) */}
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
+        {/* Toolbar for page size & text search */}
         <TableToolbar
           pageSize={pageSize}
           onPageSizeChange={(val) => setPageSize(val === 'all' ? 'all' : Number(val))}
@@ -560,7 +631,6 @@ export const Rejection: React.FC = () => {
                 <th className="py-2 px-2">DSK Code</th>
                 <th className="py-2 px-2">DSK Name</th>
                 <th className="py-2 px-2">Supervisor</th>
-
                 <th className="py-2 px-2">No. of Cans</th>
                 <th className="py-2 px-2">Approx Qty (LTR)</th>
                 <th className="py-2 px-2">Reason</th>
@@ -569,13 +639,13 @@ export const Rejection: React.FC = () => {
             <tbody className="divide-y divide-slate-100 text-xs">
               {loadingRejections ? (
                 <tr>
-                  <td colSpan={10} className="py-4 px-4 text-center text-slate-500">
+                  <td colSpan={11} className="py-4 px-4 text-center text-slate-500">
                     Loading Rejections...
                   </td>
                 </tr>
               ) : rejections.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="py-4 px-4 text-center text-slate-500">
+                  <td colSpan={11} className="py-4 px-4 text-center text-slate-500">
                     No Rejections Found
                   </td>
                 </tr>
@@ -603,9 +673,6 @@ export const Rejection: React.FC = () => {
                     <td className="py-2 px-2 text-slate-700">{item.dskCode}</td>
                     <td className="py-2 px-2 font-semibold text-slate-800">{item.dskName}</td>
                     <td className="py-2 px-2 text-slate-700">{item.supervisor}</td>
-                    {/* <td className="py-2 px-2 text-slate-700">
-                      {item.shift === '1' ? 'Morning' : item.shift === '2' ? 'Evening' : item.shift}
-                    </td> */}
                     <td className="py-2 px-2 text-slate-700">{item.noOfCanes}</td>
                     <td className="py-2 px-2 font-bold text-emerald-600">{item.aproxQuantity}</td>
                     <td className="py-2 px-2 text-slate-700">{item.reason}</td>
@@ -616,6 +683,7 @@ export const Rejection: React.FC = () => {
           </table>
         </div>
 
+        {/* Pagination */}
         <TablePagination
           page={pagination.page}
           totalPages={pagination.totalPages}

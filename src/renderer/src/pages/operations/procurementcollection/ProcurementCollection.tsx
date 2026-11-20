@@ -12,6 +12,7 @@ import { useAuth } from '@renderer/context/AuthContext'
 import { RouteResponseDto } from '@shared/dtos/route/route-response.dto'
 import { VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
 import { MilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
+import { useShift } from '@renderer/hooks/useShift'
 
 interface SelectOption {
   value: string
@@ -24,6 +25,8 @@ const DEFAULT_TEST_WEIGHT = '25.5'
 
 export const ProcurementCollection: React.FC = () => {
   const { user } = useAuth()
+  const { shiftOptions, currentShiftId, loadingShifts, getShiftLabel } = useShift(user?.plant)
+  const shifts = shiftOptions
   // Routes state
   const [routes, setRoutes] = useState<RouteResponseDto[]>([])
   const [routeOptions, setRouteOptions] = useState<SelectOption[]>([])
@@ -37,7 +40,8 @@ export const ProcurementCollection: React.FC = () => {
   const [loadingVendors, setLoadingVendors] = useState<boolean>(false)
 
   // Collection metadata fields
-  const [shift, setShift] = useState('1')
+  const [shift, setShift] = useState(currentShiftId)
+
   const [plant, setPlant] = useState<string>(user?.plant)
   // const [weightSystem, setWeightSystem] = useState('WeightBowl')
   // const [cansType, setCansType] = useState('Aluminium')
@@ -118,6 +122,13 @@ export const ProcurementCollection: React.FC = () => {
     }
   }
 
+  useEffect(() => {
+    if (currentShiftId) {
+      setShift(currentShiftId)
+      fetchCollections(getCurrentDateISO(), currentShiftId)
+    }
+  }, [currentShiftId])
+
   // Fetch vendors whenever the selected route changes
   useEffect(() => {
     // If no route is selected, clear vendor list and selection
@@ -183,9 +194,22 @@ export const ProcurementCollection: React.FC = () => {
     fetchVendorsBySelectedRoute()
   }, [selectedRoute, routes])
 
-  const fetchCollections = async (page = 1): Promise<void> => {
+  // Current date formatted as YYYY-MM-DD (e.g. 2026-11-20)
+  const getCurrentDateISO = (): string => {
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = String(today.getMonth() + 1).padStart(2, '0')
+    const day = String(today.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+  const fetchCollections = async (
+    dateVal = getCurrentDateISO(),
+    shiftVal = shift
+  ): Promise<void> => {
     try {
-      const response = await api.collection.getMilkCollections()
+      const shiftNum = shiftVal ? Number(shiftVal) : undefined
+      const response = await api.collection.getMilkCollections(dateVal, shiftNum)
       if (response) {
         if (response) {
           setEntries(response)
@@ -257,10 +281,10 @@ export const ProcurementCollection: React.FC = () => {
   }, [])
 
   // Options configuration
-  const shifts = [
-    { value: '1', label: 'Morning' },
-    { value: '2', label: 'Evening' }
-  ]
+  // const shifts = [
+  //   { value: '1', label: 'Morning' },
+  //   { value: '2', label: 'Evening' }
+  // ]
 
   // const plantOptions = [
   //   { value: '1102', label: 'Raipur' },
@@ -453,7 +477,7 @@ export const ProcurementCollection: React.FC = () => {
   //     setLoadingLastSampleDate(false)
   //   }
   // }
-    // Fetch Last Sample Date & Time dynamically from API
+  // Fetch Last Sample Date & Time dynamically from API
   const fetchLastSampleDate = async (): Promise<void> => {
     try {
       setLoadingLastSampleDate(true)
@@ -494,7 +518,7 @@ export const ProcurementCollection: React.FC = () => {
     fetchMilkTypes()
     fetchCanTypes()
     fetchLastSampleDate()
-    fetchCollections(1)
+    fetchCollections()
   }, [])
   // Compute Total no. of cans for the active route until route is changed
   const routeTotalCans = useMemo(() => {
@@ -642,14 +666,14 @@ export const ProcurementCollection: React.FC = () => {
         await (window as any).api.clearSerialReadings(['weight'])
       }
 
-      await fetchCollections(1)
+      await fetchCollections()
       await fetchLastSampleDate()
     } catch (error) {
       console.error('Failed to save milk collection:', error)
       // toast.error('Failed to save milk collection. Please try again.')
       toast.error(error?.message || String(error))
     } finally {
-      await fetchCollections(1)
+      await fetchCollections()
     }
   }
 
@@ -718,7 +742,7 @@ export const ProcurementCollection: React.FC = () => {
               <label className="text-xs font-semibold text-slate-700">
                 Select Shift <span className="text-rose-500">*</span>
               </label>
-              <CustomForm.CustomSelectSearchField
+              <CustomForm.CustomSelectField
                 name="shift"
                 value={shift}
                 onChange={(e: any) => setShift(e.target.value)}
@@ -754,7 +778,7 @@ export const ProcurementCollection: React.FC = () => {
                 Weight System <span className="text-rose-500">*</span>{' '}
                 {loadingWeights && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
-              <CustomForm.CustomSelectSearchField
+              <CustomForm.CustomSelectField
                 name="weight"
                 value={weightSystem}
                 onChange={(e: any) => setWeightSystem(e.target.value)}
@@ -775,7 +799,7 @@ export const ProcurementCollection: React.FC = () => {
                   <span className="text-slate-400 font-normal">(Loading...)</span>
                 )}
               </label>
-              <CustomForm.CustomSelectSearchField
+              <CustomForm.CustomSelectField
                 name="cans"
                 value={cansType}
                 onChange={(e: any) => setCansType(e.target.value)}
@@ -794,7 +818,7 @@ export const ProcurementCollection: React.FC = () => {
                   <span className="text-slate-400 font-normal">(Loading...)</span>
                 )}
               </label>
-              <CustomForm.CustomSelectSearchField
+              <CustomForm.CustomSelectField
                 name="milktype"
                 value={milkType}
                 onChange={(e: any) => setMilkType(e.target.value)}
@@ -813,7 +837,7 @@ export const ProcurementCollection: React.FC = () => {
                   <span className="text-slate-400 font-normal">(Loading...)</span>
                 )}
               </label>
-              <CustomForm.CustomSelectSearchField
+              <CustomForm.CustomSelectField
                 name="milkstatus"
                 value={milkStatus}
                 onChange={(e: any) => setMilkStatus(e.target.value)}
