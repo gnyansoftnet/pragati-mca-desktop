@@ -47,7 +47,7 @@ export class ProcurmentSyncService implements IProcurmentSyncService {
         AppConstant.pending,
         AppConstant.analyze_false
       )
-      if (collectionMilk.length != analyzedMilk.length) {
+      if (collectionMilk.length != analyzedMilk.length && collectionMilk.length != 0) {
         throw new NotFoundError('collection milk and analyzed milk are not equal')
       }
       const response: MilkCollectionSyncResultDto = await this.syncUpMilkCollection(analyzedMilk)

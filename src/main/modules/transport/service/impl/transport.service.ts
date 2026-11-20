@@ -53,7 +53,7 @@ export class TransportService implements ITransportService {
           syncStatus: row.sync_status,
           createdAt: row.created_at,
           updatedAt: row.updated_at,
-          dFalg: row.d_falg
+          dFalg: row.d_flag
         })),
         pagination: {
           total,
@@ -89,7 +89,7 @@ export class TransportService implements ITransportService {
         syncStatus: row.sync_status,
         createdAt: row.created_at,
         updatedAt: row.updated_at,
-        dFalg: row.d_falg
+        dFalg: row.d_flag
       }
     } catch (error) {
       if (error instanceof AppError) throw error
