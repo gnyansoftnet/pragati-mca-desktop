@@ -27,7 +27,7 @@ export const SidebarSignOut: React.FC<SidebarSignOutProps> = ({ isCollapsed }) =
   const isParentActive = isAnalyzedActive || isRejectedActive || isTransportActive
 
   // Accordion state (expanded by default or when an item is active)
-  const [isExpanded, setIsExpanded] = useState<boolean>(true)
+  const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
   // Auto-expand if current route matches any child
   useEffect(() => {

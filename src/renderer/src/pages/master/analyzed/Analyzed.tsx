@@ -9,13 +9,15 @@ import TablePagination from '@renderer/components/table/TablePagination'
 import type { MilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
 import { useAuth } from '@renderer/context/AuthContext'
 import { useNetwork } from '@renderer/hooks/useNetwork'
+import { useShift } from '@renderer/hooks/useShift'
 
 export const Analyzed: React.FC = () => {
   const { user } = useAuth()
   const { verifyConnection } = useNetwork()
+  const { shiftOptions, currentShiftId, loadingShifts, getShiftLabel } = useShift(user?.plant)
   const [isSyncing, setIsSyncing] = useState<boolean>(false)
 
-  
+  // Format today's date as YYYY-MM-DD
   const getCurrentLocalDate = (): string => {
     const today = new Date()
     const year = today.getFullYear()
@@ -24,14 +26,19 @@ export const Analyzed: React.FC = () => {
     return `${year}-${month}-${day}`
   }
 
-  
-  const [fromDate, setFromDate] = useState<string>(getCurrentLocalDate())
-  const [toDate, setToDate] = useState<string>(getCurrentLocalDate())
+  const [date, setDate] = useState<string>(getCurrentLocalDate())
+  const [shift, setShift] = useState<string>(currentShiftId)
 
-  
-  const [appliedFromDate, setAppliedFromDate] = useState<string>(getCurrentLocalDate())
-  const [appliedToDate, setAppliedToDate] = useState<string>(getCurrentLocalDate())
-  const [appliedIsAnalyse, setAppliedIsAnalyse] = useState<number>(1)
+  // Applied filter states (locked until user clicks Search)
+  const [appliedDate, setAppliedDate] = useState<string>(getCurrentLocalDate())
+  const [appliedShift, setAppliedShift] = useState<string>('')
+
+  useEffect(() => {
+    if (currentShiftId) {
+      setShift(currentShiftId)
+      setAppliedShift(currentShiftId)
+    }
+  }, [currentShiftId])
 
   const [showConfirm, setShowConfirm] = useState(false)
   const [collections, setCollections] = useState<MilkCollectionDto[]>([])
@@ -48,14 +55,13 @@ export const Analyzed: React.FC = () => {
     hasPrevPage: false
   })
 
-  
+  // Fetch paginated collections with: params, shift, date, isAnalyse (1)
   const fetchPaginatedCollections = async (
     pageNo = pagination.page,
     limitVal = pageSize,
     searchVal = searchQuery,
-    fDate = appliedFromDate,
-    tDate = appliedToDate,
-    isAnalyse = appliedIsAnalyse
+    selectedShift = appliedShift,
+    selectedDate = appliedDate
   ) => {
     try {
       setLoading(true)
@@ -66,9 +72,9 @@ export const Analyzed: React.FC = () => {
           limit: actualLimit,
           search: searchVal.trim()
         },
-        fDate,
-        tDate,
-        isAnalyse
+        selectedShift ? Number(selectedShift) : undefined,
+        selectedDate,
+        1
       )
 
       if (response) {
@@ -93,26 +99,25 @@ export const Analyzed: React.FC = () => {
 
   const handleSubmitFilter = (e?: React.FormEvent) => {
     if (e) e.preventDefault()
-    if (fromDate && toDate && fromDate > toDate) {
-      toast.warn('From Date cannot be greater than To Date.')
+    if (!date) {
+      toast.warn('Please select a date.')
       return
     }
-    setAppliedFromDate(fromDate)
-    setAppliedToDate(toDate)
-    fetchPaginatedCollections(1, pageSize, searchQuery, fromDate, toDate)
+    setAppliedDate(date)
+    setAppliedShift(shift)
+    fetchPaginatedCollections(1, pageSize, searchQuery, shift, date)
   }
 
   // Initial load on mount & debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchPaginatedCollections(1, pageSize, searchQuery, appliedFromDate, appliedToDate)
+      fetchPaginatedCollections(1, pageSize, searchQuery, appliedShift, appliedDate)
     }, 300)
     return () => clearTimeout(timer)
-  }, [searchQuery, pageSize])
+  }, [searchQuery, pageSize, appliedShift, appliedDate])
 
-  // Handle Sync to Server
+  // Handle Sync to Server with date and shift
   const handleStartSync = async () => {
-    // 1. Verify internet connection first
     const hasNet = await verifyConnection()
     if (!hasNet) {
       toast.error('Cannot sync: No internet connection! Please check your network.')
@@ -124,8 +129,7 @@ export const Analyzed: React.FC = () => {
       setIsSyncing(true)
       setShowConfirm(false)
 
-      // 2. Invoke syncMilkCollection with the selected/applied date range
-      const result = await (window.api as any).syncMilkCollection(appliedFromDate, appliedToDate)
+      const result = await window.api.syncMilkCollection(appliedDate, Number(appliedShift))
 
       if (
         result &&
@@ -138,8 +142,7 @@ export const Analyzed: React.FC = () => {
           : ''
         toast.success(`${summaryMsg}${counts}`)
 
-        // 3. Refresh list with currently applied dates
-        await fetchPaginatedCollections(1, pageSize, searchQuery, appliedFromDate, appliedToDate)
+        await fetchPaginatedCollections(1, pageSize, searchQuery, appliedShift, appliedDate)
       } else {
         toast.error(result?.message || result?.data?.message || 'Failed to sync milk collections.')
       }
@@ -164,7 +167,7 @@ export const Analyzed: React.FC = () => {
   return (
     <div className="space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Analyzed Collections" />
+        <PageBreadcrumb title="Procurement Samples" />
 
         <Button1
           disabled={isSyncing}
@@ -188,9 +191,16 @@ export const Analyzed: React.FC = () => {
               </div>
               <h3 className="text-lg font-bold text-slate-800 mb-2">Sync to Server</h3>
               <p className="text-sm text-slate-600 leading-relaxed mb-4">
-                This will upload analyzed milk collection records from{' '}
-                <strong className="text-slate-800">{formatDateForDisplay(appliedFromDate)}</strong>{' '}
-                to <strong className="text-slate-800">{formatDateForDisplay(appliedToDate)}</strong>{' '}
+                This will upload analyzed milk collection records for Date:{' '}
+                <strong className="text-slate-800">{formatDateForDisplay(appliedDate)}</strong> and
+                Shift:{' '}
+                <strong className="text-slate-800">
+                  {appliedShift === '1'
+                    ? 'Morning'
+                    : appliedShift === '2'
+                      ? 'Evening'
+                      : appliedShift}
+                </strong>{' '}
                 to the central cloud server. Are you sure you want to proceed?
               </p>
 
@@ -204,9 +214,17 @@ export const Analyzed: React.FC = () => {
                   User: <strong className="text-slate-800">{user?.userName || '-'}</strong>
                 </span>
                 <span>
-                  Date Range:{' '}
+                  Date:{' '}
+                  <strong className="text-slate-800">{formatDateForDisplay(appliedDate)}</strong>
+                </span>
+                <span>
+                  Shift:{' '}
                   <strong className="text-slate-800">
-                    {formatDateForDisplay(appliedFromDate)} to {formatDateForDisplay(appliedToDate)}
+                    {appliedShift === '1'
+                      ? 'Morning'
+                      : appliedShift === '2'
+                        ? 'Evening'
+                        : appliedShift}
                   </strong>
                 </span>
               </div>
@@ -244,35 +262,41 @@ export const Analyzed: React.FC = () => {
 
       {/* Main Table Card */}
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
-        {/* Date Filter Bar */}
+        {/* Single Date & Shift Filter Bar */}
         <CustomForm onSubmit={handleSubmitFilter} className="w-full">
           <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-3 mb-3 items-end">
-            {/* From Date */}
+            {/* Date Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">From Date</label>
+              <label className="text-xs font-semibold text-slate-700">Date</label>
               <CustomForm.CustomDateField
-                name="fromDate"
-                value={fromDate}
-                onChange={(e: any) => setFromDate(e.target.value)}
+                name="date"
+                value={date}
+                onChange={(e: any) => setDate(e.target.value)}
               />
             </div>
 
-            {/* To Date */}
+            {/* Shift Dropdown */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">To Date</label>
-              <CustomForm.CustomDateField
-                name="toDate"
-                value={toDate}
-                onChange={(e: any) => setToDate(e.target.value)}
+              <label className="text-xs font-semibold text-slate-700">
+                Select Shift{' '}
+                {loadingShifts && <span className="text-slate-400 font-normal">(Loading...)</span>}
+              </label>
+              <CustomForm.CustomSelectSearchField
+                name="shift"
+                value={shift}
+                onChange={(e: any) => setShift(e.target.value)}
+                options={shiftOptions}
+                placeholder={loadingShifts ? 'Loading shifts...' : 'Select shift...'}
+                disabled={loadingShifts}
               />
             </div>
 
-            {/* Submit Button */}
+            {/* Search Button */}
             <div className="flex items-end justify-start">
               <Button1
                 variant="primary"
                 icon={<Search className="w-3.5 h-3.5 text-white" />}
-                label={loading ? 'Filtering...' : 'Submit'}
+                label={loading ? 'Searching...' : 'Search'}
                 onClick={handleSubmitFilter}
                 disabled={loading}
               />
@@ -316,23 +340,23 @@ export const Analyzed: React.FC = () => {
             <tbody className="divide-y divide-slate-100 text-xs">
               {loading && (
                 <tr>
-                  <td colSpan={16} className="py-4 text-center text-slate-400 font-medium">
+                  <td colSpan={18} className="py-4 text-center text-slate-400 font-medium">
                     Loading collections...
                   </td>
                 </tr>
               )}
               {!loading && collections.length === 0 && (
                 <tr>
-                  <td colSpan={16} className="py-4 text-center text-slate-400 font-medium">
-                    No milk collections found for the selected date range
+                  <td colSpan={18} className="py-4 text-center text-slate-400 font-medium">
+                    No milk collections found for the selected date and shift
                   </td>
                 </tr>
               )}
               {!loading &&
                 collections.map((item, index) => (
                   <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
-                    <td className="py-2 px-2 font-semibold text-primary">{item.sampleCode}</td>
-                    <td className="py-2 px-2 font-semibold text-primary">
+                    <td className="py-2 px-4 font-semibold text-primary">{item.sampleCode}</td>
+                    <td className="py-2 px-4 font-semibold text-primary">
                       {item.sampleDate
                         ? (() => {
                             const d = new Date(item.sampleDate)
@@ -346,32 +370,19 @@ export const Analyzed: React.FC = () => {
                           })()
                         : ''}
                     </td>
-                    <td className="py-2 px-2">
-                      {/* <span
-                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
-                          String(item.shift) === '1'
-                            ? 'bg-orange-50 text-orange-500 border-orange-200'
-                            : String(item.shift) === '2'
-                              ? 'bg-sky-50 text-sky-500 border-sky-200'
-                              : 'bg-rose-50 text-rose-700 border-rose-200'
-                        }`}
-                      >
-                        {String(item.shift) === '1'
-                          ? 'Morning'
-                          : String(item.shift) === '2'
-                            ? 'Evening'
-                            : `Shift ${item.shift}`}
-                      </span> */}
-                      {item.shift}
+                    <td className="py-2 px-4">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-rose-50 text-rose-500 border-rose-200">
+                        {item.shiftName}
+                      </span>
                     </td>
-                    <td className="py-2 px-2 font-semibold text-slate-800">{item.plant}</td>
-                    <td className="py-2 px-3 font-semibold text-primary max-w-40 truncate">
+                    <td className="py-2 px-4 font-semibold text-slate-800">{item.plant}</td>
+                    <td className="py-2 px-4 font-semibold text-primary max-w-40 truncate">
                       {item.rootCode}
                     </td>
-                    <td className="py-2 px-2 font-semibold text-primary">{item.vendorCode}</td>
-                    <td className="py-2 px-2 font-bold text-slate-900">{item.weightSystem}</td>
-                    <td className="py-2 px-2 font-semibold text-primary">{item.canType}</td>
-                    <td className="py-2 px-2">
+                    <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
+                    <td className="py-2 px-4 font-bold text-slate-900">{item.weightSystem}</td>
+                    <td className="py-2 px-4 font-semibold text-primary">{item.canType}</td>
+                    <td className="py-2 px-4">
                       <span
                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                           String(item.milkType).toLowerCase() === 'cow'
@@ -386,26 +397,23 @@ export const Analyzed: React.FC = () => {
                         {item.milkType}
                       </span>
                     </td>
-                    <td className="py-2 px-2 font-semibold text-primary">{item.milkStatus}</td>
-                    <td className="py-2 px-2 font-semibold text-primary">{item.noOfCans}</td>
-                    <td className="py-2 px-2 font-bold text-emerald-600">
+                    <td className="py-2 px-4 font-semibold text-primary">{item.milkStatus}</td>
+                    <td className="py-2 px-4 font-semibold text-primary">{item.noOfCans}</td>
+                    <td className="py-2 px-4 font-bold text-slate-800">
+                      {Number(item.grossWeight || 0).toFixed(1)}
+                    </td>
+                    <td className="py-2 px-4 font-bold text-emerald-600">
                       {Number(item.netWeight || item.netLtr || 0).toFixed(1)}
                     </td>
-                    <td className="py-2 px-2 font-bold text-emerald-600">
-                      {Number(item.netWeight || item.netLtr || 0).toFixed(1)}
-                    </td>
-                    <td className="py-2 px-2 font-semibold text-primary">{item.tipingTime}</td>
-                    <td className="py-2 px-2 font-bold text-slate-800">
+                    <td className="py-2 px-4 font-semibold text-primary">{item.tipingTime}</td>
+                    <td className="py-2 px-4 font-bold text-slate-800">
                       {Number(item.fat || 0) > 0 ? `${Number(item.fat).toFixed(1)}%` : '0.0%'}
                     </td>
-                    <td className="py-2 px-2 font-bold text-slate-800">
+                    <td className="py-2 px-4 font-bold text-slate-800">
                       {Number(item.snf || 0) > 0 ? `${Number(item.snf).toFixed(1)}%` : '0.0%'}
                     </td>
-                    <td className="py-2 px-2 font-bold text-slate-800">
-                      {/* {Number(item.clr || 0) > 0 ? `${Number(item.snf).toFixed(1)}%` : '0.0%'} */}
-                      {item.clr}
-                    </td>
-                    <td className="py-2 px-2 text-center">
+                    <td className="py-2 px-4 font-bold text-slate-800">{item.clr}</td>
+                    <td className="py-2 px-4 text-center">
                       <span
                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                           Number(item.isAnalyse) === 1
@@ -433,13 +441,7 @@ export const Analyzed: React.FC = () => {
           loading={loading}
           itemName="collections"
           onPageChange={(newPage) =>
-            fetchPaginatedCollections(
-              newPage,
-              pageSize,
-              searchQuery,
-              appliedFromDate,
-              appliedToDate
-            )
+            fetchPaginatedCollections(newPage, pageSize, searchQuery, appliedShift, appliedDate)
           }
         />
       </div>

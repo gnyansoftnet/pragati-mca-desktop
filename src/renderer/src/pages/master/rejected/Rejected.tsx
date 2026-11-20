@@ -8,10 +8,14 @@ import TableToolbar from '@renderer/components/table/TableToolbar'
 import TablePagination from '@renderer/components/table/TablePagination'
 import { useAuth } from '@renderer/context/AuthContext'
 import { useNetwork } from '@renderer/hooks/useNetwork'
-import type { MilkRejectionResponseDto } from '@shared/dtos/milk-rejection/milk-rejection.dto'
+import { useShift } from '@renderer/hooks/useShift'
+import { MilkRejectionResponseDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
+// import type { MilkRejectionResponseDto } from '@shared/dtos/milk-rejection/milk-rejection.dto'
+
 export const Rejected: React.FC = () => {
   const { user } = useAuth()
   const { verifyConnection } = useNetwork()
+  const { shiftOptions, currentShiftId, loadingShifts, getShiftLabel } = useShift(user?.plant)
   const [isSyncing, setIsSyncing] = useState<boolean>(false)
 
   // Format today's date as YYYY-MM-DD
@@ -33,13 +37,20 @@ export const Rejected: React.FC = () => {
     return dateStr
   }
 
-  // Date Filter states (default: today's date)
-  const [fromDate, setFromDate] = useState<string>(getCurrentLocalDate())
-  const [toDate, setToDate] = useState<string>(getCurrentLocalDate())
+  // Filter input states (defaults to today & active shift)
+  const [date, setDate] = useState<string>(getCurrentLocalDate())
+  const [shift, setShift] = useState<string>(currentShiftId)
 
-  // Applied date filters (locked until user clicks Submit)
-  const [appliedFromDate, setAppliedFromDate] = useState<string>(getCurrentLocalDate())
-  const [appliedToDate, setAppliedToDate] = useState<string>(getCurrentLocalDate())
+  // Applied filter states (locked until user clicks Search)
+  const [appliedDate, setAppliedDate] = useState<string>(getCurrentLocalDate())
+  const [appliedShift, setAppliedShift] = useState<string>('')
+
+  useEffect(() => {
+    if (currentShiftId) {
+      setShift(currentShiftId)
+      setAppliedShift(currentShiftId)
+    }
+  }, [currentShiftId])
 
   const [showConfirm, setShowConfirm] = useState(false)
   const [rejections, setRejections] = useState<MilkRejectionResponseDto[]>([])
@@ -56,13 +67,21 @@ export const Rejected: React.FC = () => {
     hasPrevPage: false
   })
 
-  // Fetch paginated rejections with applied date filters
+  // Automatically update default shift when active shift is detected
+  useEffect(() => {
+    if (currentShiftId) {
+      setShift((prev) => prev || currentShiftId)
+      setAppliedShift((prev) => prev || currentShiftId)
+    }
+  }, [currentShiftId])
+
+  // Fetch paginated rejections with: params, shift, date
   const fetchPaginatedRejections = async (
     pageNo = pagination.page,
     limitVal = pageSize,
     searchVal = searchQuery,
-    fDate = appliedFromDate,
-    tDate = appliedToDate
+    selectedShift = appliedShift,
+    selectedDate = appliedDate
   ) => {
     try {
       setLoading(true)
@@ -73,8 +92,8 @@ export const Rejected: React.FC = () => {
           limit: actualLimit,
           search: searchVal.trim()
         },
-        fDate,
-        tDate
+        selectedShift ? Number(selectedShift) : undefined,
+        selectedDate
       )
 
       if (response) {
@@ -99,26 +118,25 @@ export const Rejected: React.FC = () => {
 
   const handleSubmitFilter = (e?: React.FormEvent) => {
     if (e) e.preventDefault()
-    if (fromDate && toDate && fromDate > toDate) {
-      toast.warn('From Date cannot be greater than To Date.')
+    if (!date) {
+      toast.warn('Please select a date.')
       return
     }
-    setAppliedFromDate(fromDate)
-    setAppliedToDate(toDate)
-    fetchPaginatedRejections(1, pageSize, searchQuery, fromDate, toDate)
+    setAppliedDate(date)
+    setAppliedShift(shift)
+    fetchPaginatedRejections(1, pageSize, searchQuery, shift, date)
   }
 
   // Initial load on mount & debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchPaginatedRejections(1, pageSize, searchQuery, appliedFromDate, appliedToDate)
+      fetchPaginatedRejections(1, pageSize, searchQuery, appliedShift, appliedDate)
     }, 300)
     return () => clearTimeout(timer)
-  }, [searchQuery, pageSize])
+  }, [searchQuery, pageSize, appliedShift, appliedDate])
 
   // Handle Sync to Server
   const handleStartSync = async () => {
-    // 1. Verify internet connection first
     const hasNet = await verifyConnection()
     if (!hasNet) {
       toast.error('Cannot sync: No internet connection! Please check your network.')
@@ -130,8 +148,7 @@ export const Rejected: React.FC = () => {
       setIsSyncing(true)
       setShowConfirm(false)
 
-      // 2. Invoke syncMilkRejection with the selected/applied date range
-      const result = await (window.api as any).syncMilkRejection(appliedFromDate, appliedToDate)
+      const result = await window.api.syncMilkRejection(appliedDate, Number(appliedShift))
 
       if (
         result &&
@@ -144,8 +161,7 @@ export const Rejected: React.FC = () => {
           : ''
         toast.success(`${summaryMsg}${counts}`)
 
-        // 3. Refresh list with currently applied dates
-        await fetchPaginatedRejections(1, pageSize, searchQuery, appliedFromDate, appliedToDate)
+        await fetchPaginatedRejections(1, pageSize, searchQuery, appliedShift, appliedDate)
       } else {
         toast.error(result?.message || result?.data?.message || 'Failed to sync milk rejections.')
       }
@@ -161,7 +177,7 @@ export const Rejected: React.FC = () => {
     <div className="space-y-3">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Rejected Collections" />
+        <PageBreadcrumb title="Rejected Samples" />
 
         <Button1
           disabled={isSyncing}
@@ -185,10 +201,10 @@ export const Rejected: React.FC = () => {
               </div>
               <h3 className="text-lg font-bold text-slate-800 mb-2">Sync to Server</h3>
               <p className="text-sm text-slate-600 leading-relaxed mb-4">
-                This will upload rejected milk collection records from{' '}
-                <strong className="text-slate-800">{formatDateForDisplay(appliedFromDate)}</strong>{' '}
-                to <strong className="text-slate-800">{formatDateForDisplay(appliedToDate)}</strong>{' '}
-                to the central cloud server. Are you sure you want to proceed?
+                This will upload rejected milk collection records for Date:{' '}
+                <strong className="text-slate-800">{formatDateForDisplay(appliedDate)}</strong> and
+                Shift: <strong className="text-slate-800">{getShiftLabel(appliedShift)}</strong> to
+                the central cloud server. Are you sure you want to proceed?
               </p>
 
               {/* Current Context Badges */}
@@ -203,10 +219,11 @@ export const Rejected: React.FC = () => {
                   User: <strong className="text-slate-800">{user?.userName || '-'}</strong>
                 </span>
                 <span>
-                  Date Range:{' '}
-                  <strong className="text-slate-800">
-                    {formatDateForDisplay(appliedFromDate)} to {formatDateForDisplay(appliedToDate)}
-                  </strong>
+                  Date:{' '}
+                  <strong className="text-slate-800">{formatDateForDisplay(appliedDate)}</strong>
+                </span>
+                <span>
+                  Shift: <strong className="text-slate-800">{getShiftLabel(appliedShift)}</strong>
                 </span>
               </div>
 
@@ -243,35 +260,41 @@ export const Rejected: React.FC = () => {
 
       {/* Main Table Card */}
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
-        {/* Date Filter Bar */}
+        {/* Single Date & Shift Filter Bar */}
         <CustomForm onSubmit={handleSubmitFilter} className="w-full">
           <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-3 mb-3 items-end">
-            {/* From Date */}
+            {/* Date Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">From Date</label>
+              <label className="text-xs font-semibold text-slate-700">Date</label>
               <CustomForm.CustomDateField
-                name="fromDate"
-                value={fromDate}
-                onChange={(e: any) => setFromDate(e.target.value)}
+                name="date"
+                value={date}
+                onChange={(e: any) => setDate(e.target.value)}
               />
             </div>
 
-            {/* To Date */}
+            {/* Shift Dropdown */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">To Date</label>
-              <CustomForm.CustomDateField
-                name="toDate"
-                value={toDate}
-                onChange={(e: any) => setToDate(e.target.value)}
+              <label className="text-xs font-semibold text-slate-700">
+                Select Shift{' '}
+                {loadingShifts && <span className="text-slate-400 font-normal">(Loading...)</span>}
+              </label>
+              <CustomForm.CustomSelectSearchField
+                name="shift"
+                value={shift}
+                onChange={(e: any) => setShift(e.target.value)}
+                options={shiftOptions}
+                placeholder={loadingShifts ? 'Loading shifts...' : 'Select shift...'}
+                disabled={loadingShifts}
               />
             </div>
 
-            {/* Submit Button */}
+            {/* Search Button */}
             <div className="flex items-end justify-start">
               <Button1
                 variant="primary"
                 icon={<Search className="w-3.5 h-3.5 text-white" />}
-                label={loading ? 'Filtering...' : 'Submit'}
+                label={loading ? 'Searching...' : 'Search'}
                 onClick={handleSubmitFilter}
                 disabled={loading}
               />
@@ -287,7 +310,7 @@ export const Rejected: React.FC = () => {
           searchPlaceholder="Search DSK, route or supervisor..."
         />
 
-        {/* Table Following Rejection.tsx Columns */}
+        {/* Table Following Rejection Columns */}
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -309,15 +332,15 @@ export const Rejected: React.FC = () => {
             <tbody className="divide-y divide-slate-100 text-xs">
               {loading && (
                 <tr>
-                  <td colSpan={11} className="py-4 text-center text-slate-400 font-medium">
+                  <td colSpan={12} className="py-4 text-center text-slate-400 font-medium">
                     Loading rejections...
                   </td>
                 </tr>
               )}
               {!loading && rejections.length === 0 && (
                 <tr>
-                  <td colSpan={11} className="py-4 text-center text-slate-400 font-medium">
-                    No milk rejections found for the selected date range
+                  <td colSpan={12} className="py-4 text-center text-slate-400 font-medium">
+                    No milk rejections found for the selected date and shift
                   </td>
                 </tr>
               )}
@@ -339,9 +362,15 @@ export const Rejected: React.FC = () => {
                           })()
                         : ''}
                     </td>
-                    <td className="py-2 px-2 font-semibold text-primary">{item.shift}</td>
+                    <td className="py-2 px-2">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-rose-50 text-rose-500 border-rose-200">
+                        {item.shiftName}
+                      </span>
+                    </td>
                     <td className="py-2 px-2 font-semibold text-slate-800">{item.plant}</td>
-                    <td className="py-2 px-2 font-semibold text-primary">{item.routeName}</td>
+                    <td className="py-2 px-2 font-semibold text-primary">
+                      {(item as any).routeName || item.route}
+                    </td>
                     <td className="py-2 px-2 text-slate-700">{item.dskCode}</td>
                     <td className="py-2 px-2 font-semibold text-slate-800">{item.dskName}</td>
                     <td className="py-2 px-2 text-slate-700">{item.supervisor}</td>
@@ -379,7 +408,7 @@ export const Rejected: React.FC = () => {
           loading={loading}
           itemName="rejections"
           onPageChange={(newPage) =>
-            fetchPaginatedRejections(newPage, pageSize, searchQuery, appliedFromDate, appliedToDate)
+            fetchPaginatedRejections(newPage, pageSize, searchQuery, appliedShift, appliedDate)
           }
         />
       </div>
