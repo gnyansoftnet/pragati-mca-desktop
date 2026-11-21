@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 import {
   MilkRejectionSaveDto,
   MilkRejectionResponseDto
-} from '@shared/dtos/milk-rejection/milk-rejection.dto'
+} from '@shared/dtos/milk-collection/milk-rejection.dto'
 import { useAuth } from '@renderer/context/AuthContext'
 import TableToolbar from '@renderer/components/table/TableToolbar'
 import TablePagination from '@renderer/components/table/TablePagination'
@@ -48,7 +48,7 @@ export const Rejection: React.FC = () => {
   const [selectedReason, setSelectedReason] = useState<string>('')
   const [loadingReasons, setLoadingReasons] = useState<boolean>(false)
 
-  const [shift, setShift] = useState<string>(currentShiftId || '1')
+  const [shift, setShift] = useState<string>(currentShiftId)
   const [plant, setPlant] = useState(user?.plant)
   const [noOfCans, setNoOfCans] = useState('')
   const [approxQuantity, setApproxQuantity] = useState('')
@@ -266,20 +266,24 @@ export const Rejection: React.FC = () => {
   const fetchPaginatedRejections = async (
     pageNo = pagination.page,
     limitVal = pageSize,
-    searchVal = searchQuery
+    searchVal = searchQuery,
+    selectedShift = shift
   ): Promise<void> => {
     try {
       setLoadingRejections(true)
       const actualLimit = limitVal === 'all' ? 10000000000000 : limitVal
       const todayDate = getCurrentDateISO()
-      const activeShift = currentShiftId || '1'
+      const shiftParam =
+        selectedShift && String(selectedShift).trim() !== '' && String(selectedShift) !== '0'
+          ? String(selectedShift).trim()
+          : undefined
       const response = await window.api.getPaginatedMilkRejections(
         {
           page: pageNo,
           limit: actualLimit,
           search: searchVal.trim()
         },
-        activeShift,
+        shiftParam,
         todayDate
       )
       if (response) {
@@ -668,7 +672,23 @@ export const Rejection: React.FC = () => {
                           })()
                         : ''}
                     </td>
-                    <td className="py-2 px-2 text-slate-700">{item.shift}</td>
+                    <td className="py-2 px-2 text-slate-700">
+                      <span
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                          String(item.shiftName) === 'morning'
+                            ? 'bg-orange-50 text-orange-500 border-orange-200'
+                            : String(item.shiftName) === 'evening'
+                              ? 'bg-sky-50 text-sky-500 border-sky-200'
+                              : 'bg-rose-50 text-rose-700 border-rose-200'
+                        }`}
+                      >
+                        {String(item.shiftName) === 'morning'
+                          ? 'Morning'
+                          : String(item.shiftName) === 'evening'
+                            ? 'Evening'
+                            : item.shiftName || `Shift ${item.shiftName}`}
+                      </span>
+                    </td>
                     <td className="py-2 px-2 font-semibold text-primary">{item.routeName}</td>
                     <td className="py-2 px-2 text-slate-700">{item.dskCode}</td>
                     <td className="py-2 px-2 font-semibold text-slate-800">{item.dskName}</td>

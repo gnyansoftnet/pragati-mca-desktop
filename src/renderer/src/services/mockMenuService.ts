@@ -186,22 +186,16 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     children: [
       {
         id: '13-1',
-        title: 'Collection Report',
-        path: '/report-collection',
+        title: 'Periodic Report',
+        path: '/periodic-report',
         icon: 'ListFilter'
       },
       {
         id: '13-2',
-        title: 'Rejection Report',
-        path: '/report-rejection',
-        icon: 'UserPlus'
-      },
-      {
-        id: '13-3',
-        title: 'Transport Report',
-        path: '/report-transport',
-        icon: 'UserPlus'
-      },
+        title: 'Truck Sheet',
+        path: '/truck-sheet',
+        icon: 'Car'
+      }
     ]
   },
 ]

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { RefreshCw, UploadCloud, Search } from 'lucide-react'
+import { RefreshCw, UploadCloud, Search, Clock } from 'lucide-react'
 import { toast } from 'react-toastify'
 import CustomForm from '@renderer/components/customform/CustomForm'
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
@@ -17,6 +17,7 @@ export const Rejected: React.FC = () => {
   const { verifyConnection } = useNetwork()
   const { shiftOptions, currentShiftId, loadingShifts, getShiftLabel } = useShift(user?.plant)
   const [isSyncing, setIsSyncing] = useState<boolean>(false)
+  const [lastUpdated, setLastUpdated] = useState<string>('')
 
   // Format today's date as YYYY-MM-DD
   const getCurrentLocalDate = (): string => {
@@ -172,6 +173,46 @@ export const Rejected: React.FC = () => {
       setIsSyncing(false)
     }
   }
+  // Format Date object or Date string to "DD-MM-YYYY" (or "DD-MM-YYYY HH:mm:ss" if time is present)
+  const formatLastUpdated = (rawDate?: string | Date | null): string => {
+    if (!rawDate) return ''
+    const d = new Date(rawDate)
+    if (isNaN(d.getTime())) return String(rawDate)
+
+    const day = String(d.getDate()).padStart(2, '0')
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const year = d.getFullYear()
+    const hours = String(d.getHours()).padStart(2, '0')
+    const minutes = String(d.getMinutes()).padStart(2, '0')
+    const seconds = String(d.getSeconds()).padStart(2, '0')
+
+    // If time is 00:00:00, show clean date "DD-MM-YYYY"
+    if (hours === '00' && minutes === '00' && seconds === '00') {
+      return `${day}-${month}-${year}`
+    }
+
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`
+  }
+
+  const fetchLastSynced = async () => {
+    try {
+      if (typeof window !== 'undefined' && (window.api as any)?.getLastSynckedMilkCollection) {
+        const res = await (window.api as any).getLastSynckedMilkCollection()
+        const item = Array.isArray(res) ? res[0] : res
+        // Property name returned from milk_collection_sync_log is lastSycfrom
+        const syncDate = item?.lastSycfrom || item?.lastSyncFrom || item?.lastUpdated
+        if (syncDate) {
+          setLastUpdated(formatLastUpdated(syncDate))
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch last synced milk collection:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchLastSynced()
+  }, [])
 
   return (
     <div className="space-y-3">
@@ -179,19 +220,27 @@ export const Rejected: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <PageBreadcrumb title="Rejected Samples" />
 
-        <Button1
-          disabled={isSyncing}
-          onClick={() => setShowConfirm(true)}
-          variant="primary"
-          icon={
-            isSyncing ? (
-              <RefreshCw className="w-3.5 h-3.5 text-white animate-spin" />
-            ) : (
-              <UploadCloud className="w-3.5 h-3.5 text-white" />
-            )
-          }
-          label={isSyncing ? 'Syncing...' : 'Sync to server'}
-        />
+        <div className="flex items-center justify-end gap-2">
+          {lastUpdated && (
+            <span className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
+              <Clock className="w-3 h-3 text-slate-400" />
+              Last Synced: <strong className="text-slate-700">{lastUpdated}</strong>
+            </span>
+          )}
+          <Button1
+            disabled={isSyncing}
+            onClick={() => setShowConfirm(true)}
+            variant="primary"
+            icon={
+              isSyncing ? (
+                <RefreshCw className="w-3.5 h-3.5 text-white animate-spin" />
+              ) : (
+                <UploadCloud className="w-3.5 h-3.5 text-white" />
+              )
+            }
+            label={isSyncing ? 'Syncing...' : 'Sync to server'}
+          />
+        </div>
 
         {showConfirm && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs transition-opacity animate-fade-in rounded-2xl">

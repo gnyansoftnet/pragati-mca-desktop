@@ -209,6 +209,9 @@ export const ProcurementCollection: React.FC = () => {
   ): Promise<void> => {
     try {
       const shiftNum = shiftVal ? Number(shiftVal) : undefined
+      if (!shiftNum || isNaN(shiftNum) || shiftNum <= 0) {
+        return
+      }
       const response = await api.collection.getMilkCollections(dateVal, shiftNum)
       if (response) {
         if (response) {
@@ -518,7 +521,7 @@ export const ProcurementCollection: React.FC = () => {
     fetchMilkTypes()
     fetchCanTypes()
     fetchLastSampleDate()
-    fetchCollections()
+    // fetchCollections()
   }, [])
   // Compute Total no. of cans for the active route until route is changed
   const routeTotalCans = useMemo(() => {
@@ -639,7 +642,7 @@ export const ProcurementCollection: React.FC = () => {
         entry: entry
       }
 
-      console.log('payload', payload)
+      // console.log('payload', payload)
 
       if (typeof window !== 'undefined' && (window as any).api?.saveMilkCollection) {
         await (window as any).api.saveMilkCollection(payload)
@@ -719,7 +722,7 @@ export const ProcurementCollection: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-secondary border border-secondary/30">
             <Clock className="w-3.5 h-3.5 text-secondary" />
-            Last Sync: {loadingLastSampleDate ? 'Loading...' : lastSampleDate || '-'}
+            Last Collected: {loadingLastSampleDate ? 'Loading...' : lastSampleDate || '-'}
           </span>
         </div>
       </div>
@@ -745,7 +748,13 @@ export const ProcurementCollection: React.FC = () => {
               <CustomForm.CustomSelectField
                 name="shift"
                 value={shift}
-                onChange={(e: any) => setShift(e.target.value)}
+                onChange={(e: any) => {
+                  const val = e.target.value
+                  setShift(val)
+                  if (val) {
+                    fetchCollections(getCurrentDateISO(), val)
+                  }
+                }}
                 options={shifts}
                 tabIndex={1}
               />
@@ -1031,24 +1040,24 @@ export const ProcurementCollection: React.FC = () => {
                         })()
                       : ''}
                   </td>
-                  <td className="py-2 px-2 font-semibold text-slate-800">{item.shift}</td>
-                  {/* <td className="py-2 px-2">
+                  {/* <td className="py-2 px-2 font-semibold text-slate-800">{item.shift}</td> */}
+                  <td className="py-2 px-2">
                     <span
                       className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
-                        String(item.shift) === '1'
+                        String(item.shiftName) === 'morning'
                           ? 'bg-orange-50 text-orange-500 border-orange-200'
-                          : String(item.shift) === '2'
+                          : String(item.shiftName) === 'evening'
                             ? 'bg-sky-50 text-sky-500 border-sky-200'
                             : 'bg-rose-50 text-rose-700 border-rose-200'
                       }`}
                     >
-                      {String(item.shift) === '1'
+                      {String(item.shiftName) === 'morning'
                         ? 'Morning'
-                        : String(item.shift) === '2'
+                        : String(item.shiftName) === 'evening'
                           ? 'Evening'
-                          : item.shiftName || `Shift ${item.shift}`}
+                          : item.shiftName || `Shift ${item.shiftName}`}
                     </span>
-                  </td> */}
+                  </td>
                   <td className="py-2 px-2 font-semibold text-slate-800">{item.plant}</td>
                   <td className="py-2 px-2 font-semibold text-primary max-w-40 truncate">
                     {item.rootName}
@@ -1062,19 +1071,21 @@ export const ProcurementCollection: React.FC = () => {
                   <td className="py-2 px-2">
                     <span
                       className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
-                        String(item.milkType).toLowerCase() === '1'
+                        String(item.milkTypeName).toLowerCase() === 'cow'
                           ? 'bg-amber-50 text-amber-700 border-amber-200'
-                          : String(item.milkType).toLowerCase() === '2'
+                          : String(item.milkTypeName).toLowerCase() === 'buffalo'
                             ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-                            : String(item.milkType).toLowerCase() === '3'
+                            : String(item.milkTypeName).toLowerCase() === 'mixed'
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                               : 'bg-gray-50 text-gray-700 border-gray-200'
                       }`}
                     >
-                      {item.milkType}
+                      {item.milkTypeName}
                     </span>
                   </td>
-                  <td className="py-2 px-2 font-semibold text-primary">{item.milkStatus}</td>
+                  <td className="py-2 px-2 font-semibold text-primary">
+                    {item.milkStatus}. {item.milkStatusName}
+                  </td>
                   <td className="py-2 px-2 font-semibold text-primary">{item.noOfCans}</td>
                   <td className="py-2 px-2 font-bold text-emerald-600">{item.netWeight}</td>
                   <td className="py-2 px-2 font-bold text-emerald-600">{item.netWeight}</td>
