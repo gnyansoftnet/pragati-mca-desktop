@@ -17,6 +17,9 @@ import { Analyzed } from '../pages/master/analyzed/Analyzed'
 import { Rejected } from '../pages/master/rejected/Rejected'
 import { Users } from '../pages/master/users/Users'
 import { DynamicRoutePage } from '../pages/common/DynamicRoutePage'
+//reports
+import { PeriodicReport } from '../pages/reports/periodic/PeriodicReport'
+import { TruckReport } from '../pages/reports/truck/TruckReport'
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -41,6 +44,10 @@ export const AppRoutes: React.FC = () => {
           <Route path="routes" element={<Rootes />} />
           <Route path="vendors" element={<Vendors />} />
           <Route path="supervisors" element={<Supervisors />} />
+
+          <Route path="periodic-report" element={<PeriodicReport />} />
+          <Route path="truck-sheet" element={<TruckReport />} />
+
           <Route path="analyzed-sample" element={<Analyzed />} />
           <Route path="rejected-sample" element={<Rejected />} />
           <Route path="*" element={<DynamicRoutePage />} />
