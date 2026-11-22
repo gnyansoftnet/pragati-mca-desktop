@@ -429,6 +429,7 @@ export const Rejection: React.FC = () => {
                 onChange={(e: any) => setShift(e.target.value)}
                 options={shifts}
                 tabIndex={1}
+                readOnly={true}
               />
             </div>
 

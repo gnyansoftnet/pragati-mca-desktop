@@ -107,7 +107,7 @@ export const Users: React.FC = () => {
     }
 
     // 2. Extract logged-in plant (fallback to "1102") and initial flag "false"
-    const plant = String(user?.plant || '1102')
+    const plant = String(user?.plant)
     const initial = 'false'
 
     try {

@@ -261,7 +261,7 @@ export const Rejected: React.FC = () => {
                 <span>
                   Plant:{' '}
                   <strong className="text-slate-800">
-                    {user?.plantName || user?.plant || '1102'}
+                    {user?.plantName || user?.plant }
                   </strong>
                 </span>
                 <span>

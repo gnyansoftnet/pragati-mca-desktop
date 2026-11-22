@@ -757,6 +757,7 @@ export const ProcurementCollection: React.FC = () => {
                 }}
                 options={shifts}
                 tabIndex={1}
+                readOnly={true}
               />
             </div>
 

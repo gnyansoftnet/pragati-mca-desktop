@@ -48,7 +48,7 @@ export const TopbarUserProfile: React.FC = () => {
             </h4>
             <ChevronDown className={`w-3.5 h-3.5 text-slate-400 ...`} />
           </div>
-          <p className="text-[10px] text-slate-400 font-medium">Plant {user?.plant || '1102'}</p>
+          <p className="text-[10px] text-slate-400 font-medium">Plant {user?.plant}</p>
         </div>
       </button>
 
