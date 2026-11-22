@@ -10,9 +10,11 @@ import { useSerialSnapshot } from '@renderer/hooks/useSerial'
 import api from '@renderer/services'
 import { MilkSampleDto, MilkSampleUpdateDto } from '@shared/dtos/milk-collection/milk-sample.dto'
 import { analyzerName, isAnalyzer } from '@shared/dtos/connection/serial-com-port.dto'
+import useShift from '@renderer/hooks/useShift'
 
 export const Analyze: React.FC = () => {
   const { user } = useAuth()
+  const { shiftOptions, currentShiftId, getShiftLabel } = useShift(user?.plant)
 
   // Current Date default
   const getCurrentLocalDate = (): string => {
@@ -24,7 +26,13 @@ export const Analyze: React.FC = () => {
   }
 
   const [date, setDate] = useState<string>(getCurrentLocalDate())
-  const [shift, setShift] = useState<string>('1')
+  const [shift, setShift] = useState<string>(currentShiftId)
+  useEffect(() => {
+    if (currentShiftId) {
+      setShift(currentShiftId)
+    }
+  }, [currentShiftId])
+
   const [plant, setPlant] = useState<string>(user?.plant)
 
   const [samples, setSamples] = useState<MilkSampleDto[]>([])
@@ -39,10 +47,11 @@ export const Analyze: React.FC = () => {
     .filter((p) => isAnalyzer(p.parserType) && p.status === 'connected')
     .sort((a, b) => a.parserType.localeCompare(b.parserType))
 
-  const shifts = [
-    { value: '1', label: 'Morning' },
-    { value: '2', label: 'Evening' }
-  ]
+  // const shifts = [
+  //   { value: '1', label: 'Morning' },
+  //   { value: '2', label: 'Evening' }
+  // ]
+  const shifts = shiftOptions
 
   // const plantOptions = [
   //   { value: '1102', label: 'Raipur' },
@@ -194,9 +203,10 @@ export const Analyze: React.FC = () => {
   return (
     <div className="space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <PageBreadcrumb title="Analyze"
-        //  desc="Test milk samples with connected Milk Analyzer" 
-         />
+        <PageBreadcrumb
+          title="Analyze"
+          //  desc="Test milk samples with connected Milk Analyzer"
+        />
 
         {/* Analyzer Connection Status Indicator */}
         <div className="flex items-center gap-2">
@@ -232,17 +242,20 @@ export const Analyze: React.FC = () => {
                 name="date"
                 value={date}
                 onChange={(e: any) => setDate(e.target.value)}
+                readOnly={true}
               />
             </div>
 
             {/* Shift */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Select Shift</label>
-              <CustomForm.CustomSelectSearchField
+              <CustomForm.CustomSelectField
                 name="shift"
                 value={shift}
                 onChange={(e: any) => setShift(e.target.value)}
                 options={shifts}
+                tabIndex={1}
+                readOnly={true}
               />
             </div>
 
@@ -251,7 +264,7 @@ export const Analyze: React.FC = () => {
               <label className="text-xs font-semibold text-slate-700">Chilling Center</label>
               <CustomForm.CustomTextField
                 name="chilling"
-                value={`${user?.plant || ''}, ${user?.plantName || ''}`} 
+                value={`${user?.plant || ''}, ${user?.plantName || ''}`}
                 readOnly={true}
                 tabIndex={-1}
               />
