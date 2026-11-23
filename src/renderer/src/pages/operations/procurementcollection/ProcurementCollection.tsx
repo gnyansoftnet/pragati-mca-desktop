@@ -20,8 +20,8 @@ interface SelectOption {
 }
 
 // Set to true while testing; set to false in production with real hardware
-const IS_TEST_MODE = true
-const DEFAULT_TEST_WEIGHT = '25.5'
+// const IS_TEST_MODE = true
+// const DEFAULT_TEST_WEIGHT = '25.5'
 
 export const ProcurementCollection: React.FC = () => {
   const { user } = useAuth()
@@ -232,31 +232,31 @@ export const ProcurementCollection: React.FC = () => {
   //     }
   //   }
   // }, [snap.readings.weight, isScaleConnected])
-  useEffect(() => {
-    if (IS_TEST_MODE) {
-      // In test mode, always keep the default test weight loaded
-      if (!weightCans) {
-        setWeightCans(DEFAULT_TEST_WEIGHT)
-      }
-      return
-    }
-
-    if (isScaleConnected && snap.readings.weight?.value !== undefined) {
-      const scaleValue = String(snap.readings.weight.value)
-      if (scaleValue && scaleValue !== '0') {
-        setWeightCans(scaleValue)
-      }
-    }
-  }, [snap.readings.weight, isScaleConnected, weightCans])
-  // Auto-capture live weight from connected machine scale (Zero manual input)
   // useEffect(() => {
+  //   if (IS_TEST_MODE) {
+  //     // In test mode, always keep the default test weight loaded
+  //     if (!weightCans) {
+  //       setWeightCans(DEFAULT_TEST_WEIGHT)
+  //     }
+  //     return
+  //   }
+
   //   if (isScaleConnected && snap.readings.weight?.value !== undefined) {
   //     const scaleValue = String(snap.readings.weight.value)
-  //     if (Number(scaleValue) > 0) {
+  //     if (scaleValue && scaleValue !== '0') {
   //       setWeightCans(scaleValue)
   //     }
   //   }
-  // }, [snap.readings.weight, isScaleConnected])
+  // }, [snap.readings.weight, isScaleConnected, weightCans])
+  // Auto-capture live weight from connected machine scale (Zero manual input)
+  useEffect(() => {
+    if (isScaleConnected && snap.readings.weight?.value !== undefined) {
+      const scaleValue = String(snap.readings.weight.value)
+      if (Number(scaleValue) > 0) {
+        setWeightCans(scaleValue)
+      }
+    }
+  }, [snap.readings.weight, isScaleConnected])
 
   const getCurrentLocalDate = (): string => {
     const today = new Date()
@@ -653,8 +653,8 @@ export const ProcurementCollection: React.FC = () => {
       // Requirement 1: DO NOT clear selectedRoute. Only clear vendor name, cans, and weight.
       setSelectedVendor('')
       setNoOfCans('')
-      // setWeightCans('')
-      setWeightCans(IS_TEST_MODE ? DEFAULT_TEST_WEIGHT : '')
+      setWeightCans('')
+      // setWeightCans(IS_TEST_MODE ? DEFAULT_TEST_WEIGHT : '')
 
       // Auto-focus Vendor input for the next collection on this route
       setTimeout(() => {
