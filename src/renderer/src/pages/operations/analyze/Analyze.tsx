@@ -74,7 +74,7 @@ export const Analyze: React.FC = () => {
   }
 
   // Set to true while testing without physical hardware, false in production
-  const IS_TEST_MODE = true
+  const IS_TEST_MODE = false
   const DEFAULT_TEST_FAT = 4.2
   const DEFAULT_TEST_SNF = 8.5
 
