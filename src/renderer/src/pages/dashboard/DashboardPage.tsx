@@ -481,7 +481,7 @@ export const DashboardPage: React.FC = () => {
           onSearchChange={setSearchQuery}
           searchPlaceholder={
             activeTab === 'analyzed'
-              ? 'Search sample code, route or vendor...'
+              ? 'Search sample no, route or vendor...'
               : 'Search DSK, route or supervisor...'
           }
         />

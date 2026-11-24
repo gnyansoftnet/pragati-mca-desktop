@@ -14,9 +14,6 @@ export default function CustomForm(props) {
   )
 }
 
-/* ==========================================================================
-   1. Custom Text Field
-   ========================================================================== */
 interface CustomTextFieldProps {
   name?: string
   value?: string | number
@@ -52,9 +49,6 @@ CustomForm.CustomTextField = function CustomTextField({
   )
 }
 
-/* ==========================================================================
-   2. Custom Number Field
-   ========================================================================== */
 interface CustomNumberFieldProps {
   name?: string
   value?: string | number
@@ -103,9 +97,6 @@ CustomForm.CustomNumberField = function CustomNumberField({
   )
 }
 
-/* ==========================================================================
-   3. Custom Email Field
-   ========================================================================== */
 CustomForm.CustomEmailField = function CustomEmailField({
   name = 'email',
   value,
@@ -131,9 +122,6 @@ CustomForm.CustomEmailField = function CustomEmailField({
   )
 }
 
-/* ==========================================================================
-   4. Custom Password Field (with Show/Hide Toggle)
-   ========================================================================== */
 CustomForm.CustomPasswordField = function CustomPasswordField({
   name = 'password',
   value,
@@ -177,9 +165,6 @@ CustomForm.CustomPasswordField = function CustomPasswordField({
   )
 }
 
-/* ==========================================================================
-   5. Custom Date Field
-   ========================================================================== */
 CustomForm.CustomDateField = function CustomDateField({
   name,
   value,
@@ -203,9 +188,6 @@ CustomForm.CustomDateField = function CustomDateField({
   )
 }
 
-/* ==========================================================================
-   6. Custom Address (Textarea)
-   ========================================================================== */
 CustomForm.CustomAddress = function CustomAddress({
   name = 'address',
   value,
@@ -232,9 +214,6 @@ CustomForm.CustomAddress = function CustomAddress({
   )
 }
 
-/* ==========================================================================
-   7. Custom Select Field (HTML Native with readOnly support)
-   ========================================================================== */
 interface SelectOption {
   value: string | number
   label: string
@@ -298,9 +277,6 @@ CustomForm.CustomSelectField = function CustomSelectField({
   )
 }
 
-/* ==========================================================================
-   8. Custom Select Search Field (react-select with readOnly & safe Array)
-   ========================================================================== */
    interface SelectSearchOption {
   value: string | number
   label: string
@@ -403,7 +379,7 @@ CustomForm.CustomSelectSearchField = function CustomSelectSearchField({
         }),
         dropdownIndicator: (base, state) => ({
           ...base,
-          color: state.isFocused ? '#10257B' : '#94a3b8',
+          color: state.isFocused ? '#10257B' : '#10257B',
           padding: '4px',
           '&:hover': {
             color: '#10257B'
@@ -424,8 +400,8 @@ CustomForm.CustomSelectSearchField = function CustomSelectSearchField({
           ...base,
           fontSize: '0.875rem',
           cursor: 'pointer',
-          backgroundColor: state.isSelected ? '#10257B' : state.isFocused ? '#f1f5f9' : '#ffffff',
-          color: state.isSelected ? '#ffffff' : '#1e293b',
+          backgroundColor: state.isSelected ? '#10257B' : state.isFocused ? '#CAD8E3' : '#ffffff',
+          color: state.isSelected ? '#ffffff' : '#10257B',
           '&:active': {
             backgroundColor: '#10257B',
             color: '#ffffff'

@@ -268,7 +268,7 @@ export const Supervisors: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                {/* <th className="py-2 px-2">ID</th> */}
+                <th className="py-2 px-2">Sl No</th>
                 <th className="py-2 px-2">Employee ID</th>
                 <th className="py-2 px-2">Supervisor Name</th>
                 <th className="py-2 px-2">Plant</th>
@@ -290,9 +290,9 @@ export const Supervisors: React.FC = () => {
                   </td>
                 </tr>
               )}
-              {supervisors.map((item) => (
+              {supervisors.map((item, index) => (
                 <tr key={item.id} className="hover:bg-slate-50/70 transition">
-                  {/* <td className="py-2 px-2 font-semibold text-primary">{item.id}</td> */}
+                  <td className="py-2 px-2 font-semibold text-primary">{index + 1}</td>
                   <td className="py-2 px-2 font-semibold text-primary">{item.employeeId}</td>
                   <td className="py-2 px-2 font-semibold text-slate-800">
                     {`${item.firstName} ${item.lastName}`}
