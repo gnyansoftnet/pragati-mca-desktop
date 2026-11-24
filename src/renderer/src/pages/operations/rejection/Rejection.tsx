@@ -46,7 +46,12 @@ export const Rejection: React.FC = () => {
   const [reason, setReason] = useState<ReasonDto[]>([])
   const [reasonOptions, setReasonOptions] = useState<SelectOption[]>([])
   const [selectedReason, setSelectedReason] = useState<string>('')
+  const [reasonFor, setReasonFor] = useState<string>('')
   const [loadingReasons, setLoadingReasons] = useState<boolean>(false)
+
+  const isOtherReason =
+    selectedReason.trim().toLowerCase() === 'others' ||
+    selectedReason.trim().toLowerCase() === 'other'
 
   const [shift, setShift] = useState<string>(currentShiftId)
   const [plant, setPlant] = useState(user?.plant)
@@ -189,6 +194,19 @@ export const Rejection: React.FC = () => {
     ;(fetchRoutes(), fetchReasons())
   }, [])
 
+
+  const handleReasonChange = (val: string) => {
+    setSelectedReason(val)
+    if (val.trim().toLowerCase() === 'others' || val.trim().toLowerCase() === 'other') {
+      setTimeout(() => {
+        const reasonForInput = document.getElementById('reason-for-input') as HTMLInputElement | null
+        reasonForInput?.focus()
+      }, 80)
+    } else {
+      setReasonFor('')
+    }
+  }
+
   const getCurrentLocalDate = (): string => {
     const today = new Date()
     const year = today.getFullYear()
@@ -218,6 +236,68 @@ export const Rejection: React.FC = () => {
       }, 100)
     }
   }
+
+  // Hotkeys:
+  // 'r' (or Alt+r) -> Focus Route input
+  // 'v' (or Alt+v) -> Focus Vendor / DSK input
+  // 'c' (or Alt+c) -> Focus No. of Cans input
+  // 'a' (or Alt+a) -> Focus Approx Quantity input
+  // 's' (or Alt+s) -> Focus Select Reason input
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Preserve system and browser shortcuts (Ctrl+C, Ctrl+V, Ctrl+R, Ctrl+A, Ctrl+S, etc.)
+      if (e.ctrlKey || e.metaKey) return
+
+      const key = e.key.toLowerCase()
+
+      if (key === 'r') {
+        const routeInput = document.getElementById('route-select-input') as HTMLInputElement | null
+        if (routeInput && (e.altKey || document.activeElement !== routeInput)) {
+          e.preventDefault()
+          routeInput.focus()
+          routeInput.select?.()
+        }
+      } else if (key === 'v') {
+        const vendorInput = (document.getElementById('dsk-select-input') ||
+          document.getElementById('vendor-select-input')) as HTMLInputElement | null
+        if (vendorInput && (e.altKey || document.activeElement !== vendorInput)) {
+          e.preventDefault()
+          vendorInput.focus()
+          vendorInput.select?.()
+        }
+      } else if (key === 'c') {
+        const cansInput = (document.getElementById('no-of-cans-input') ||
+          document.querySelector('input[name="noOfCans"]')) as HTMLInputElement | null
+        if (cansInput && (e.altKey || document.activeElement !== cansInput)) {
+          e.preventDefault()
+          cansInput.focus()
+          cansInput.select?.()
+        }
+      } else if (key === 'a') {
+        const approxInput = (document.getElementById('approx-quantity-input') ||
+          document.querySelector('input[name="approxQuantity"]')) as HTMLInputElement | null
+        if (approxInput && (e.altKey || document.activeElement !== approxInput)) {
+          e.preventDefault()
+          approxInput.focus()
+          approxInput.select?.()
+        }
+      } else if (key === 's') {
+        const reasonInput = document.getElementById(
+          'reason-select-input'
+        ) as HTMLInputElement | null
+        if (reasonInput && (e.altKey || document.activeElement !== reasonInput)) {
+          e.preventDefault()
+          reasonInput.focus()
+          reasonInput.select?.()
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   const handleApproxQuantityChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const raw = e.target.value
@@ -366,6 +446,7 @@ export const Rejection: React.FC = () => {
         noOfCanes: String(noOfCans),
         aproxQuantity: String(approxQuantity),
         reason: String(selectedReason)
+        // reasonFor: String(reasonFor) // Ready for backend integration
       }
 
       // console.log("payload rejection", payload)
@@ -447,7 +528,7 @@ export const Rejection: React.FC = () => {
             {/* Routes Dropdown (tabIndex: 2) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Routes <span className="text-rose-500">*</span>{' '}
+                <u>R</u>outes <span className="text-rose-500">*</span>{' '}
                 {loadingRoutes && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
@@ -465,7 +546,7 @@ export const Rejection: React.FC = () => {
             {/* DSK Name (tabIndex: 3) - Automatically focused after selecting route */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                DSK Name <span className="text-rose-500">*</span>{' '}
+                <u>D</u>SK Name <span className="text-rose-500">*</span>{' '}
                 {loadingVendors && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
@@ -502,7 +583,7 @@ export const Rejection: React.FC = () => {
             {/* No. of Cans (tabIndex: 4) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                No. of Cans <span className="text-rose-500">*</span>
+                No. of <u>C</u>ans <span className="text-rose-500">*</span>
               </label>
               <CustomForm.CustomNumberField
                 name="noOfCans"
@@ -534,7 +615,7 @@ export const Rejection: React.FC = () => {
             {/* Approx Quantity (tabIndex: 5) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                Aprox Quantity(LTR) <span className="text-rose-500">*</span>
+                <u>A</u>prox Quantity(LTR) <span className="text-rose-500">*</span>
               </label>
               <CustomForm.CustomNumberField
                 name="approxQuantity"
@@ -566,19 +647,26 @@ export const Rejection: React.FC = () => {
           <div className="grid md:grid-cols-2 grid-cols-1 gap-2.5">
             {/* Select Reason (tabIndex: 6) - Pressing Enter saves entry if reason is selected */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                Select Reason <span className="text-rose-500">*</span>{' '}
-                {loadingReasons && <span className="text-slate-400 font-normal">(Loading...)</span>}
+              <label className="text-xs font-semibold text-slate-700 flex items-center justify-between">
+                <span>
+                  <u>S</u>elect Reason <span className="text-rose-500">*</span>{' '}
+                  {loadingReasons && (
+                    <span className="text-slate-400 font-normal">(Loading...)</span>
+                  )}
+                </span>
               </label>
               <CustomForm.CustomSelectSearchField
                 name="reason"
                 inputId="reason-select-input"
                 placeholder={loadingReasons ? 'Loading reasons...' : 'Select & search reason...'}
                 value={selectedReason}
-                onChange={(e: any) => setSelectedReason(e.target.value)}
+                onChange={(e: any) => handleReasonChange(e.target.value)}
                 onKeyDown={(e: React.KeyboardEvent) => {
                   if (e.key === 'Enter') {
-                    if (selectedReason) {
+                    if (isOtherReason) {
+                      e.preventDefault()
+                      document.getElementById('reason-for-input')?.focus()
+                    } else if (selectedReason) {
                       e.preventDefault()
                       handleSaveRejection()
                     }
@@ -589,6 +677,29 @@ export const Rejection: React.FC = () => {
                 tabIndex={6}
               />
             </div>
+
+            {/* Conditional "Reason For" input when reason is 'Others' */}
+            {isOtherReason && (
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-slate-700">
+                  Reason For <span className="text-rose-500">*</span>
+                </label>
+                <CustomForm.CustomTextField
+                  name="reasonFor"
+                  id="reason-for-input"
+                  placeholder="Enter reason description..."
+                  value={reasonFor}
+                  onChange={(e: any) => setReasonFor(e.target.value)}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      handleSaveRejection()
+                    }
+                  }}
+                  tabIndex={7}
+                />
+              </div>
+            )}
           </div>
 
           {/* Action Buttons (tabIndex: 7 & 8) */}
@@ -598,7 +709,7 @@ export const Rejection: React.FC = () => {
               icon={<X className="w-3.5 h-3.5 text-primary" />}
               label="Clear"
               onClick={handleCancel}
-              tabIndex={8}
+              tabIndex={-1}
             />
             <Button1
               variant="primary"
