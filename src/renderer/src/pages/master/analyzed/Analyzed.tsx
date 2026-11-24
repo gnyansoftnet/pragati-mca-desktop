@@ -422,19 +422,19 @@ export const Analyzed: React.FC = () => {
                           })()
                         : ''}
                     </td>
-                    <td className="py-2 px-4">
+                    <td className="py-2 px-2">
                       <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-rose-50 text-rose-500 border-rose-200">
                         {item.shiftName}
                       </span>
                     </td>
-                    <td className="py-2 px-4 font-semibold text-slate-800">{item.plant}</td>
-                    <td className="py-2 px-4 font-semibold text-primary max-w-40 truncate">
-                      {item.rootCode}
+                    <td className="py-2 px-2 font-semibold text-slate-800">{item.plant}</td>
+                    <td className="py-2 px-2 font-semibold text-primary max-w-40 truncate">
+                      {item.rootName}
                     </td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.vendorCode}</td>
-                    <td className="py-2 px-4 font-bold text-slate-900">{item.weightSystem}</td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.canType}</td>
-                    <td className="py-2 px-4">
+                    <td className="py-2 px-2 font-semibold text-primary whitespace-nowrap">{item.dskName}</td>
+                    <td className="py-2 px-2 font-bold text-slate-900">{item.weightSystem}</td>
+                    <td className="py-2 px-2 font-semibold text-primary">{item.canType}</td>
+                    <td className="py-2 px-2">
                       <span
                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                           String(item.milkType).toLowerCase() === 'cow'
@@ -449,23 +449,23 @@ export const Analyzed: React.FC = () => {
                         {item.milkType}
                       </span>
                     </td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.milkStatus}</td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.noOfCans}</td>
-                    <td className="py-2 px-4 font-bold text-slate-800">
+                    <td className="py-2 px-2 font-semibold text-primary">{item.milkStatus}</td>
+                    <td className="py-2 px-2 font-semibold text-primary">{item.noOfCans}</td>
+                    <td className="py-2 px-2 font-bold text-slate-800">
                       {Number(item.grossWeight || 0).toFixed(1)}
                     </td>
-                    <td className="py-2 px-4 font-bold text-emerald-600">
+                    <td className="py-2 px-2 font-bold text-emerald-600">
                       {Number(item.netWeight || item.netLtr || 0).toFixed(1)}
                     </td>
-                    <td className="py-2 px-4 font-semibold text-primary">{item.tipingTime}</td>
-                    <td className="py-2 px-4 font-bold text-slate-800">
+                    <td className="py-2 px-2 font-semibold text-primary">{item.tipingTime}</td>
+                    <td className="py-2 px-2 font-bold text-slate-800">
                       {Number(item.fat || 0) > 0 ? `${Number(item.fat).toFixed(1)}%` : '0.0%'}
                     </td>
-                    <td className="py-2 px-4 font-bold text-slate-800">
+                    <td className="py-2 px-2 font-bold text-slate-800">
                       {Number(item.snf || 0) > 0 ? `${Number(item.snf).toFixed(1)}%` : '0.0%'}
                     </td>
-                    <td className="py-2 px-4 font-bold text-slate-800">{item.clr}</td>
-                    <td className="py-2 px-4 text-center">
+                    <td className="py-2 px-2 font-bold text-slate-800">{item.clr}</td>
+                    <td className="py-2 px-2 text-center">
                       <span
                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                           Number(item.isAnalyse) === 1

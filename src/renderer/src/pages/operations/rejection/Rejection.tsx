@@ -740,13 +740,13 @@ export const Rejection: React.FC = () => {
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
                 <th className="py-2 px-2">ID</th>
-                <th className="py-2 px-2">Plant Id</th>
                 <th className="py-2 px-2">Date</th>
                 <th className="py-2 px-2">Shift</th>
+                <th className="py-2 px-2">Plant Id</th>
                 <th className="py-2 px-2">Route Name</th>
                 <th className="py-2 px-2">DSK Code</th>
                 <th className="py-2 px-2">DSK Name</th>
-                <th className="py-2 px-2">Supervisor</th>
+                <th className="py-2 px-2">Supervisor Id</th>
                 <th className="py-2 px-2">No. of Cans</th>
                 <th className="py-2 px-2">Approx Qty (LTR)</th>
                 <th className="py-2 px-2">Reason</th>
@@ -769,7 +769,7 @@ export const Rejection: React.FC = () => {
                 rejections.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50/70 transition">
                     <td className="py-2 px-2 font-semibold text-primary">{item.id}</td>
-                    <td className="py-2 px-2 text-slate-700">{item.plant}</td>
+                    
                     <td className="py-2 px-2 text-slate-700">
                       {item.createdAt
                         ? (() => {
@@ -801,6 +801,7 @@ export const Rejection: React.FC = () => {
                             : item.shiftName || `Shift ${item.shiftName}`}
                       </span>
                     </td>
+                    <td className="py-2 px-2 text-slate-700">{item.plant}</td>
                     <td className="py-2 px-2 font-semibold text-primary">{item.routeName}</td>
                     <td className="py-2 px-2 text-slate-700">{item.dskCode}</td>
                     <td className="py-2 px-2 font-semibold text-slate-800">{item.dskName}</td>

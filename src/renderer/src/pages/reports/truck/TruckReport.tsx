@@ -44,11 +44,11 @@ export const TruckReport: React.FC = () => {
 
   // Filter input states
   const [date, setDate] = useState<string>(getCurrentDateISO())
-  const [shift, setShift] = useState<string>(currentShiftId || '1')
+  const [shift, setShift] = useState<string>(currentShiftId)
 
   // Applied filter states
   const [appliedDate, setAppliedDate] = useState<string>(getCurrentDateISO())
-  const [appliedShift, setAppliedShift] = useState<string>(currentShiftId || '1')
+  const [appliedShift, setAppliedShift] = useState<string>(currentShiftId)
 
   // Search & Pagination States
   const [searchQuery, setSearchQuery] = useState<string>('')

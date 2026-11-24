@@ -371,7 +371,7 @@ export const Rejected: React.FC = () => {
                 <th className="py-2 px-2 whitespace-nowrap">Route Name</th>
                 <th className="py-2 px-2 whitespace-nowrap">DSK Code</th>
                 <th className="py-2 px-2 whitespace-nowrap">DSK Name</th>
-                <th className="py-2 px-2 whitespace-nowrap">Supervisor</th>
+                <th className="py-2 px-2 whitespace-nowrap">Supervisor Id</th>
                 <th className="py-2 px-2 whitespace-nowrap">No. of Cans</th>
                 <th className="py-2 px-2 whitespace-nowrap">Approx Qty (LTR)</th>
                 <th className="py-2 px-2 whitespace-nowrap">Reason</th>
