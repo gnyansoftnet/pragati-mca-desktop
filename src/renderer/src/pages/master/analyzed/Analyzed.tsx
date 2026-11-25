@@ -17,7 +17,6 @@ export const Analyzed: React.FC = () => {
   const { shiftOptions, currentShiftId, loadingShifts, getShiftLabel } = useShift(user?.plant)
   const [isSyncing, setIsSyncing] = useState<boolean>(false)
   const [lastUpdated, setLastUpdated] = useState<string>('')
-  
 
   // Format today's date as YYYY-MM-DD
   const getCurrentLocalDate = (): string => {
@@ -192,7 +191,6 @@ export const Analyzed: React.FC = () => {
       console.error('Failed to fetch last synced milk collection:', error)
     }
   }
-
 
   useEffect(() => {
     fetchLastSynced()
@@ -382,6 +380,7 @@ export const Analyzed: React.FC = () => {
                 <th className="py-2 px-2 whitespace-nowrap">No. of Cans</th>
                 <th className="py-2 px-2 whitespace-nowrap">Gross Weight</th>
                 <th className="py-2 px-2 whitespace-nowrap">Net Weight</th>
+                <th className="py-2 px-2 whitespace-nowrap">Net Ltr</th>
                 <th className="py-2 px-2 whitespace-nowrap">Tipping Time</th>
                 <th className="py-2 px-2 whitespace-nowrap">FAT (%)</th>
                 <th className="py-2 px-2 whitespace-nowrap">SNF (%)</th>
@@ -431,31 +430,38 @@ export const Analyzed: React.FC = () => {
                     <td className="py-2 px-2 font-semibold text-primary max-w-40 truncate">
                       {item.rootName}
                     </td>
-                    <td className="py-2 px-2 font-semibold text-primary whitespace-nowrap">{item.dskName}</td>
+                    <td className="py-2 px-2 font-semibold text-primary whitespace-nowrap">
+                      {item.dskName}
+                    </td>
                     <td className="py-2 px-2 font-bold text-slate-900">{item.weightSystem}</td>
                     <td className="py-2 px-2 font-semibold text-primary">{item.canType}</td>
                     <td className="py-2 px-2">
                       <span
                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
-                          String(item.milkType).toLowerCase() === 'cow'
+                          String(item.milkTypeName).toLowerCase() === 'cow'
                             ? 'bg-amber-50 text-amber-700 border-amber-200'
-                            : String(item.milkType).toLowerCase() === 'buffalo'
+                            : String(item.milkTypeName).toLowerCase() === 'buffalo'
                               ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-                              : String(item.milkType).toLowerCase() === 'mixed'
+                              : String(item.milkTypeName).toLowerCase() === 'mixed'
                                 ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                                 : 'bg-gray-50 text-gray-700 border-gray-200'
                         }`}
                       >
-                        {item.milkType}
+                        {item.milkTypeName}
                       </span>
                     </td>
-                    <td className="py-2 px-2 font-semibold text-primary">{item.milkStatus}</td>
+                    <td className="py-2 px-2 font-semibold text-primary">
+                      {item.milkStatus}. {item.milkStatusName}
+                    </td>
                     <td className="py-2 px-2 font-semibold text-primary">{item.noOfCans}</td>
                     <td className="py-2 px-2 font-bold text-slate-800">
-                      {Number(item.grossWeight || 0).toFixed(1)}
+                      {Number(item.grossWeight).toFixed(1)}
                     </td>
                     <td className="py-2 px-2 font-bold text-emerald-600">
-                      {Number(item.netWeight || item.netLtr || 0).toFixed(1)}
+                      {Number(item.netWeight).toFixed(1)}
+                    </td>
+                    <td className="py-2 px-2 font-bold text-emerald-600">
+                      {Number(item.netLtr).toFixed(1)}
                     </td>
                     <td className="py-2 px-2 font-semibold text-primary">{item.tipingTime}</td>
                     <td className="py-2 px-2 font-bold text-slate-800">

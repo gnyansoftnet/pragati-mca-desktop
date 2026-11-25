@@ -501,8 +501,10 @@ export const DashboardPage: React.FC = () => {
                   <th className="py-2.5 px-2 whitespace-nowrap">Cans Type</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Milk Type</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Milk Status</th>
-                  <th className="py-2.5 px-2 whitespace-nowrap">Cans</th>
+                  <th className="py-2.5 px-2 whitespace-nowrap">No. of Cans</th>
+                  <th className="py-2.5 px-2 whitespace-nowrap">Gross Weight</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Net Weight</th>
+                  <th className="py-2.5 px-2 whitespace-nowrap">Net Ltr</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">FAT (%)</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">SNF (%)</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">CLR (%)</th>
@@ -559,7 +561,13 @@ export const DashboardPage: React.FC = () => {
                       <td className="py-2 px-2 font-semibold text-primary">{item.milkStatus}</td>
                       <td className="py-2 px-2 font-semibold text-primary">{item.noOfCans}</td>
                       <td className="py-2 px-2 font-bold text-emerald-600">
-                        {Number(item.netWeight || item.netLtr || 0).toFixed(1)}
+                        {Number(item.grossWeight).toFixed(1)}
+                      </td>
+                      <td className="py-2 px-2 font-bold text-emerald-600">
+                        {Number(item.netWeight).toFixed(1)}
+                      </td>
+                      <td className="py-2 px-2 font-bold text-emerald-600">
+                        {Number(item.netLtr).toFixed(1)}
                       </td>
                       <td className="py-2 px-2 font-bold text-slate-800">
                         {Number(item.fat || 0) > 0 ? `${Number(item.fat).toFixed(1)}%` : '0.0%'}

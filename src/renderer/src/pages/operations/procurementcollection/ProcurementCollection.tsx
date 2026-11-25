@@ -1208,7 +1208,6 @@ export const ProcurementCollection: React.FC = () => {
       setNoOfCans(val)
       setWeightCans('')
 
-      // Clear serial machine reading cache so scale waits for a fresh reading
       if (typeof window !== 'undefined' && (window as any).api?.clearSerialReadings) {
         ;(window as any).api.clearSerialReadings(['weight'])
       }
@@ -2130,7 +2129,7 @@ export const ProcurementCollection: React.FC = () => {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold text-slate-700">
-                  Weight (LTR) <span className="text-rose-500">*</span>
+                  Weight <span className="text-rose-500">*</span>
                 </label>
                 {IS_TEST_MODE ? (
                   <span className="text-[10px] text-amber-600 font-semibold flex items-center gap-1">
