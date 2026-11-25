@@ -8,7 +8,7 @@ export interface Button1Props extends React.ButtonHTMLAttributes<HTMLButtonEleme
   variant?: ButtonVariant
   size?: ButtonSize
   icon?: React.ReactNode
-  label?: string
+  label?: React.ReactNode
 }
 
 export const Button1: React.FC<Button1Props> = ({

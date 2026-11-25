@@ -615,7 +615,7 @@ export const Rejection: React.FC = () => {
             {/* Approx Quantity (tabIndex: 5) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                <u>A</u>prox Quantity(LTR) <span className="text-rose-500">*</span>
+                <u>A</u>prox Quantity <span className="text-rose-500">*</span>
               </label>
               <CustomForm.CustomNumberField
                 name="approxQuantity"
@@ -748,7 +748,7 @@ export const Rejection: React.FC = () => {
                 <th className="py-2 px-2">DSK Name</th>
                 <th className="py-2 px-2">Supervisor Id</th>
                 <th className="py-2 px-2">No. of Cans</th>
-                <th className="py-2 px-2">Approx Qty (LTR)</th>
+                <th className="py-2 px-2">Approx Qty</th>
                 <th className="py-2 px-2">Reason</th>
               </tr>
             </thead>

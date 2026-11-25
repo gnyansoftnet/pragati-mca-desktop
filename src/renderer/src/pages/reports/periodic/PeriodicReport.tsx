@@ -753,7 +753,7 @@ export const PeriodicReport: React.FC = () => {
       headStyles: {
         fillColor: false,
         textColor: [0, 0, 0],
-        fontStyle: 'normal',
+        fontStyle: 'bold',
         lineColor: [0, 0, 0],
         lineWidth: 0.15
       },
