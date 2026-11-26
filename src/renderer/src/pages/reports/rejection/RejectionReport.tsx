@@ -12,10 +12,16 @@ import { useAuth } from '@renderer/context/AuthContext'
 import { useShift } from '@renderer/hooks/useShift'
 import { MilkRejectionResponseDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
 
+import { RejectionPrintButton } from '@renderer/components/rejectionreport/RejectionPrintButton'
+import { RejectionPdfButton } from '@renderer/components/rejectionreport/RejectionPdfButton'
+
 export const RejectionReport: React.FC = () => {
   const { user } = useAuth()
   const { shiftOptions, currentShiftId, loadingShifts, getShiftLabel } = useShift(user?.plant)
 
+  const shiftOptionsWithAll = [{ value: '', label: 'All Shifts' }, ...shiftOptions]
+
+  // console.log('shiftOptions', shiftOptions)
   // Format today's date as YYYY-MM-DD
   const getCurrentLocalDate = (): string => {
     const today = new Date()
@@ -48,18 +54,18 @@ export const RejectionReport: React.FC = () => {
 
   // Filter input states
   const [date, setDate] = useState<string>(getCurrentLocalDate())
-  const [shift, setShift] = useState<string>(currentShiftId || '')
+  const [shift, setShift] = useState<string>('')
 
   // Applied filter states (locked until user clicks Search)
   const [appliedDate, setAppliedDate] = useState<string>(getCurrentLocalDate())
-  const [appliedShift, setAppliedShift] = useState<string>(currentShiftId || '')
+  const [appliedShift, setAppliedShift] = useState<string>('')
 
-  useEffect(() => {
-    if (currentShiftId) {
-      setShift((prev) => prev || currentShiftId)
-      setAppliedShift((prev) => prev || currentShiftId)
-    }
-  }, [currentShiftId])
+  // useEffect(() => {
+  //   if (currentShiftId) {
+  //     setShift((prev) => prev || currentShiftId)
+  //     setAppliedShift((prev) => prev || currentShiftId)
+  //   }
+  // }, [currentShiftId])
 
   const [rejections, setRejections] = useState<MilkRejectionResponseDto[]>([])
   const [loading, setLoading] = useState<boolean>(false)
@@ -389,7 +395,7 @@ export const RejectionReport: React.FC = () => {
                 name="shift"
                 value={shift}
                 onChange={(e: any) => setShift(e.target.value)}
-                options={shiftOptions}
+                options={shiftOptionsWithAll}
                 placeholder={loadingShifts ? 'Loading shifts...' : 'Select shift...'}
                 disabled={loadingShifts}
               />
@@ -421,10 +427,10 @@ export const RejectionReport: React.FC = () => {
           <table id="rejection-report-table" className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-2 px-2 whitespace-nowrap">ID</th>
+                {/* <th className="py-2 px-2 whitespace-nowrap">ID</th> */}
                 <th className="py-2 px-2 whitespace-nowrap">Date</th>
                 <th className="py-2 px-2 whitespace-nowrap">Shift</th>
-                <th className="py-2 px-2 whitespace-nowrap">Plant</th>
+                <th className="py-2 px-2 whitespace-nowrap">Plant Id</th>
                 <th className="py-2 px-2 whitespace-nowrap">Route Name</th>
                 <th className="py-2 px-2 whitespace-nowrap">DSK Code</th>
                 <th className="py-2 px-2 whitespace-nowrap">DSK Name</th>
@@ -432,6 +438,7 @@ export const RejectionReport: React.FC = () => {
                 <th className="py-2 px-2 whitespace-nowrap">No. of Cans</th>
                 <th className="py-2 px-2 whitespace-nowrap">Approx Qty (LTR)</th>
                 <th className="py-2 px-2 whitespace-nowrap">Reason</th>
+                <th className="py-2 px-2">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -452,7 +459,7 @@ export const RejectionReport: React.FC = () => {
               {!loading &&
                 rejections.map((item, index) => (
                   <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
-                    <td className="py-2 px-2 font-semibold text-primary">{item.id}</td>
+                    {/* <td className="py-2 px-2 font-semibold text-primary">{item.id}</td> */}
                     <td className="py-2 px-2 text-slate-700">
                       {item.createdAt
                         ? (() => {
@@ -485,7 +492,12 @@ export const RejectionReport: React.FC = () => {
                       {Number(item.aproxQuantity || 0).toFixed(1)}
                     </td>
                     <td className="py-2 px-2 text-slate-700">{item.reason}</td>
-                    
+                    <td className="py-2 px-2 text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <RejectionPrintButton item={item} user={user} />
+                        <RejectionPdfButton item={item} user={user} />
+                      </div>
+                    </td>
                   </tr>
                 ))}
             </tbody>

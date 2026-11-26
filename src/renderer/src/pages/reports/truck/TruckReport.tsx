@@ -19,6 +19,9 @@ export const TruckReport: React.FC = () => {
   const { user } = useAuth()
   const { shiftOptions, currentShiftId, loadingShifts } = useShift(user?.plant)
 
+
+  const shiftOptionsWithAll = [{ value: '', label: 'All Shifts' }, ...shiftOptions]
+
   // Current Date in YYYY-MM-DD
   const getCurrentDateISO = (): string => {
     const today = new Date()
@@ -42,11 +45,11 @@ export const TruckReport: React.FC = () => {
 
   // Filter input states
   const [date, setDate] = useState<string>(getCurrentDateISO())
-  const [shift, setShift] = useState<string>(currentShiftId || '')
+  const [shift, setShift] = useState<string>('')
 
   // Applied filter states
   const [appliedDate, setAppliedDate] = useState<string>(getCurrentDateISO())
-  const [appliedShift, setAppliedShift] = useState<string>(currentShiftId || '')
+  const [appliedShift, setAppliedShift] = useState<string>('')
 
   // Report data & loading states
   const [reportData, setReportData] = useState<MilkCollectionDto[]>([])
@@ -102,14 +105,16 @@ export const TruckReport: React.FC = () => {
 
   // Automatically fetch report once currentShiftId is detected by useShift
   useEffect(() => {
-    if (currentShiftId && !initialLoadedRef.current) {
+    if (
+      // currentShiftId && 
+      !initialLoadedRef.current) {
       initialLoadedRef.current = true
-      setShift(currentShiftId)
-      setAppliedShift(currentShiftId)
-      fetchTruckReport(date, currentShiftId)
+      setShift('')
+      setAppliedShift('')
+      fetchTruckReport(date, '')
     } else if (
       !loadingShifts &&
-      !currentShiftId &&
+      // !currentShiftId &&
       !initialLoadedRef.current &&
       shiftOptions.length > 0
     ) {
@@ -120,7 +125,9 @@ export const TruckReport: React.FC = () => {
       setAppliedShift(fallback)
       fetchTruckReport(date, fallback)
     }
-  }, [currentShiftId, loadingShifts, shiftOptions])
+  }, [
+    // currentShiftId,
+     loadingShifts, shiftOptions])
 
   // Handle Search submit
   const handleSubmitFilter = (e?: React.FormEvent) => {
@@ -406,7 +413,7 @@ export const TruckReport: React.FC = () => {
                 name="shift"
                 value={shift}
                 onChange={(e: any) => setShift(e.target.value)}
-                options={shiftOptions}
+                options={shiftOptionsWithAll}
                 placeholder={loadingShifts ? 'Loading shifts...' : 'Select shift...'}
                 disabled={loadingShifts}
               />

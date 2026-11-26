@@ -321,19 +321,28 @@ export const DashboardPage: React.FC = () => {
       {/* Summary Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Routes & Vendors */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
-          <div className="space-y-1">
+        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
+          <div className="space-y-0.3">
+            <h5 className="text-[14px] font-semibold text-slate-800 tracking-wider">
+              <u>Master Data</u>
+            </h5>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">
                 Total Routes:
               </p>
-              <p className="text-[13px] font-bold text-slate-800 uppercase">{counts.route}</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">{counts.route}</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">
                 Total Vendors:
               </p>
-              <p className="text-[13px] font-bold text-slate-800 uppercase">{counts.vendor}</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">{counts.vendor}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">
+                Total Users:
+              </p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">{counts.user}</p>
             </div>
           </div>
 
@@ -343,25 +352,22 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Card 2: Milk Operations */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
-          <div className="space-y-1">
+        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
+          <div className="space-y-0.3">
+            <h5 className="text-[14px] font-semibold text-slate-800 tracking-wider">
+              <u>Todays Collection</u>
+            </h5>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
-                Milk Collected:
-              </p>
-              <p className="text-[13px] font-bold text-slate-800 uppercase">{counts.collection}</p>
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Total Milk:</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">145.7kg</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
-                Milk Analyzed:
-              </p>
-              <p className="text-[13px] font-bold text-emerald-600 uppercase">{counts.analyze}</p>
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Morning:</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">85.3kg</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
-                Milk Rejected:
-              </p>
-              <p className="text-[13px] font-bold text-rose-600 uppercase">{counts.rejected}</p>
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Evening:</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">60.4kg</p>
             </div>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-pink-600 to-pink-300 text-white flex items-center justify-center shadow-md shadow-pink-500/20">
@@ -370,19 +376,22 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Card 3: Supervisors & Users */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
-          <div className="space-y-1">
+        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
+          <div className="space-y-0.3">
+            <h5 className="text-[14px] font-semibold text-slate-800 tracking-wider">
+              <u>Todays Rejection</u>
+            </h5>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
-                Total Supervisors:
-              </p>
-              <p className="text-[13px] font-bold text-slate-800 uppercase">{counts.supervisor}</p>
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Total Milk:</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">14.5kg</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
-                Total Users:
-              </p>
-              <p className="text-[13px] font-bold text-slate-800 uppercase">{counts.user}</p>
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Morning:</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">8.3kg</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Evening:</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">6.2kg</p>
             </div>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-r  from-emerald-600 to-emerald-300 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
@@ -391,7 +400,29 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Card 4: Machine Connections */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
+        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
+          <div className="space-y-0.3">
+            <h5 className="text-[14px] font-semibold text-slate-800 tracking-wider">
+              <u>Todays Samples</u>
+            </h5>
+            <div className="flex items-center gap-2">
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Total Milk:</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">150</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Morning:</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">80</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Evening:</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">50</p>
+            </div>
+          </div>
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-orange-600 to-orange-300 text-white flex items-center justify-center shadow-md shadow-orange-500/20">
+            <CheckCircle2 className="w-6 h-6 strokeWidth={2}" />
+          </div>
+        </div>
+        {/* <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex items-start justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <p className="text-[13px] font-semibold text-slate-400 tracking-wider">
@@ -411,21 +442,36 @@ export const DashboardPage: React.FC = () => {
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-orange-600 to-orange-300 text-white flex items-center justify-center shadow-md shadow-orange-500/20">
             <CheckCircle2 className="w-6 h-6 strokeWidth={2}" />
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Today's Data Card (Tabbed View) */}
       <div className="p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs space-y-4">
-        {/* Card Header & Navigation Tabs */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-3">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-slate-800">Today's Data</h2>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-              {formatDateForDisplay(todayDate)}
-            </span>
+          <div className='flex items-center gap-2'>
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-bold text-slate-800">Today's Data</h2>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                {formatDateForDisplay(todayDate)}
+              </span>
+            </div>
+            ,
+            <div className="w-full sm:w-60 flex items-center gap-2">
+              <label className="text-base font-bold text-slate-800 block">
+                Shift{' '}
+                {loadingShifts && <span className="text-slate-400 font-normal">(Loading...)</span>}
+              </label>
+              <CustomForm.CustomSelectSearchField
+                name="shift"
+                value={shift}
+                onChange={handleShiftChange}
+                options={shiftOptions}
+                placeholder={loadingShifts ? 'Loading shifts...' : 'Select shift...'}
+                disabled={loadingShifts}
+              />
+            </div>
           </div>
 
-          {/* Tab Selector */}
           <div className="flex items-center gap-4">
             <button
               type="button"
@@ -455,9 +501,8 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Shift Filter Bar (No Date Field, No Search Button - auto-triggers on onChange) */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="w-full sm:w-60 space-y-1">
+          {/* <div className="w-full sm:w-60 space-y-1">
             <label className="text-xs font-semibold text-slate-700 block">
               Shift{' '}
               {loadingShifts && <span className="text-slate-400 font-normal">(Loading...)</span>}
@@ -470,10 +515,9 @@ export const DashboardPage: React.FC = () => {
               placeholder={loadingShifts ? 'Loading shifts...' : 'Select shift...'}
               disabled={loadingShifts}
             />
-          </div>
+          </div> */}
         </div>
 
-        {/* Table Toolbar (Page size & Search) */}
         <TableToolbar
           pageSize={pageSize}
           onPageSizeChange={(val) => setPageSize(val === 'all' ? 'all' : Number(val))}
@@ -486,7 +530,6 @@ export const DashboardPage: React.FC = () => {
           }
         />
 
-        {/* Analyzed Table */}
         {activeTab === 'analyzed' && (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -595,7 +638,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         )}
 
-        {/* Rejected Table */}
         {activeTab === 'rejected' && (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -668,7 +710,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         )}
 
-        {/* Table Pagination */}
         <TablePagination
           page={currentPagination.page}
           totalPages={currentPagination.totalPages}

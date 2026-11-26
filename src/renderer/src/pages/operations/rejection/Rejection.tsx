@@ -19,6 +19,9 @@ import { VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
 import { ReasonDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
 import useShift from '@renderer/hooks/useShift'
 
+import { RejectionPrintButton } from '@renderer/components/rejectionreport/RejectionPrintButton'
+import { RejectionPdfButton } from '@renderer/components/rejectionreport/RejectionPdfButton'
+
 interface SelectOption {
   value: string
   label: string
@@ -221,8 +224,12 @@ export const Rejection: React.FC = () => {
   // Hotkeys:
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Preserve system and browser shortcuts (Ctrl+C, Ctrl+V, Ctrl+R, Ctrl+A, Ctrl+S, etc.)
       if (e.ctrlKey || e.metaKey) return
+
+      const isTypingReasonFor = document.activeElement?.id === 'reason-for-input'
+      if (isTypingReasonFor && !e.altKey) {
+        return // Lets the user type letters freely into reasonFor
+      }
 
       const key = e.key.toLowerCase()
 
@@ -775,10 +782,10 @@ export const Rejection: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-2 px-2">ID</th>
-                <th className="py-2 px-2">Plant Id</th>
+                {/* <th className="py-2 px-2">ID</th> */}
                 <th className="py-2 px-2">Date</th>
                 <th className="py-2 px-2">Shift</th>
+                <th className="py-2 px-2">Plant Id</th>
                 <th className="py-2 px-2">Route Name</th>
                 <th className="py-2 px-2">DSK Code</th>
                 <th className="py-2 px-2">DSK Name</th>
@@ -786,6 +793,7 @@ export const Rejection: React.FC = () => {
                 <th className="py-2 px-2">No. of Cans</th>
                 <th className="py-2 px-2">Approx Qty (LTR)</th>
                 <th className="py-2 px-2">Reason</th>
+                <th className="py-2 px-2">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -804,8 +812,7 @@ export const Rejection: React.FC = () => {
               ) : (
                 rejections.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50/70 transition">
-                    <td className="py-2 px-2 font-semibold text-primary">{item.id}</td>
-                    <td className="py-2 px-2 text-slate-700">{item.plant}</td>
+                    {/* <td className="py-2 px-2 font-semibold text-primary">{item.id}</td> */}
                     <td className="py-2 px-2 text-slate-700">
                       {item.createdAt
                         ? (() => {
@@ -837,6 +844,7 @@ export const Rejection: React.FC = () => {
                             : item.shiftName || `Shift ${item.shiftName}`}
                       </span>
                     </td>
+                    <td className="py-2 px-2 text-slate-700">{item.plant}</td>
                     <td className="py-2 px-2 font-semibold text-primary">{item.routeName}</td>
                     <td className="py-2 px-2 text-slate-700">{item.dskCode}</td>
                     <td className="py-2 px-2 font-semibold text-slate-800">{item.dskName}</td>
@@ -844,6 +852,12 @@ export const Rejection: React.FC = () => {
                     <td className="py-2 px-2 text-slate-700">{item.noOfCanes}</td>
                     <td className="py-2 px-2 font-bold text-emerald-600">{item.aproxQuantity}</td>
                     <td className="py-2 px-2 text-slate-700">{item.reason}</td>
+                    <td className="py-2 px-2 text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <RejectionPrintButton item={item} user={user} />
+                        <RejectionPdfButton item={item} user={user} />
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}
