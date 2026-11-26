@@ -849,7 +849,7 @@ export const Analyze: React.FC = () => {
               {!loading && samples.length === 0 && (
                 <tr>
                   <td colSpan={6} className="py-4 text-center text-slate-400 font-medium">
-                    No samples found. Click &quot;Find&quot; to load pending milk samples.
+                    No samples found. Click &quot;Find&quot; / Enter "f" to load pending milk samples.
                   </td>
                 </tr>
               )}
@@ -862,8 +862,8 @@ export const Analyze: React.FC = () => {
                   const { fat: liveFat, snf: liveSnf } = getLiveReading(selectedAnalyzer)
 
                   // Active rows rule: only the first N rows equal to connected analyzers are active
-                  // const isRowActive = index < connectedAnalyzers.length
-                  const isRowActive = index < 3
+                  const isRowActive = index < connectedAnalyzers.length
+                  // const isRowActive = index < 3
 
                   // Filter out ports already selected in OTHER rows
                   const usedPorts = Object.entries(selectedPorts)
@@ -884,7 +884,7 @@ export const Analyze: React.FC = () => {
                       }}
                       className={`transition ${
                         !isRowActive
-                          ? 'opacity-50 bg-slate-50/40 cursor-not-allowed'
+                          ? ' cursor-not-allowed'
                           : activeSampleId === item.id
                             ? 'bg-primary/5 cursor-pointer'
                             : selectedAnalyzer
@@ -913,8 +913,8 @@ export const Analyze: React.FC = () => {
                               : !isRowActive
                                 ? 'Slot Inactive'
                                 : selectedAnalyzer
-                                  ? 'Hold (Waiting for machine data...)'
-                                  : 'Select Analyzer to Read...'}
+                                  ? '(Waiting for machine data...)'
+                                  : 'Select Analyzer...'}
                           </option>
                           {availableAnalyzers.map((port) => (
                             <option key={port.path} value={port.parserType}>
@@ -941,8 +941,8 @@ export const Analyze: React.FC = () => {
                             </span>
                           </span>
                         ) : selectedAnalyzer ? (
-                          <span className="text-amber-500 font-semibold italic text-xs animate-pulse">
-                            Hold...
+                          <span className="text-amber-500 font-semibold italic text-md animate-pulse">
+                            ...
                           </span>
                         ) : (
                           <span className="text-slate-400">0.0%</span>
@@ -963,7 +963,7 @@ export const Analyze: React.FC = () => {
                           </span>
                         ) : selectedAnalyzer ? (
                           <span className="text-amber-500 font-semibold italic text-xs animate-pulse">
-                            Hold...
+                            ...
                           </span>
                         ) : (
                           <span className="text-slate-400">0.0%</span>
@@ -984,7 +984,7 @@ export const Analyze: React.FC = () => {
                         ) : selectedAnalyzer ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 animate-pulse">
                             <Clock className="w-3 h-3 text-amber-700" />
-                            Hold
+                            Wait
                           </span>
                         ) : isRowActive ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
