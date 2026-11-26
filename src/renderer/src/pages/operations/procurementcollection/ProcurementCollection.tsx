@@ -1808,7 +1808,7 @@ export const ProcurementCollection: React.FC = () => {
         entry: entry
       }
 
-      // console.log('payload', payload)
+      console.log('payload', payload)
 
       if (typeof window !== 'undefined' && (window as any).api?.saveMilkCollection) {
         await (window as any).api.saveMilkCollection(payload)
@@ -2119,6 +2119,7 @@ export const ProcurementCollection: React.FC = () => {
                 onKeyDown={handleNoOfCansKeyDown}
                 placeholder="e.g. 4"
                 tabIndex={8}
+                className='font-semibold text-slate-800'
               />
               <p className="text-xs font-semibold text-slate-700">
                 Total no. cans: <span className="text-primary font-bold">{routeTotalCans}</span>
@@ -2173,7 +2174,7 @@ export const ProcurementCollection: React.FC = () => {
                 }
                 className={
                   IS_TEST_MODE
-                    ? 'font-bold text-slate-800'
+                    ? 'font-semibold text-slate-800'
                     : 'bg-slate-100 font-bold text-slate-800 cursor-not-allowed select-none'
                 }
               />

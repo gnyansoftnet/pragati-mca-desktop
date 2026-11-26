@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import {
   FileSpreadsheet,
   FileDown,
@@ -11,8 +11,6 @@ import autoTable from 'jspdf-autotable'
 import PageBreadcrumb from '@renderer/components/breadcrumbs/PageBreadcrumb'
 import CustomForm from '@renderer/components/customform/CustomForm'
 import Button1 from '@renderer/components/buttons/Button1'
-import TablePagination from '@renderer/components/table/TablePagination'
-import TableToolbar from '@renderer/components/table/TableToolbar'
 import { useAuth } from '@renderer/context/AuthContext'
 import { useShift } from '@renderer/hooks/useShift'
 import { MilkCollectionDto } from '@shared/dtos/milk-collection/milk-collection.dto'
@@ -44,45 +42,26 @@ export const TruckReport: React.FC = () => {
 
   // Filter input states
   const [date, setDate] = useState<string>(getCurrentDateISO())
-  const [shift, setShift] = useState<string>(currentShiftId)
+  const [shift, setShift] = useState<string>(currentShiftId || '')
 
   // Applied filter states
   const [appliedDate, setAppliedDate] = useState<string>(getCurrentDateISO())
-  const [appliedShift, setAppliedShift] = useState<string>(currentShiftId)
+  const [appliedShift, setAppliedShift] = useState<string>(currentShiftId || '')
 
-  // Search & Pagination States
-  const [searchQuery, setSearchQuery] = useState<string>('')
-  const [pageSize, setPageSize] = useState<number | 'all'>(10)
+  // Report data & loading states
   const [reportData, setReportData] = useState<MilkCollectionDto[]>([])
   const [loading, setLoading] = useState<boolean>(false)
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 10,
-    total: 0,
-    totalPages: 1,
-    hasNextPage: false,
-    hasPrevPage: false
-  })
 
-  // Automatically update shift once detected
-  useEffect(() => {
-    if (currentShiftId) {
-      setShift((prev) => prev || currentShiftId)
-      setAppliedShift((prev) => prev || currentShiftId)
-    }
-  }, [currentShiftId])
+  // Track if initial load has already occurred
+  const initialLoadedRef = useRef<boolean>(false)
 
-  // Fetch Report from API (Exact unchanged backend call)
+  // Fetch Report from API (Loads all records for selected date and shift)
   const fetchTruckReport = async (
-    pageNo = pagination.page,
-    limitVal = pageSize,
-    searchVal = searchQuery,
-    selectedDate = appliedDate,
-    selectedShift = appliedShift
+    selectedDate: string,
+    selectedShift: string
   ): Promise<void> => {
     try {
       setLoading(true)
-      const actualLimit = limitVal === 'all' ? 1000000 : limitVal
       const shiftNum =
         selectedShift && selectedShift !== 'all' && Number(selectedShift) > 0
           ? Number(selectedShift)
@@ -91,9 +70,9 @@ export const TruckReport: React.FC = () => {
       if (typeof window !== 'undefined' && (window.api as any)?.getTruckSheetReport) {
         const response = await (window.api as any).getTruckSheetReport(
           {
-            page: pageNo,
-            limit: actualLimit,
-            search: searchVal.trim()
+            page: 1,
+            limit: 1000000,
+            search: ''
           },
           shiftNum,
           selectedDate,
@@ -107,10 +86,8 @@ export const TruckReport: React.FC = () => {
               ? response
               : []
           setReportData(list)
-
-          if (response.pagination) {
-            setPagination(response.pagination)
-          }
+          setAppliedDate(selectedDate)
+          setAppliedShift(selectedShift)
         }
       } else {
         toast.error('getTruckSheetReport API is not available on window.api')
@@ -123,26 +100,35 @@ export const TruckReport: React.FC = () => {
     }
   }
 
+  // Automatically fetch report once currentShiftId is detected by useShift
+  useEffect(() => {
+    if (currentShiftId && !initialLoadedRef.current) {
+      initialLoadedRef.current = true
+      setShift(currentShiftId)
+      setAppliedShift(currentShiftId)
+      fetchTruckReport(date, currentShiftId)
+    } else if (
+      !loadingShifts &&
+      !currentShiftId &&
+      !initialLoadedRef.current &&
+      shiftOptions.length > 0
+    ) {
+      // Fallback if no active shift detected after loading shifts
+      initialLoadedRef.current = true
+      const fallback = shiftOptions[0].value
+      setShift(fallback)
+      setAppliedShift(fallback)
+      fetchTruckReport(date, fallback)
+    }
+  }, [currentShiftId, loadingShifts, shiftOptions])
+
   // Handle Search submit
   const handleSubmitFilter = (e?: React.FormEvent) => {
     if (e) e.preventDefault()
     setAppliedDate(date)
     setAppliedShift(shift)
-    fetchTruckReport(1, pageSize, searchQuery, date, shift)
+    fetchTruckReport(date, shift)
   }
-
-  // Auto-fetch on search or page size change
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchTruckReport(1, pageSize, searchQuery, appliedDate, appliedShift)
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [searchQuery, pageSize])
-
-  // Initial load
-  useEffect(() => {
-    fetchTruckReport(1, pageSize, searchQuery, getCurrentDateISO(), currentShiftId || '1')
-  }, [])
 
   // Calculate Column Totals & Weighted Averages
   const totals = useMemo(() => {
@@ -234,8 +220,8 @@ export const TruckReport: React.FC = () => {
       format: 'a4'
     })
 
-    const plantId = user?.plant || '1207'
-    const plantName = user?.plantName || 'ARILO'
+    const plantId = user?.plant
+    const plantName = user?.plantName
 
     // 1. Draw Top Letterhead (Matching the reference photo)
     doc.setFont('helvetica', 'bold')
@@ -272,8 +258,8 @@ export const TruckReport: React.FC = () => {
         { content: 'DSK Name', styles: { halign: 'left' as const } },
         { content: 'DSK Code', styles: { halign: 'center' as const } },
         { content: 'Route Name', styles: { halign: 'left' as const } },
-        { content: 'Gross Weight', styles: { halign: 'right' as const } },
         { content: 'No Of Cans', styles: { halign: 'center' as const } },
+        { content: 'Gross Weight', styles: { halign: 'right' as const } },
         { content: 'FAT %', styles: { halign: 'right' as const } },
         { content: 'SNF %', styles: { halign: 'right' as const } },
         { content: 'Net Weight', styles: { halign: 'right' as const } }
@@ -299,8 +285,8 @@ export const TruckReport: React.FC = () => {
         item.dskName || '-',
         item.vendorCode || '-',
         item.rootName || item.rootCode || '-',
-        Number(item.grossWeight || 0).toFixed(1),
         String(item.noOfCans ?? 0),
+        Number(item.grossWeight || 0).toFixed(1),
         Number(item.fat || 0) > 0 ? Number(item.fat).toFixed(1) : '0.0',
         Number(item.snf || 0) > 0 ? Number(item.snf).toFixed(1) : '0.0',
         Number(item.netWeight || item.netLtr || 0).toFixed(1)
@@ -315,8 +301,8 @@ export const TruckReport: React.FC = () => {
           colSpan: 6,
           styles: { halign: 'left' as const, fontStyle: 'bold' as const }
         },
-        totals.totalGross,
         String(totals.totalCans),
+        totals.totalGross,
         `${totals.avgFat}%`,
         `${totals.avgSnf}%`,
         totals.totalNet
@@ -359,8 +345,8 @@ export const TruckReport: React.FC = () => {
         3: { halign: 'left' as const, cellWidth: 34 },
         4: { halign: 'center' as const, cellWidth: 16 },
         5: { halign: 'left' as const, cellWidth: 26 },
-        6: { halign: 'right' as const, cellWidth: 18 },
-        7: { halign: 'center' as const, cellWidth: 14 },
+        6: { halign: 'center' as const, cellWidth: 14 },
+        7: { halign: 'right' as const, cellWidth: 18 },
         8: { halign: 'right' as const, cellWidth: 14 },
         9: { halign: 'right' as const, cellWidth: 14 },
         10: { halign: 'right' as const, cellWidth: 18 }
@@ -439,17 +425,6 @@ export const TruckReport: React.FC = () => {
           </div>
         </CustomForm>
 
-        {/* Table Toolbar */}
-        <div>
-          <TableToolbar
-            pageSize={pageSize}
-            onPageSizeChange={(val) => setPageSize(val === 'all' ? 'all' : Number(val))}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            searchPlaceholder="Search sample no, DSK, route or code..."
-          />
-        </div>
-
         {/* Table View matching photo */}
         <div className="overflow-x-auto mt-2">
           <table id="truck-sheet-table" className="w-full text-left border-collapse">
@@ -461,8 +436,8 @@ export const TruckReport: React.FC = () => {
                 <th className="py-2 px-2 whitespace-nowrap">DSK Name</th>
                 <th className="py-2 px-2 whitespace-nowrap">DSK Code</th>
                 <th className="py-2 px-2 whitespace-nowrap">Route Name</th>
-                <th className="py-2 px-2 whitespace-nowrap">Gross Weight</th>
                 <th className="py-2 px-2 whitespace-nowrap">No. of Cans</th>
+                <th className="py-2 px-2 whitespace-nowrap">Gross Weight</th>
                 <th className="py-2 px-2 whitespace-nowrap">FAT (%)</th>
                 <th className="py-2 px-2 whitespace-nowrap">SNF (%)</th>
                 <th className="py-2 px-2 whitespace-nowrap">Net Weight</th>
@@ -506,10 +481,10 @@ export const TruckReport: React.FC = () => {
                     <td className="py-2 px-2 font-semibold text-primary max-w-40 truncate">
                       {item.rootName || item.rootCode || '-'}
                     </td>
+                    <td className="py-2 px-2 font-semibold text-primary">{item.noOfCans ?? 0}</td>
                     <td className="py-2 px-2 font-bold text-slate-800">
                       {Number(item.grossWeight || 0).toFixed(1)}
                     </td>
-                    <td className="py-2 px-2 font-semibold text-primary">{item.noOfCans ?? 0}</td>
                     <td className="py-2 px-2 font-bold text-slate-800">
                       {Number(item.fat || 0) > 0 ? `${Number(item.fat).toFixed(1)}%` : '0.0%'}
                     </td>
@@ -530,8 +505,8 @@ export const TruckReport: React.FC = () => {
                   <td colSpan={6} className="py-2.5 px-2 uppercase text-slate-600 tracking-wider">
                     Total / Weighted Avg
                   </td>
-                  <td className="py-2.5 px-2 font-bold text-slate-900">{totals.totalGross}</td>
                   <td className="py-2.5 px-2 font-semibold text-primary">{totals.totalCans}</td>
+                  <td className="py-2.5 px-2 font-bold text-slate-900">{totals.totalGross}</td>
                   <td className="py-2.5 px-2 font-bold text-slate-900">{totals.avgFat}%</td>
                   <td className="py-2.5 px-2 font-bold text-slate-900">{totals.avgSnf}%</td>
                   <td className="py-2.5 px-2 font-bold text-emerald-600">{totals.totalNet}</td>
@@ -539,23 +514,6 @@ export const TruckReport: React.FC = () => {
               </tfoot>
             )}
           </table>
-        </div>
-
-        {/* Table Pagination */}
-        <div>
-          <TablePagination
-            page={pagination.page}
-            totalPages={pagination.totalPages}
-            totalItems={pagination.total}
-            pageSize={pageSize}
-            hasNextPage={pagination.hasNextPage}
-            hasPrevPage={pagination.hasPrevPage}
-            loading={loading}
-            itemName="records"
-            onPageChange={(newPage) =>
-              fetchTruckReport(newPage, pageSize, searchQuery, appliedDate, appliedShift)
-            }
-          />
         </div>
       </div>
     </div>
