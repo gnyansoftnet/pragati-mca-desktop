@@ -241,17 +241,7 @@ export const Analyzed: React.FC = () => {
               </div>
               <h3 className="text-lg font-bold text-slate-800 mb-2">Sync to Server</h3>
               <p className="text-sm text-slate-600 leading-relaxed mb-4">
-                This will upload analyzed milk collection records for Date:{' '}
-                <strong className="text-slate-800">{formatDateForDisplay(appliedDate)}</strong> and
-                Shift:{' '}
-                <strong className="text-slate-800">
-                  {appliedShift === '1'
-                    ? 'Morning'
-                    : appliedShift === '2'
-                      ? 'Evening'
-                      : appliedShift}
-                </strong>{' '}
-                to the central cloud server. Are you sure you want to proceed?
+                This will upload procurement data to the central cloud server. Are you sure! Want to proceed?
               </p>
 
               {/* Current Context Badges */}

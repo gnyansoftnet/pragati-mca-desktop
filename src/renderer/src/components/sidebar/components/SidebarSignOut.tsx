@@ -108,7 +108,7 @@ export const SidebarSignOut: React.FC<SidebarSignOutProps> = ({ isCollapsed }) =
               <div className={`shrink-0 ${isAnalyzedActive ? 'text-white' : 'text-slate-400'}`}>
                 <FileCheck className="w-3.5 h-3.5" />
               </div>
-              <span className="truncate text-left flex-1">Procurement Samples</span>
+              <span className="truncate text-left flex-1">Procurement Data</span>
             </button>
 
             <button
@@ -123,7 +123,7 @@ export const SidebarSignOut: React.FC<SidebarSignOutProps> = ({ isCollapsed }) =
               <div className={`shrink-0 ${isRejectedActive ? 'text-white' : 'text-slate-400'}`}>
                 <AlertTriangle className="w-3.5 h-3.5" />
               </div>
-              <span className="truncate text-left flex-1">Rejected Samples</span>
+              <span className="truncate text-left flex-1">Rejected Data</span>
             </button>
 
             {/* <button

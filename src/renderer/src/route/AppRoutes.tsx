@@ -8,6 +8,7 @@ import { Transport } from '../pages/operations/transport/Transport'
 import { MilkCollectionPage } from '../pages/operations/MilkCollectionPage'
 import { MacineConnection } from '../pages/operations/macineconnection/MacineConnection'
 import { ProcurementCollection } from '../pages/operations/procurementcollection/ProcurementCollection'
+import { ManualCollection } from '../pages/operations/manualcollection/ManualCollection'
 // import { PortConnection } from '../pages/operations/portconnection/PortConnection'
 import { Analyze } from '../pages/operations/analyze/Analyze'
 import { Rootes } from '../pages/master/rootes/Rootes'
@@ -20,6 +21,7 @@ import { DynamicRoutePage } from '../pages/common/DynamicRoutePage'
 //reports
 import { PeriodicReport } from '../pages/reports/periodic/PeriodicReport'
 import { TruckReport } from '../pages/reports/truck/TruckReport'
+import { RejectionReport } from '../pages/reports/rejection/RejectionReport'
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -39,6 +41,9 @@ export const AppRoutes: React.FC = () => {
           <Route path="collection" element={<MilkCollectionPage />} />
           <Route path="machine-connection" element={<MacineConnection />} />
           <Route path="procurement-collection" element={<ProcurementCollection />} />
+          <Route path="manual-collection" element={<ManualCollection />} />
+          
+          
           <Route path="users" element={<Users />} />
           <Route path="analyze" element={<Analyze />} />
           <Route path="routes" element={<Rootes />} />
@@ -47,6 +52,7 @@ export const AppRoutes: React.FC = () => {
 
           <Route path="periodic-report" element={<PeriodicReport />} />
           <Route path="truck-sheet" element={<TruckReport />} />
+          <Route path="rejection-report" element={<RejectionReport />} />
 
           <Route path="analyzed-sample" element={<Analyzed />} />
           <Route path="rejected-sample" element={<Rejected />} />

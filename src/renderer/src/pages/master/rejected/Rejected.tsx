@@ -250,10 +250,7 @@ export const Rejected: React.FC = () => {
               </div>
               <h3 className="text-lg font-bold text-slate-800 mb-2">Sync to Server</h3>
               <p className="text-sm text-slate-600 leading-relaxed mb-4">
-                This will upload rejected milk collection records for Date:{' '}
-                <strong className="text-slate-800">{formatDateForDisplay(appliedDate)}</strong> and
-                Shift: <strong className="text-slate-800">{getShiftLabel(appliedShift)}</strong> to
-                the central cloud server. Are you sure you want to proceed?
+                This will upload rejected milk data to the central cloud server. Are you sure! Want to proceed?
               </p>
 
               {/* Current Context Badges */}
@@ -272,7 +269,14 @@ export const Rejected: React.FC = () => {
                   <strong className="text-slate-800">{formatDateForDisplay(appliedDate)}</strong>
                 </span>
                 <span>
-                  Shift: <strong className="text-slate-800">{getShiftLabel(appliedShift)}</strong>
+                  Shift:{' '}
+                  <strong className="text-slate-800">
+                    {appliedShift === '1'
+                      ? 'Morning'
+                      : appliedShift === '2'
+                        ? 'Evening'
+                        : appliedShift}
+                  </strong>
                 </span>
               </div>
 

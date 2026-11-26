@@ -68,6 +68,16 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     badge: ''
   },
   {
+    id: 5,
+    title: 'Manual Collection',
+    path: '/manual-collection',
+    icon: 'TestTubes',
+    roles: ['admin', 'staff', 'farmer'],
+    category: 'operations',
+    order_index: 50,
+    badge: ''
+  },
+  {
     id: 6,
     title: 'Analyze',
     path: '/analyze',
@@ -192,9 +202,15 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
       },
       {
         id: '13-2',
-        title: 'Truck Sheet',
+        title: 'Truck Sheet Report',
         path: '/truck-sheet',
         icon: 'Car'
+      },
+      {
+        id: '13-3',
+        title: 'Rejection Report',
+        path: '/rejection-report',
+        icon: 'TestTubes'
       }
     ]
   },
