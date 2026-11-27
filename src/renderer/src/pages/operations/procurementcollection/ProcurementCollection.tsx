@@ -1808,7 +1808,7 @@ export const ProcurementCollection: React.FC = () => {
         entry: entry
       }
 
-      console.log('payload', payload)
+      // console.log('payload', payload)
 
       if (typeof window !== 'undefined' && (window as any).api?.saveMilkCollection) {
         await (window as any).api.saveMilkCollection(payload)
