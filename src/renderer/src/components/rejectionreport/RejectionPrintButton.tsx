@@ -380,7 +380,7 @@ export const RejectionPrintButton: React.FC<RejectionPrintButtonProps> = ({ item
       type="button"
       onClick={handlePrint}
       title="Print Rejection Slip"
-      className="inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-slate-50 bg-slate-200 text-slate-800 hover:bg-slate-300 hover:border-slate-400  text-[11px] font-semibold shadow-xs transition-all duration-150 cursor-pointer active:scale-95"
+      className="inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-slate-300 bg-slate-100 text-slate-800 hover:bg-slate-300 hover:border-slate-400  text-[11px] font-semibold shadow-xs transition-all duration-150 cursor-pointer active:scale-95"
     >
       <Printer className="w-3.5 h-3.5" />
     </button>

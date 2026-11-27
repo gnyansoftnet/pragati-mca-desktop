@@ -462,7 +462,7 @@ export const Analyzed: React.FC = () => {
                     </td>
                     <td className="py-2 px-2 font-bold text-slate-800">{item.clr}</td>
                     <td className="py-2 px-2 text-center">
-                      <span
+                      {/* <span
                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                           Number(item.isAnalyse) === 1
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
@@ -470,6 +470,17 @@ export const Analyzed: React.FC = () => {
                         }`}
                       >
                         {Number(item.isAnalyse) === 1 ? 'Analyzed' : 'Pending'}
+                      </span> */}
+                      <span
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                          item.syncStatus === 'synced' || item.syncStatus === '1'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : 'bg-amber-50 text-amber-700 border-amber-200'
+                        }`}
+                      >
+                        {item.syncStatus === 'synced' || item.syncStatus === '1'
+                          ? 'Synced'
+                          : 'Pending'}
                       </span>
                     </td>
                   </tr>

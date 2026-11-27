@@ -448,7 +448,7 @@ export const DashboardPage: React.FC = () => {
       {/* Today's Data Card (Tabbed View) */}
       <div className="p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-3">
-          <div className='flex items-center gap-2'>
+          <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
               <h2 className="text-base font-bold text-slate-800">Today's Data</h2>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
@@ -643,7 +643,7 @@ export const DashboardPage: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                  <th className="py-2.5 px-2 whitespace-nowrap">ID</th>
+                  <th className="py-2.5 px-2 whitespace-nowrap">Date</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Shift</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Plant</th>
                   <th className="py-2.5 px-2 whitespace-nowrap">Route Name</th>
@@ -674,7 +674,21 @@ export const DashboardPage: React.FC = () => {
                 {!loading &&
                   rejections.map((item, index) => (
                     <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
-                      <td className="py-2 px-2 font-semibold text-primary">{item.id}</td>
+                      {/* <td className="py-2 px-2 font-semibold text-primary">{item.id}</td> */}
+                      <td className="py-2 px-2 text-slate-700">
+                      {item.createdAt
+                        ? (() => {
+                            const d = new Date(item.createdAt)
+                            return isNaN(d.getTime())
+                              ? String(item.createdAt)
+                              : d.toLocaleDateString('en-GB', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: '2-digit'
+                                })
+                          })()
+                        : ''}
+                    </td>
                       <td className="py-2 px-2">
                         <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-rose-50 text-rose-500 border-rose-200">
                           {item.shiftName}

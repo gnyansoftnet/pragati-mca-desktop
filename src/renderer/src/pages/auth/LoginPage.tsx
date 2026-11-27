@@ -207,63 +207,68 @@ export const LoginPage: React.FC = () => {
 
         {/* Heading & Subtitle */}
         <div className="text-center mb-7">
-          <p className="text-xs text-slate-500 leading-relaxed px-2 font-normal">
+          {/* <p className="text-xs text-slate-500 leading-relaxed px-2 font-normal">
             Make sure you have sync the user first
-          </p>
+          </p> */}
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          {/* User Name Input */}
-          {/* User Name Input */}
-          <div
-            className={`flex items-center gap-3 border border-slate-200/60 rounded-xl px-4 py-3.5 transition-all ${
-              checkingUsers || !hasUsers
-                ? 'bg-slate-200/70 opacity-60 cursor-not-allowed'
-                : 'bg-slate-100/90 hover:bg-slate-100 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 focus-within:border-slate-300'
-            }`}
-          >
-            <User className="w-4 h-4 text-slate-400 shrink-0" />
-            <input
-              type="text"
-              value={username}
-              disabled={checkingUsers || !hasUsers || isLoggingIn}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="UserName"
-              className="w-full bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none disabled:cursor-not-allowed"
-            />
-          </div>
-
-          {/* Password Input */}
-          <div className="space-y-2">
+        {!showSyncInput && (
+          <form onSubmit={handleLogin} className="space-y-4">
+            {/* User Name Input */}
             <div
               className={`flex items-center gap-3 border border-slate-200/60 rounded-xl px-4 py-3.5 transition-all ${
                 checkingUsers || !hasUsers
-                  ? 'bg-slate-200/70 opacity-60 cursor-not-allowed'
-                  : 'bg-slate-100/90 hover:bg-slate-100 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 focus-within:border-slate-300'
+                  ? 'bg-white opacity-60 cursor-not-allowed'
+                  : 'bg-white border-slate-300 hover:bg-white focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 focus-within:border-slate-400'
               }`}
             >
-              <Lock className="w-4 h-4 text-slate-400 shrink-0" />
+              <User className="w-4 h-4 text-slate-400 shrink-0" />
               <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
+                type="text"
+                value={username}
                 disabled={checkingUsers || !hasUsers || isLoggingIn}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="UserName"
                 className="w-full bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none disabled:cursor-not-allowed"
               />
-              <button
-                type="button"
-                disabled={checkingUsers || !hasUsers || isLoggingIn}
-                onClick={() => setShowPassword(!showPassword)}
-                className="text-slate-400 hover:text-slate-600 transition focus:outline-none cursor-pointer disabled:cursor-not-allowed"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
             </div>
 
-            {/* Sync Plant User Trigger or Expandable Input Field */}
-            {!showSyncInput ? (
+            {/* Password Input */}
+            <div className="space-y-2">
+              <div
+                // className={`flex items-center gap-3 border border-slate-200/60 rounded-xl px-4 py-3.5 transition-all ${
+                //   checkingUsers || !hasUsers
+                //     ? 'bg-slate-200/70 opacity-60 cursor-not-allowed'
+                //     : 'bg-slate-100/90 hover:bg-slate-100 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 focus-within:border-slate-300'
+                // }`}
+                className={`flex items-center gap-3 border border-slate-200/60 rounded-xl px-4 py-3.5 transition-all ${
+                  checkingUsers || !hasUsers
+                    ? 'bg-white opacity-60 cursor-not-allowed'
+                    : 'bg-white border-slate-300 hover:bg-white focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 focus-within:border-slate-400'
+                }`}
+              >
+                <Lock className="w-4 h-4 text-slate-400 shrink-0" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  disabled={checkingUsers || !hasUsers || isLoggingIn}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  className="w-full bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none disabled:cursor-not-allowed"
+                />
+                <button
+                  type="button"
+                  disabled={checkingUsers || !hasUsers || isLoggingIn}
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-slate-400 hover:text-slate-600 transition focus:outline-none cursor-pointer disabled:cursor-not-allowed"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+
+              {/* Sync Plant User Trigger or Expandable Input Field */}
+              {/* {!showSyncInput ? (
               <div className="flex justify-end pr-1">
                 <button
                   type="button"
@@ -325,7 +330,6 @@ export const LoginPage: React.FC = () => {
                   </button>
                 </div>
 
-                {/* Inline Status Message */}
                 {syncStatus && (
                   <div
                     className={`text-[11px] px-2 py-1.5 rounded-lg flex items-center gap-1.5 ${
@@ -343,28 +347,95 @@ export const LoginPage: React.FC = () => {
                   </div>
                 )}
               </div>
+            )} */}
+            </div>
+
+            {/* Primary Action Button */}
+            <button
+              type="submit"
+              disabled={isLoggingIn}
+              className="w-full bg-[#1e2025] hover:bg-[#111215] active:scale-[0.99] text-white py-3.5 px-6 rounded-xl font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:bg-slate-700 disabled:cursor-not-allowed"
+            >
+              {isLoggingIn ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin text-white" />
+                  <span>Logging in...</span>
+                </>
+              ) : (
+                <>
+                  <span>Login</span>
+                  <ArrowRight className="w-4 h-4 opacity-80" />
+                </>
+              )}
+            </button>
+          </form>
+        )}
+
+        {showSyncInput && (
+          <div className="p-3 bg-slate-50/95 border border-slate-200 rounded-xl space-y-2 shadow-xs transition-all">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <CloudSync size={14} className="text-primary" />
+                Sync Plant User
+              </span>
+              {hasUsers && (
+                <button
+                  type="button"
+                  disabled={isSyncing}
+                  onClick={() => {
+                    setShowSyncInput(false)
+                    setSyncStatus(null)
+                  }}
+                  className="text-slate-400 hover:text-slate-600 cursor-pointer p-0.5 rounded transition"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={plantCode}
+                disabled={isSyncing}
+                onChange={(e) => setPlantCode(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    handleOpenConfirm()
+                  }
+                }}
+                placeholder="Plant Code (e.g. 1102)"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-800 focus:ring-1 focus:ring-slate-800 disabled:bg-slate-100"
+              />
+              <button
+                type="button"
+                disabled={isSyncing || !plantCode.trim()}
+                onClick={handleOpenConfirm}
+                className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shrink-0 cursor-pointer disabled:cursor-not-allowed shadow-xs"
+              >
+                <span>Submit</span>
+              </button>
+            </div>
+
+            {syncStatus && (
+              <div
+                className={`text-[11px] px-2 py-1.5 rounded-lg flex items-center gap-1.5 ${
+                  syncStatus.type === 'success'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    : 'bg-rose-50 text-rose-700 border border-rose-200'
+                }`}
+              >
+                {syncStatus.type === 'success' ? (
+                  <CheckCircle2 size={13} className="shrink-0 text-emerald-600" />
+                ) : (
+                  <AlertCircle size={13} className="shrink-0 text-rose-600" />
+                )}
+                <span className="truncate">{syncStatus.text}</span>
+              </div>
             )}
           </div>
-
-          {/* Primary Action Button */}
-          <button
-            type="submit"
-            disabled={isLoggingIn}
-            className="w-full bg-[#1e2025] hover:bg-[#111215] active:scale-[0.99] text-white py-3.5 px-6 rounded-xl font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:bg-slate-700 disabled:cursor-not-allowed"
-          >
-            {isLoggingIn ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin text-white" />
-                <span>Logging in...</span>
-              </>
-            ) : (
-              <>
-                <span>Login</span>
-                <ArrowRight className="w-4 h-4 opacity-80" />
-              </>
-            )}
-          </button>
-        </form>
+        )}
 
         {/* Footer */}
         <div className="my-6 flex items-center justify-center gap-2">
