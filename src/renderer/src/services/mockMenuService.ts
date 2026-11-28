@@ -124,46 +124,6 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
       }
     ]
   },
-  // {
-  //   id: 7,
-  //   title: 'Routes',
-  //   path: '/routes',
-  //   icon: 'Banknote',
-  //   roles: ['admin', 'staff', 'farmer'],
-  //   category: 'master',
-  //   order_index: 50,
-  //   badge: ''
-  // },
-  // {
-  //   id: 8,
-  //   title: 'Vendors',
-  //   path: '/vendors',
-  //   icon: 'Users',
-  //   roles: ['admin', 'staff', 'farmer'],
-  //   category: 'master',
-  //   order_index: 50,
-  //   badge: ''
-  // },
-  // {
-  //   id: 9,
-  //   title: 'Supervisors',
-  //   path: '/supervisors',
-  //   icon: 'FolderUsers',
-  //   roles: ['admin', 'staff', 'farmer'],
-  //   category: 'master',
-  //   order_index: 50,
-  //   badge: ''
-  // },
-  // {
-  //   id: 10,
-  //   title: 'Users',
-  //   path: '/users',
-  //   icon: 'Users',
-  //   roles: ['admin', 'staff', 'farmer'],
-  //   category: 'master',
-  //   order_index: 50,
-  //   badge: ''
-  // },
   {
     id: 11,
     title: 'Rejection Entry',
@@ -174,16 +134,6 @@ export const DYNAMIC_MENUS: DynamicMenuItem[] = [
     order_index: 50,
     badge: ''
   },
-  // {
-  //   id: 12,
-  //   title: 'Transport Entry',
-  //   path: '/transport-entry',
-  //   icon: 'Route',
-  //   roles: ['admin', 'staff', 'farmer'],
-  //   category: 'master',
-  //   order_index: 50,
-  //   badge: ''
-  // },
   {
     id: 13,
     title: 'Reports',

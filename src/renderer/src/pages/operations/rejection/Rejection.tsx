@@ -641,6 +641,7 @@ export const Rejection: React.FC = () => {
                 maxLength={2}
                 placeholder="e.g. 1"
                 tabIndex={4}
+                className='font-bold text-slate-800'
               />
             </div>
 
@@ -674,6 +675,7 @@ export const Rejection: React.FC = () => {
                 }}
                 placeholder="e.g. 4.5"
                 tabIndex={5}
+                className='font-bold text-slate-800 '
               />
             </div>
           </div>
@@ -707,6 +709,7 @@ export const Rejection: React.FC = () => {
                 options={reasonOptions}
                 disabled={loadingReasons}
                 tabIndex={6}
+                
               />
             </div>
 

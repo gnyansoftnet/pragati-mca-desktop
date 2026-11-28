@@ -1424,7 +1424,7 @@ export const ProcurementCollection: React.FC = () => {
           routeInput.focus()
           routeInput.select?.()
         }
-      } else if (key === 'v') {
+      } else if (key === 'd') {
         const vendorInput = document.getElementById(
           'vendor-select-input'
         ) as HTMLInputElement | null
@@ -2058,7 +2058,7 @@ export const ProcurementCollection: React.FC = () => {
             {/* Vendor Name (tabIndex: 7) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
-                <u>V</u>endor Name <span className="text-rose-500">*</span>{' '}
+                <u>D</u>SK Name <span className="text-rose-500">*</span>{' '}
                 {loadingVendors && <span className="text-slate-400 font-normal">(Loading...)</span>}
               </label>
               <CustomForm.CustomSelectSearchField
@@ -2071,7 +2071,7 @@ export const ProcurementCollection: React.FC = () => {
                       ? 'Loading vendors...'
                       : vendorOptions.length === 0
                         ? 'No vendors found for this route'
-                        : 'Select & search vendor...'
+                        : 'Select & search dsk...'
                 }
                 value={selectedVendor}
                 onChange={handleVendorChange}
@@ -2082,23 +2082,7 @@ export const ProcurementCollection: React.FC = () => {
             </div>
 
             {/* Number of Cans (tabIndex: 8) */}
-            {/* <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700">
-                No. of Cans <span className="text-rose-500">*</span>
-              </label>
-              <CustomForm.CustomNumberField
-                name="noOfCans"
-                id="no-of-cans-input"
-                value={noOfCans}
-                onChange={(e: any) => setNoOfCans(e.target.value)}
-                onKeyDown={handleNoOfCansKeyDown}
-                placeholder="e.g. 4"
-                tabIndex={8}
-              />
-              <p className="text-xs font-semibold text-slate-700">
-                Total no. cans: <span className="text-primary font-bold">{routeTotalCans}</span>
-              </p>
-            </div> */}
+            
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">
                 No. of <u>C</u>ans <span className="text-rose-500">*</span>
@@ -2119,7 +2103,7 @@ export const ProcurementCollection: React.FC = () => {
                 onKeyDown={handleNoOfCansKeyDown}
                 placeholder="e.g. 4"
                 tabIndex={8}
-                className='font-semibold text-slate-800'
+                className='font-bold text-slate-800 '
               />
               <p className="text-xs font-semibold text-slate-700">
                 Total no. cans: <span className="text-primary font-bold">{routeTotalCans}</span>
@@ -2174,7 +2158,7 @@ export const ProcurementCollection: React.FC = () => {
                 }
                 className={
                   IS_TEST_MODE
-                    ? 'font-semibold text-slate-800'
+                    ? 'font-bold text-slate-800'
                     : 'bg-slate-100 font-bold text-slate-800 cursor-not-allowed select-none'
                 }
               />
@@ -2213,7 +2197,7 @@ export const ProcurementCollection: React.FC = () => {
                 <th className="py-2 px-2 whitespace-nowrap">Shift</th>
                 <th className="py-2 px-2 whitespace-nowrap">Plant Id</th>
                 <th className="py-2 px-2 whitespace-nowrap">Route Name</th>
-                <th className="py-2 px-2 whitespace-nowrap">Vendor Name</th>
+                <th className="py-2 px-2 whitespace-nowrap">Dsk Name</th>
                 <th className="py-2 px-2 whitespace-nowrap">Weight System</th>
                 <th className="py-2 px-2 whitespace-nowrap">Cans Type</th>
                 <th className="py-2 px-2 whitespace-nowrap">Milk Type</th>
