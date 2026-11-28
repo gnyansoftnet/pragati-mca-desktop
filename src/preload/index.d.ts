@@ -51,8 +51,8 @@ declare global {
     api: {
       // =============================USER==========================
       login: (userName: string, password: string) => Promise<UserResponseDto>
-      syncUser: (plant: string, intial: string) => Promise<SyncSucess>
       usersExist: () => Promise<boolean>
+      getMenu: (userId: number) => Promise<PermissionDto[]>
       getPaginatedUsers: (params: PaginationRequestDto) => Promise<PaginatedUsersDto>
 
       // =====================ROUTES====================
@@ -69,6 +69,7 @@ declare global {
       getPaginatedVendors: (params: PaginationRequestDto) => Promise<PaginatedVendorsDto>
 
       // ===========================SYNC PROCESS=========================
+      syncUser: (plant: string, intial: string) => Promise<SyncSucess>
       syncRoutes: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       syncVendors: (plant: string, org: string, branch: string) => Promise<SyncSucess>
       syncSupervisors: (plant: string, org: string, branch: string) => Promise<SyncSucess>

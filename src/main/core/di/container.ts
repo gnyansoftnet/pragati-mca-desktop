@@ -5,10 +5,7 @@ import { VendorSyncRepo } from '../../modules/sync/repo/impl/vendor-sync.repo'
 import { VendorSyncService } from '../../modules/sync/service/impl/vendor-sync.service'
 import { SerialComPortService } from '../../modules/machine/service/serial-com-port.service'
 import { TokenService } from '../../modules/user/service/token.service'
-import { UserSyncService } from '../../modules/user/service/user-sync.service'
 import { ApiService } from '../../utils/api-service'
-import { UserRepo } from '../../modules/user/repo/user.repo'
-import { UserService } from '../../modules/user/service/user.service'
 import { MilkRejectionRepo } from '../../modules/procurement/repo/impl/milk-rejection.repo'
 import { MilkRejectionService } from '../../modules/procurement/service/impl/milk-rejection.service'
 import { PasswordService } from '../../modules/user/service/password.service'
@@ -37,17 +34,22 @@ import { MasterRepo } from '../../modules/master/repo/impl/master.repo'
 import { MasterService } from '../../modules/master/service/impl/master.service'
 import { ReportRepo } from '../../modules/reports/repo/impl/report.repo'
 import { ReportService } from '../../modules/reports/service/impl/report.service'
+import { UserSyncService } from '../../modules/sync/service/impl/user-sync.service'
+import { UserSyncRepo } from '../../modules/sync/repo/impl/user-sync.repo'
+import { UserRepo } from '../../modules/user/repo/impl/user.repo'
+import { UserService } from '../../modules/user/service/impl/user.service'
 
 export function bootstrapContainer(): void {
-  // user
-  container.registerSingleton(UserRepo)
-  container.registerSingleton(UserService)
-  container.registerSingleton(UserSyncService)
-
   container.registerSingleton(SerialComPortService)
   container.registerSingleton(PasswordService)
   container.registerSingleton(ApiService)
   container.registerSingleton(TokenService)
+
+  container.registerSingleton(TOKENS.UserRepo, UserRepo)
+  container.registerSingleton(TOKENS.UserService, UserService)
+
+  container.registerSingleton(TOKENS.UserSyncService, UserSyncService)
+  container.registerSingleton(TOKENS.UserSyncRepo, UserSyncRepo)
 
   container.registerSingleton(TOKENS.VendorRepo, VendorRepo)
   container.registerSingleton(TOKENS.VendorService, VendorService)

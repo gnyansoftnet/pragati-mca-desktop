@@ -6,13 +6,18 @@ import { IVendorSyncService } from './service/i-vendor-sync.service'
 import { IProcurmentSyncService } from './service/i-procurement-sync.service'
 import { IRouteSyncService } from './service/i-route-sync.service'
 import { ISupervisorSyncService } from './service/i-supervisor-sync.service'
+import { IUserSyncService } from './service/i-user-sync.service'
 
 export function registerSyncIpc(): void {
+  const userService = container.resolve<IUserSyncService>(TOKENS.UserSyncService)
   const routeService = container.resolve<IRouteSyncService>(TOKENS.RouteSyncService)
   const vendorService = container.resolve<IVendorSyncService>(TOKENS.VendorSyncService)
   const supervisorService = container.resolve<ISupervisorSyncService>(TOKENS.SupervisorSyncService)
   const proService = container.resolve<IProcurmentSyncService>(TOKENS.ProSyncService)
 
+  ipcMain.handle('user-sync:syncUser', (_event, plant: string, intial: string) =>
+    userService.saveUsers(plant, intial)
+  )
   ipcMain.handle('route-sync:syncRoutes', (_event, plant: string, org: string, branch: string) =>
     routeService.saveRoutes(plant, org, branch)
   )
