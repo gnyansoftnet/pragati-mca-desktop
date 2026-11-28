@@ -38,8 +38,7 @@ export class UserSyncService implements IUserSyncService {
         intial
       }
     })
-    console.log('URI:', this.api.http.getUri({ url: Url.user, params: { plant, intial } }))
-    console.log('Raw data[0]:', JSON.stringify(data.data[0]))
+  
     if (!data?.success) {
       throw new ExternalApiError(`User API failed: ${data?.message ?? 'Unknown error'}`)
     }

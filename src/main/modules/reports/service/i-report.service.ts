@@ -8,6 +8,8 @@ export interface IReportService {
     data: PaginationRequestDto,
     shift?: number,
     date?: string,
-    isAnalyse?: number
+    isAnalyse?: number,
+    routeCode?: string,
+    vendorCode?: string
   ): Promise<PaginatedTruckSheetDto>
 }
