@@ -6,6 +6,10 @@ import { CountRow, PagedVendorRows, VendorListRow, VendorRow } from '../../dto/v
 
 const SQL_VENDOR_COLUMNS = `id, dsk_name, dsk_code, vendor_code, mobile_number, route_code, supervisor_emp_id`
 
+const SQL_VENDOR_COLUMNS_WITH_ROUTE = `
+  v.id, v.dsk_name, v.dsk_code, v.vendor_code, v.mobile_number,
+  v.route_code, v.supervisor_emp_id,
+  r.route_name`
 const escapeLike = (value: string): string => value.replace(/[\\%_]/g, '\\$&')
 
 @injectable()
@@ -41,18 +45,19 @@ export class VendorRepo implements IVendorRepo {
     const params: (string | number)[] = []
 
     if (search) {
-      where = 'WHERE (mobile_number LIKE ? OR dsk_name LIKE ? OR dsk_code LIKE ?)'
+      where = 'WHERE (v.mobile_number LIKE ? OR v.dsk_name LIKE ? OR v.dsk_code LIKE ?)'
       const like = `%${escapeLike(search)}%`
       params.push(like, like, like)
     }
 
     const [[countRows], [rows]] = await Promise.all([
-      db.query<CountRow[]>(`SELECT COUNT(*) AS total FROM vendor ${where}`, params),
+      db.query<CountRow[]>(`SELECT COUNT(*) AS total FROM vendor v ${where}`, params),
       db.query<VendorRow[]>(
-        `SELECT ${SQL_VENDOR_COLUMNS}
-           FROM vendor
+        `SELECT ${SQL_VENDOR_COLUMNS_WITH_ROUTE}
+           FROM vendor v
+           LEFT JOIN route r ON r.route_code = v.route_code
            ${where}
-          ORDER BY id ASC
+          ORDER BY v.id ASC
           LIMIT ? OFFSET ?`,
         [...params, limit, offset]
       )

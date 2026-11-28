@@ -65,6 +65,7 @@ export class VendorService implements IVendorService {
           vendorCode: r.vendor_code,
           mobileNumber: r.mobile_number,
           routeCode: r.route_code,
+          routeName: r.route_name,
           supervisorEmpId: r.supervisor_emp_id
         })),
         pagination: {
