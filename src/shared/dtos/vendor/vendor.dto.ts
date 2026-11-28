@@ -7,6 +7,7 @@ export interface VendoreResponseDto {
   vendorCode: string
   mobileNumber?: string | null
   routeCode?: string | null
+  routeName?: string | null
   supervisorEmpId?: string | null
 }
 

@@ -7,6 +7,7 @@ export interface VendorRow extends RowDataPacket {
   vendor_code: string
   mobile_number: string
   route_code: string
+  route_name?: string | null
   supervisor_emp_id: string
 }
 
