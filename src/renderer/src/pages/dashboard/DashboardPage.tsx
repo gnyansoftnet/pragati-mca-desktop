@@ -16,7 +16,7 @@ import type { DashboardCountDto } from '@shared/dtos/master/master.dto'
 export type DashboardTab = 'analyzed' | 'rejected'
 
 export const DashboardPage: React.FC = () => {
-  const { user } = useAuth()
+  const { user, menus } = useAuth()
   const snap = useSerialSnapshot()
   const { shiftOptions, currentShiftId, loadingShifts, getShiftLabel } = useShift(user?.plant)
   const { verifyConnection } = useNetwork()
@@ -60,7 +60,16 @@ export const DashboardPage: React.FC = () => {
     supervisor: '0',
     collection: '0',
     analyze: '0',
-    rejected: '0'
+    rejected: '0',
+    milkColleWeight: '0.0',
+    morningMilkColleWeight: '0.0',
+    eveningMilkColleWeight: '0.0',
+    milkRejWeight: '0',
+    morningMilkRejWeight: '0',
+    eveningMilkRejWeight: '0',
+    milkSample: '0',
+    morningMilkSample: '0',
+    eveningMilkSample: '0'
   })
 
   // Active tab state
@@ -131,19 +140,83 @@ export const DashboardPage: React.FC = () => {
       const item = Array.isArray(res) ? res[0] : (res as any)
       if (item) {
         setCounts({
-          user: String(item.user ?? '0'),
-          vendor: String(item.vendor ?? '0'),
-          route: String(item.route ?? '0'),
-          supervisor: String(item.supervisor ?? '0'),
-          collection: String(item.collection ?? '0'),
-          analyze: String(item.analyze ?? '0'),
-          rejected: String(item.rejected ?? '0')
+          user: item.user ?? '0',
+          vendor: item.vendor ?? '0',
+          route: item.route ?? '0',
+          supervisor: item.supervisor ?? '0',
+          collection: item.collection ?? '0',
+          analyze: item.analyze ?? '0',
+          rejected: item.rejected ?? '0',
+          milkColleWeight: item.milkColleWeight ?? '0.0',
+          morningMilkColleWeight: item.morningMilkColleWeight ?? '0.0',
+          eveningMilkColleWeight: item.eveningMilkColleWeight ?? '0.0',
+          milkRejWeight: item.milkRejWeight ?? '0',
+          morningMilkRejWeight: item.morningMilkRejWeight ?? '0',
+          eveningMilkRejWeight: item.eveningMilkRejWeight ?? '0',
+          milkSample: item.milkSample ?? 0,
+          morningMilkSample: item.morningMilkSample ?? '0',
+          eveningMilkSample: item.eveningMilkSample ?? '0'
         })
       }
     } catch (error) {
       console.error('Failed to load dashboard counts:', error)
     }
   }
+
+  const hasRouteAccess = menus.some((item) => {
+    const isDirectMatch =
+      String(item.pageId) === '4' ||
+      item.title?.trim().toLowerCase() === 'routes master' ||
+      item.path === '/routes'
+    const isChildMatch = item.children?.some(
+      (child) =>
+        String(child.pageId) === '4' ||
+        child.title?.trim().toLowerCase().includes('vendor') ||
+        child.path === '/routes'
+    )
+    return isDirectMatch || isChildMatch
+  })
+
+  const hasVendorAccess = menus.some((item) => {
+  const isDirectMatch =
+    String(item.pageId) === '5' ||
+    item.title?.trim().toLowerCase().includes('vendor') ||
+    item.path === '/vendors'
+  const isChildMatch = item.children?.some(
+    (child) =>
+      String(child.pageId) === '5' ||
+      child.title?.trim().toLowerCase().includes('vendor') ||
+      child.path === '/vendors'
+  )
+  return isDirectMatch || isChildMatch
+})
+
+  const hasAnalyzeAccess = menus.some((item) => {
+    const isDirectMatch =
+      String(item.pageId) === '3' ||
+      item.title?.trim().toLowerCase() === 'analyze' ||
+      item.path === '/analyze'
+    const isChildMatch = item.children?.some(
+      (child) =>
+        String(child.pageId) === '3' ||
+        child.title?.trim().toLowerCase() === 'analyze' ||
+        child.path === '/analyze'
+    )
+    return isDirectMatch || isChildMatch
+  })
+  const hasProcurementAccess = menus.some((item) => {
+    const isDirectMatch =
+      String(item.pageId) === '1' ||
+      item.title?.trim().toLowerCase() === 'procurement collection' ||
+      item.path === '/procurement-collection'
+    const isChildMatch = item.children?.some(
+      (child) =>
+        String(child.pageId) === '1' ||
+        child.title?.trim().toLowerCase() === 'procurement collection' ||
+        child.path === '/procurement-collection'
+    )
+    return isDirectMatch || isChildMatch
+  })
 
   // 2. Fetch today's analyzed milk collections
   const fetchAnalyzedCollections = async (
@@ -326,24 +399,33 @@ export const DashboardPage: React.FC = () => {
             <h5 className="text-[14px] font-semibold text-slate-800 tracking-wider">
               <u>Master Data</u>
             </h5>
-            <div className="flex items-center gap-2">
-              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">
-                Total Routes:
-              </p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">{counts.route}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">
-                Total Vendors:
-              </p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">{counts.vendor}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">
-                Total Users:
-              </p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">{counts.user}</p>
-            </div>
+            {hasRouteAccess && (
+              <div className="flex items-center gap-2">
+                <p className="text-[12px] font-semibold text-slate-400 tracking-wider">
+                  Total Routes:
+                </p>
+
+                <p className="text-[12px] font-bold text-slate-800 uppercase">{counts.route}</p>
+              </div>
+            )}
+
+            {hasVendorAccess && (
+              <div className="flex items-center gap-2">
+                <p className="text-[12px] font-semibold text-slate-400 tracking-wider">
+                  Total Vendors:
+                </p>
+                <p className="text-[12px] font-bold text-slate-800 uppercase">{counts.vendor}</p>
+              </div>
+            )}
+
+            {!hasAnalyzeAccess && !hasProcurementAccess && (
+              <div className="flex items-center gap-2">
+                <p className="text-[12px] font-semibold text-slate-400 tracking-wider">
+                  Total Users:
+                </p>
+                <p className="text-[12px] font-bold text-slate-800 uppercase">{counts.user}</p>
+              </div>
+            )}
           </div>
 
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white flex items-center justify-center shadow-md shadow-primary/25">
@@ -359,15 +441,21 @@ export const DashboardPage: React.FC = () => {
             </h5>
             <div className="flex items-center gap-2">
               <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Total Milk:</p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">145.7kg</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">
+                {Number(counts.milkColleWeight || 0).toFixed(1)} kg
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Morning:</p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">85.3kg</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">
+                {Number(counts.morningMilkColleWeight || 0).toFixed(1)} kg
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Evening:</p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">60.4kg</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">
+                {Number(counts.eveningMilkColleWeight || 0).toFixed(1)} kg
+              </p>
             </div>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-pink-600 to-pink-300 text-white flex items-center justify-center shadow-md shadow-pink-500/20">
@@ -383,15 +471,21 @@ export const DashboardPage: React.FC = () => {
             </h5>
             <div className="flex items-center gap-2">
               <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Total Milk:</p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">14.5kg</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">
+                {Number(counts.milkRejWeight || 0).toFixed(1)} kg
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Morning:</p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">8.3kg</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">
+                {Number(counts.morningMilkRejWeight || 0).toFixed(1)} kg
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Evening:</p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">6.2kg</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">
+                {Number(counts.eveningMilkRejWeight || 0).toFixed(1)} kg
+              </p>
             </div>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-r  from-emerald-600 to-emerald-300 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
@@ -406,16 +500,24 @@ export const DashboardPage: React.FC = () => {
               <u>Todays Samples</u>
             </h5>
             <div className="flex items-center gap-2">
-              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Total Milk:</p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">150</p>
+              <p className="text-[12px] font-semibold text-slate-400 tracking-wider">
+                Total Samples:
+              </p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">
+                {counts.milkSample ?? 0}
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Morning:</p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">80</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">
+                {counts.morningMilkSample ?? 0}
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <p className="text-[12px] font-semibold text-slate-400 tracking-wider">Evening:</p>
-              <p className="text-[12px] font-bold text-slate-800 uppercase">50</p>
+              <p className="text-[12px] font-bold text-slate-800 uppercase">
+                {counts.eveningMilkSample ?? 0}
+              </p>
             </div>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-orange-600 to-orange-300 text-white flex items-center justify-center shadow-md shadow-orange-500/20">
@@ -676,19 +778,19 @@ export const DashboardPage: React.FC = () => {
                     <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
                       {/* <td className="py-2 px-2 font-semibold text-primary">{item.id}</td> */}
                       <td className="py-2 px-2 text-slate-700">
-                      {item.createdAt
-                        ? (() => {
-                            const d = new Date(item.createdAt)
-                            return isNaN(d.getTime())
-                              ? String(item.createdAt)
-                              : d.toLocaleDateString('en-GB', {
-                                  day: '2-digit',
-                                  month: '2-digit',
-                                  year: '2-digit'
-                                })
-                          })()
-                        : ''}
-                    </td>
+                        {item.createdAt
+                          ? (() => {
+                              const d = new Date(item.createdAt)
+                              return isNaN(d.getTime())
+                                ? String(item.createdAt)
+                                : d.toLocaleDateString('en-GB', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: '2-digit'
+                                  })
+                            })()
+                          : ''}
+                      </td>
                       <td className="py-2 px-2">
                         <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-rose-50 text-rose-500 border-rose-200">
                           {item.shiftName}
