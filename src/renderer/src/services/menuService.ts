@@ -71,18 +71,12 @@ export const getFixedMenus = (): DynamicMenuItem[] => [
     title: 'Dashboard',
     path: '/dashboard',
     icon: 'LayoutDashboard',
-    roles: ['admin', 'staff', 'farmer'],
-    category: 'dashboard',
-    order_index: 10
   },
   {
     id: 'fixed-machine-connection',
     title: 'Machine Connection',
     path: '/machine-connection',
     icon: 'MonitorSpeaker',
-    roles: ['admin', 'staff', 'farmer'],
-    category: 'operations',
-    order_index: 20
   }
 ]
 
@@ -122,9 +116,6 @@ export const transformDynamicMenus = (rawPermissions: PermissionDto[]): DynamicM
           title: 'Master',
           path: '',
           icon: 'Users',
-          roles: ['admin', 'staff'],
-          category: 'master',
-          order_index: 50,
           children: []
         }
         dynamicList.push(masterParent)
@@ -149,9 +140,6 @@ export const transformDynamicMenus = (rawPermissions: PermissionDto[]): DynamicM
           title: 'Reports',
           path: '',
           icon: 'FileText',
-          roles: ['admin', 'staff'],
-          category: 'reports',
-          order_index: 60,
           children: []
         }
         dynamicList.push(reportsParent)
@@ -167,9 +155,6 @@ export const transformDynamicMenus = (rawPermissions: PermissionDto[]): DynamicM
       title: rawName,
       path: getRoutePath(rawName),
       icon: item.pageIcon || getDefaultIcon(rawName),
-      roles: ['admin', 'staff', 'farmer'],
-      category: 'operations',
-      order_index: 30 + index
     }
 
     dynamicList.push(standaloneItem)

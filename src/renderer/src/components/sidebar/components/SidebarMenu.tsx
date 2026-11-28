@@ -20,7 +20,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed, onCloseMo
   //   2: true 
   // })
   const [expandedMenus, setExpandedMenus] = useState<Record<string | number, boolean>>({
-    'parent-master': true,
+    'parent-master': false,
     'parent-reports': false
   })
 
