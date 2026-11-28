@@ -1,19 +1,37 @@
 import { inject, injectable } from 'tsyringe'
-import { PasswordService } from './password.service'
+import { PasswordService } from '../password.service'
 import type { PaginatedUsersDto, UserResponseDto } from '@shared/dtos/user/user.dto'
-import { UserRepo } from '../repo/user.repo'
-import { AppError, DatabaseError, ValidationError } from '../../../utils/app-errors'
-import { UserSyncService } from './user-sync.service'
-import { SyncSucess } from '@shared/dtos/sync-success.dto'
 import { PaginationRequestDto } from '@shared/dtos/pagination.dto'
+import { AppError, DatabaseError, ValidationError } from '../../../../utils/app-errors'
+import { IUserService } from '../i-user.service'
+import { TOKENS } from '../../../../core/di/token'
+import type { IUserRepo } from '../../repo/i-user.repo'
+import { PermissionDto } from '@shared/dtos/user/permission.dto'
+import { PermissionRow } from '../../dto/permission.row'
 
 @injectable()
-export class UserService {
+export class UserService implements IUserService {
   constructor(
-    @inject(UserRepo) private readonly userRepo: UserRepo,
-    @inject(PasswordService) private readonly passwordService: PasswordService,
-    @inject(UserSyncService) private readonly userApi: UserSyncService
+    @inject(TOKENS.UserRepo) private readonly userRepo: IUserRepo,
+    @inject(PasswordService) private readonly passwordService: PasswordService
   ) {}
+
+  async getMenu(userId: number): Promise<PermissionDto[]> {
+    try {
+      const data: PermissionRow[] = await this.userRepo.getMenu(userId)
+      return data.map((d) => ({
+        id: d.id,
+        userId: d.user_id,
+        isAccess: d.is_access,
+        pageId: d.page_id,
+        pageName: d.page_name,
+        pageIcon: d.page_icon
+      }))
+    } catch (error: any) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed to ', { cause: error })
+    }
+  }
 
   async login(userName: string, password: string): Promise<UserResponseDto> {
     // validation first, outside the try
@@ -26,17 +44,6 @@ export class UserService {
       // same message for "no user" and "wrong password"
       const valid = user ? await this.passwordService.compare(password, user.password) : false
       if (!user || !valid) throw new ValidationError('Invalid username or password')
-
-      // const payLoad = {
-      //   userCode: user.userCode,
-      //   userId: user.user_id,
-      //   orgId: user.org_id,
-      //   branchId: user.branch_id,
-      //   roleId: user.role_id
-      // }
-
-      // const accessToken = this.tokenService.generateAccessToken(payLoad)
-      // const refreshToken = this.tokenService.generateRefreshToken(payLoad)
 
       return {
         plantName: user.plant_name,
@@ -55,21 +62,6 @@ export class UserService {
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new DatabaseError('Failed to sign in', { cause: error })
-    }
-  }
-
-  async saveUsers(plant: string, intial: string): Promise<SyncSucess> {
-    try {
-      const users = await this.userApi.syncDownUsers(plant, intial)
-      const row = await this.userRepo.saveUsers(users)
-      return {
-        success: Number(row.success),
-        message: row.message,
-        total: Number(row.total)
-      }
-    } catch (error) {
-      if (error instanceof AppError) throw error
-      throw new DatabaseError('Failed to save users', { cause: error })
     }
   }
 

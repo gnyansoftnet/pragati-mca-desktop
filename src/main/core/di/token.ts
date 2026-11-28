@@ -1,4 +1,11 @@
 export const TOKENS = {
+  // user 
+  UserService: Symbol('UserService'),
+  UserRepo: Symbol('UserRepo'),
+  // user sync
+  UserSyncService: Symbol('UserSyncService'),
+  UserSyncRepo: Symbol('UserSyncRepo'),
+
   // vendor
   VendorService: Symbol('VendorService'),
   VendorRepo: Symbol('VendorRepo'),

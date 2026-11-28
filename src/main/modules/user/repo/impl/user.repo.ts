@@ -1,10 +1,9 @@
 import { injectable } from 'tsyringe'
-import { db } from '../../../core/config/database.config'
-import { CountRow, PagedUserRows, SyncUserRow, UserRow } from './user.rows'
-import { OperationAction } from '../../../core/constants/operation-action.enum'
-import { User } from '../dto/user-api-response'
-import { DatabaseError } from '../../../utils/app-errors'
+import { db } from '../../../../core/config/database.config'
+import { CountRow, PagedUserRows, UserRow } from '../../dto/user.rows'
 import { RowDataPacket } from 'mysql2'
+import { IUserRepo } from '../i-user.repo'
+import { PermissionRow } from '../../dto/permission.row'
 
 const SQL_FIND_USER_BY_NAME = `
   SELECT *
@@ -13,7 +12,26 @@ const SQL_FIND_USER_BY_NAME = `
    LIMIT 1`
 
 @injectable()
-export class UserRepo {
+export class UserRepo implements IUserRepo {
+  async getMenu(userId: number): Promise<PermissionRow[]> {
+    const [rows] = await db.query<PermissionRow[]>(
+      `SELECT
+        id,
+        user_id,
+         is_access,
+        page_id,
+        page_name,
+        page_icon
+     FROM desktop_user_permissions
+     WHERE user_id = ?
+       AND d_flag = 0
+       AND is_access = 1
+     ORDER BY page_id ASC`,
+      [userId]
+    )
+    return rows
+  }
+
   async usersExist(): Promise<boolean> {
     const [rows] = await db.query<RowDataPacket[]>(
       `SELECT EXISTS(
@@ -26,18 +44,6 @@ export class UserRepo {
   async findByUserName(userName: string): Promise<UserRow | undefined> {
     const [rows] = await db.execute<UserRow[]>(SQL_FIND_USER_BY_NAME, [userName])
     return rows[0]
-  }
-
-  async saveUsers(items: User[]): Promise<SyncUserRow> {
-    const [result] = await db.query<SyncUserRow[][]>('CALL USP_M_USER_SYNC(?, ?)', [
-      OperationAction.SYNCDOWN,
-      JSON.stringify(items)
-    ])
-
-    const row = result?.[0]?.[0]
-    if (!row) throw new DatabaseError('Route sync returned no result')
-    if (!row.success) throw new DatabaseError(row.message)
-    return row
   }
 
   async getPaginatedUsers(

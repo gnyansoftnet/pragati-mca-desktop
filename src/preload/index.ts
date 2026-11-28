@@ -45,6 +45,7 @@ import {
   WeightSystemDto
 } from '@shared/dtos/master/master.dto'
 import { PeriodicReportDto } from '@shared/dtos/reports/periodic-report.dto'
+import { PermissionDto } from '@shared/dtos/user/permission.dto'
 
 // Custom APIs for renderer
 
@@ -53,10 +54,13 @@ const api = {
   login: (userName: string, password: string): Promise<UserResponseDto> =>
     ipcRenderer.invoke('user:login', userName, password),
   usersExist: (): Promise<boolean> => ipcRenderer.invoke('user:usersExist'),
+  getMenu: (userId: number): Promise<PermissionDto[]> => ipcRenderer.invoke('user:getMenu', userId),
   getPaginatedUsers: (params: PaginationRequestDto): Promise<PaginatedUsersDto> =>
     ipcRenderer.invoke('user:getPaginatedUsers', params),
 
   // ===================================SYNC PROCESS====================================
+  syncUser: (plant: string, intial: string): Promise<SyncSucess> =>
+    ipcRenderer.invoke('user-sync:syncUser', plant, intial),
   syncRoutes: (plant: string, org: string, branch: string): Promise<SyncSucess> =>
     ipcRenderer.invoke('route-sync:syncRoutes', plant, org, branch),
 
@@ -71,9 +75,6 @@ const api = {
 
   syncMilkRejection: (date: string, shift: number): Promise<SyncSucess> =>
     ipcRenderer.invoke('procurement-sync:syncMilkRejection', date, shift),
-
-  syncUser: (plant: string, intial: string): Promise<SyncSucess> =>
-    ipcRenderer.invoke('user:syncUser', plant, intial),
 
   // ==============================ROUTES==================================
   getRoutes: (): Promise<RouteResponseDto[]> => ipcRenderer.invoke('route:getRoutes'),
