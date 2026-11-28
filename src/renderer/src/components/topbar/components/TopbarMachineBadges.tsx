@@ -17,14 +17,14 @@ export const TopbarMachineBadges: React.FC = () => {
   // 1. Check if user has permission for Weight Scale (pageId: 2 or pageName: 'Manual Collection')
   const hasWeightAccess = menus.some((item) => {
     const isDirectMatch =
-      String(item.pageId) === '2' ||
-      item.title?.trim().toLowerCase() === 'manual collection' ||
-      item.path === '/manual-collection'
+      String(item.pageId) === '1' ||
+      item.title?.trim().toLowerCase() === 'procurement collection' ||
+      item.path === '/procurement-collection'
     const isChildMatch = item.children?.some(
       (child) =>
-        String(child.pageId) === '2' ||
-        child.title?.trim().toLowerCase() === 'manual collection' ||
-        child.path === '/manual-collection'
+        String(child.pageId) === '1' ||
+        child.title?.trim().toLowerCase() === 'procurement collection' ||
+        child.path === '/procurement-collection'
     )
     return isDirectMatch || isChildMatch
   })
