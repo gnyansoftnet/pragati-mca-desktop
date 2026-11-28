@@ -40,7 +40,9 @@ export class ReportService implements IReportService {
     data: PaginationRequestDto,
     shift?: number,
     date?: string,
-    isAnalyse?: number
+    isAnalyse?: number,
+    routeCode?: string,
+    vendorCode?: string
   ): Promise<PaginatedTruckSheetDto> {
     const page = Math.max(1, Math.trunc(Number(data.page)) || 1)
     const limit = Math.max(1, Math.trunc(Number(data.limit)) || 10)
@@ -54,7 +56,9 @@ export class ReportService implements IReportService {
         offset,
         shift,
         date,
-        isAnalyse
+        isAnalyse,
+        routeCode,
+        vendorCode
       )
       const totalPages = Math.ceil(total / limit)
       return {

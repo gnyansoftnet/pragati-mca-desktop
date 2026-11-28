@@ -121,9 +121,19 @@ const api = {
     params: PaginationRequestDto,
     shift?: number,
     date?: string,
-    isAnalyse?: number
+    isAnalyse?: number,
+    routeCode?: string,
+    vendorCode?: string
   ): Promise<PaginatedMilkCollectionDto> =>
-    ipcRenderer.invoke('report:getTruckSheetReport', params, shift, date, isAnalyse),
+    ipcRenderer.invoke(
+      'report:getTruckSheetReport',
+      params,
+      shift,
+      date,
+      isAnalyse,
+      routeCode,
+      vendorCode
+    ),
 
   // ==============================MILK COLLECTION===============================
   getPaginatedMilkCollctions: (

@@ -94,7 +94,9 @@ declare global {
         params: PaginationRequestDto,
         shift?: number,
         date?: string,
-        isAnalyse?: number
+        isAnalyse?: number,
+        routeCode?: string,
+        vendorCode?: string
       ) => Promise<PaginatedMilkCollectionDto>
       getPeriodicReport: (fromDate: string, toDate: string) => Promise<PeriodicReportDto[]>
 

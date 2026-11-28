@@ -16,9 +16,11 @@ export function registerReportIpc(): void {
       params: PaginationRequestDto,
       shift?: number,
       date?: string,
-      isAnalyse?: number
+      isAnalyse?: number,
+      routeCode?: string,
+      vendorCode?: string
     ): Promise<PaginatedTruckSheetDto> =>
-      reportService.getTruckSheetReport(params, shift, date, isAnalyse)
+      reportService.getTruckSheetReport(params, shift, date, isAnalyse, routeCode, vendorCode)
   )
   ipcMain.handle(
     'report:getPeriodicReport',

@@ -58,7 +58,9 @@ export class ReportRepo implements IReportRepo {
     offset: number,
     shift?: number,
     date?: string,
-    isAnalyse?: number
+    isAnalyse?: number,
+    routeCode?: string,
+    vendorCode?: string
   ): Promise<TruckSheetPagedRows> {
     let where = 'WHERE m.d_flag = 0'
     const params: (string | number)[] = []
@@ -73,6 +75,14 @@ export class ReportRepo implements IReportRepo {
     if (shift !== undefined && shift !== null && shift > 0) {
       where += ` AND m.shift = ?`
       params.push(shift)
+    }
+    if (routeCode !== undefined && routeCode !== null) {
+      where += ` AND m.root_code = ?`
+      params.push(routeCode)
+    }
+    if (vendorCode !== undefined && vendorCode !== null) {
+      where += ` AND m.vendor_code = ?`
+      params.push(vendorCode)
     }
     if (isAnalyse !== undefined && isAnalyse !== null) {
       where += ` AND m.is_analyse = ?`
