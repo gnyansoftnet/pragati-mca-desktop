@@ -483,7 +483,7 @@ export const DashboardPage: React.FC = () => {
               }`}
             >
               <FileCheck className="w-3.5 h-3.5" />
-              <span>Analyzed ({analyzedPagination.total})</span>
+              <span>Procurement Data ({analyzedPagination.total})</span>
             </button>
 
             <button
@@ -496,7 +496,7 @@ export const DashboardPage: React.FC = () => {
               }`}
             >
               <AlertTriangle className="w-3.5 h-3.5" />
-              <span>Rejected ({rejectedPagination.total})</span>
+              <span>Rejected Data ({rejectedPagination.total})</span>
             </button>
           </div>
         </div>

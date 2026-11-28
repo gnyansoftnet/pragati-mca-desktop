@@ -262,9 +262,9 @@ export const TruckReport: React.FC = () => {
         { content: 'Sample No.', styles: { halign: 'center' as const } },
         { content: 'Date', styles: { halign: 'center' as const } },
         { content: 'Shift', styles: { halign: 'center' as const } },
-        { content: 'DSK Name', styles: { halign: 'left' as const } },
-        { content: 'DSK Code', styles: { halign: 'center' as const } },
         { content: 'Route Name', styles: { halign: 'left' as const } },
+        { content: 'DSK Code', styles: { halign: 'center' as const } },
+        { content: 'DSK Name', styles: { halign: 'left' as const } },
         { content: 'No Of Cans', styles: { halign: 'center' as const } },
         { content: 'Gross Weight', styles: { halign: 'right' as const } },
         { content: 'FAT %', styles: { halign: 'right' as const } },
@@ -289,9 +289,9 @@ export const TruckReport: React.FC = () => {
         String(item.sampleCode ?? ''),
         formatDateDDMMYYYY(item.sampleDate || item.createdAt),
         shiftLetter,
-        item.dskName || '-',
-        item.vendorCode || '-',
         item.rootName || item.rootCode || '-',
+        item.vendorCode || '-',
+        item.dskName || '-',
         String(item.noOfCans ?? 0),
         Number(item.grossWeight || 0).toFixed(1),
         Number(item.fat || 0) > 0 ? Number(item.fat).toFixed(1) : '0.0',
@@ -440,9 +440,9 @@ export const TruckReport: React.FC = () => {
                 <th className="py-2 px-2 whitespace-nowrap">Sample No</th>
                 <th className="py-2 px-2 whitespace-nowrap">Date</th>
                 <th className="py-2 px-2 whitespace-nowrap">Shift</th>
-                <th className="py-2 px-2 whitespace-nowrap">DSK Name</th>
-                <th className="py-2 px-2 whitespace-nowrap">DSK Code</th>
                 <th className="py-2 px-2 whitespace-nowrap">Route Name</th>
+                <th className="py-2 px-2 whitespace-nowrap">DSK Code</th>
+                <th className="py-2 px-2 whitespace-nowrap">DSK Name</th>
                 <th className="py-2 px-2 whitespace-nowrap">No. of Cans</th>
                 <th className="py-2 px-2 whitespace-nowrap">Gross Weight</th>
                 <th className="py-2 px-2 whitespace-nowrap">FAT (%)</th>
@@ -483,11 +483,12 @@ export const TruckReport: React.FC = () => {
                         {item.shiftName || (Number(item.shift) === 1 ? 'Morning' : 'Evening')}
                       </span>
                     </td>
-                    <td className="py-2 px-2 font-semibold text-slate-800">{item.dskName || '-'}</td>
-                    <td className="py-2 px-2 font-semibold text-primary">{item.vendorCode || '-'}</td>
                     <td className="py-2 px-2 font-semibold text-primary max-w-40 truncate">
                       {item.rootName || item.rootCode || '-'}
                     </td>
+                    <td className="py-2 px-2 font-semibold text-primary">{item.vendorCode || '-'}</td>
+                    <td className="py-2 px-2 font-semibold text-slate-800">{item.dskName || '-'}</td>
+                    
                     <td className="py-2 px-2 font-semibold text-primary">{item.noOfCans ?? 0}</td>
                     <td className="py-2 px-2 font-bold text-slate-800">
                       {Number(item.grossWeight || 0).toFixed(1)}

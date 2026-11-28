@@ -349,7 +349,7 @@ export const Analyzed: React.FC = () => {
           onPageSizeChange={(val) => setPageSize(val === 'all' ? 'all' : Number(val))}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
-          searchPlaceholder="Search sample no, route or vendor..."
+          searchPlaceholder="Search sample no, route or dsk..."
         />
 
         {/* Table Following Rearranged Header & Body */}
@@ -362,7 +362,7 @@ export const Analyzed: React.FC = () => {
                 <th className="py-2 px-2 whitespace-nowrap">Shift</th>
                 <th className="py-2 px-2 whitespace-nowrap">Plant Id</th>
                 <th className="py-2 px-2 whitespace-nowrap">Route Name</th>
-                <th className="py-2 px-2 whitespace-nowrap">Vendor Name</th>
+                <th className="py-2 px-2 whitespace-nowrap">DSK Name</th>
                 <th className="py-2 px-2 whitespace-nowrap">Weight System</th>
                 <th className="py-2 px-2 whitespace-nowrap">Cans Type</th>
                 <th className="py-2 px-2 whitespace-nowrap">Milk Type</th>
