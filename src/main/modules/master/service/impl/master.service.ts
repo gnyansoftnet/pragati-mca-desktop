@@ -96,7 +96,16 @@ export class MasterService implements IMasterService {
         supervisor: rows.supervisor,
         collection: rows.collection,
         analyze: rows.analyze,
-        rejected: rows.rejected
+        rejected: rows.rejected,
+        milkColleWeight: rows.milk_colle_weight,
+        morningMilkColleWeight: rows.morning_milk_colle_weight,
+        eveningMilkColleWeight: rows.evening_milk_colle_weight,
+        milkRejWeight: rows.milk_rej_weight,
+        morningMilkRejWeight: rows.morning_milk_rej_weight,
+        eveningMilkRejWeight: rows.evening_milk_rej_weight,
+        milkSample: rows.milk_sample,
+        morningMilkSample: rows.morning_milk_sample,
+        eveningMilkSample: rows.evening_milk_sample
       }
     } catch (error) {
       if (error instanceof AppError) throw error

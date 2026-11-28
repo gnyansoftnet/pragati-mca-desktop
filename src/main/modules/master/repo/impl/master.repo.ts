@@ -131,7 +131,20 @@ export class MasterRepo implements IMasterRepo {
       (SELECT COUNT(*) FROM vendor) AS vendor,
       (SELECT COUNT(*) FROM route) AS route,
       (SELECT COUNT(*) FROM supervisor) AS supervisor,
-      (SELECT COUNT(*) FROM \`user\`) AS user`
+      (SELECT COUNT(*) FROM \`user\`) AS user,
+      
+      (SELECT COALESCE(SUM(net_weight), 0) FROM milk_collection_details WHERE sample_date = CURDATE() AND d_flag = 0) AS milk_colle_weight,
+      (SELECT COALESCE(SUM(net_weight), 0) FROM milk_collection_details WHERE sample_date = CURDATE() AND d_flag = 0 AND shift=1) AS morning_milk_colle_weight,
+      (SELECT COALESCE(SUM(net_weight), 0) FROM milk_collection_details WHERE sample_date = CURDATE() AND d_flag = 0 AND shift=2) AS evening_milk_colle_weight,
+       
+      (SELECT COALESCE(SUM(aprox_quantity), 0) FROM rejection_milk WHERE created_at = CURDATE() AND d_flag = 0) AS milk_rej_weight,
+      (SELECT COALESCE(SUM(aprox_quantity), 0) FROM rejection_milk WHERE created_at = CURDATE() AND d_flag = 0 AND shift=1) AS morning_milk_rej_weight,
+      (SELECT COALESCE(SUM(aprox_quantity), 0) FROM rejection_milk WHERE created_at = CURDATE() AND d_flag = 0 AND shift=2) AS evening_milk_rej_weight,
+
+       (SELECT COUNT(*) FROM milk_collection_details WHERE sample_date = CURDATE() ) AS milk_sample,
+       (SELECT COUNT(*) FROM milk_collection_details WHERE sample_date = CURDATE() AND shift=1) AS morning_milk_sample,
+       (SELECT COUNT(*) FROM milk_collection_details WHERE sample_date = CURDATE() AND shift=2 ) AS evening_milk_sample
+       `
     )
     return rows[0]
   }
