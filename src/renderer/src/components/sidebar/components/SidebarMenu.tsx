@@ -16,8 +16,12 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed, onCloseMo
   const { menus } = useAuth()
 
   // Track expanded parent menus (e.g., Farmers)
+  // const [expandedMenus, setExpandedMenus] = useState<Record<string | number, boolean>>({
+  //   2: true 
+  // })
   const [expandedMenus, setExpandedMenus] = useState<Record<string | number, boolean>>({
-    2: true // Default expand Farmers (id: 2)
+    'parent-master': true,
+    'parent-reports': false
   })
 
   // Auto-expand if current route matches a child
