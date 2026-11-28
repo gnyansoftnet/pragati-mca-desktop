@@ -3,6 +3,7 @@ import { db } from '../../../../core/config/database.config'
 import { CountRow, TruckSheetPagedRows, TruckSheetRow } from '../../dto/truck-sheet.row'
 import { IReportRepo } from '../i-report.repo'
 import { PeriodicReportRow } from '../../dto/periodic-report.row'
+import { RejectionReportPagedRows, RejectionReportRow } from '../../dto/rejection-report.row'
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 
@@ -52,6 +53,69 @@ export class ReportRepo implements IReportRepo {
     const [rows] = await db.query<PeriodicReportRow[]>(sql, [fromDate, toDate])
     return rows
   }
+
+  async getRejectionReport(
+    search: string | undefined,
+    limit: number,
+    offset: number,
+    shift?: number,
+    date?: string,
+    routeCode?: string,
+    vendorCode?: string
+  ): Promise<RejectionReportPagedRows> {
+    let where = 'WHERE rm.d_flag = 0'
+    const params: (string | number)[] = []
+
+    if (date && date.trim() !== '') {
+      if (!DATE_RE.test(date)) {
+        throw new Error('Invalid date format. Use YYYY-MM-DD.')
+      }
+      where += ` AND rm.created_at = ?`
+      params.push(date)
+    }
+    if (shift !== undefined && shift !== null && shift > 0) {
+      where += ` AND rm.shift = ?`
+      params.push(shift)
+    }
+    if (routeCode !== undefined && routeCode !== null) {
+      where += ` AND rm.route = ?`
+      params.push(routeCode)
+    }
+    if (vendorCode !== undefined && vendorCode !== null) {
+      where += ` AND rm.dsk_code = ?`
+      params.push(vendorCode)
+    }
+
+    if (search && search.trim() !== '') {
+      where += ` AND (rm.rejection_code LIKE ? OR rm.dsk_name LIKE ? OR rm.route LIKE ? OR rm.dsk_code LIKE ?)`
+      const like = `%${search.trim()}%`
+      params.push(like, like, like, like)
+    }
+    const [[countRows], [rows]] = await Promise.all([
+      db.query<CountRow[]>(
+        `SELECT COUNT(*) AS total
+          FROM rejection_milk rm
+          ${where}`,
+        params
+      ),
+      db.query<RejectionReportRow[]>(
+        `SELECT rm.*,
+                 r.route_name,
+                 v.dsk_name,
+                 sh.shift_name
+          FROM rejection_milk rm
+          LEFT JOIN route r        ON r.route_code = rm.route
+          LEFT JOIN vendor v       ON v.dsk_code   = rm.dsk_code
+          LEFT JOIN shift sh       ON sh.id        = rm.shift
+          ${where}
+          ORDER BY rm.id ASC
+          LIMIT ? OFFSET ?`,
+        [...params, limit, offset]
+      )
+    ])
+    return { rows, total: Number(countRows[0]?.total ?? 0) }
+  }
+
   async getTruckSheetReport(
     search: string | undefined,
     limit: number,

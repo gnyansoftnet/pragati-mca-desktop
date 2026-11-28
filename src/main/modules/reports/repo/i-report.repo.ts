@@ -1,4 +1,5 @@
 import { PeriodicReportRow } from '../dto/periodic-report.row'
+import { RejectionReportPagedRows } from '../dto/rejection-report.row'
 import { TruckSheetPagedRows } from '../dto/truck-sheet.row'
 
 export interface IReportRepo {
@@ -13,4 +14,13 @@ export interface IReportRepo {
     routeCode?: string,
     vendorCode?: string
   ): Promise<TruckSheetPagedRows>
+  getRejectionReport(
+    search: string | undefined,
+    limit: number,
+    offset: number,
+    shift?: number,
+    date?: string,
+    routeCode?: string,
+    vendorCode?: string
+  ): Promise<RejectionReportPagedRows>
 }

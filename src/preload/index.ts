@@ -46,6 +46,7 @@ import {
 } from '@shared/dtos/master/master.dto'
 import { PeriodicReportDto } from '@shared/dtos/reports/periodic-report.dto'
 import { PermissionDto } from '@shared/dtos/user/permission.dto'
+import { PaginatedRejectionMilkReportDto } from '@shared/dtos/reports/rejection-milk-report.dto'
 
 // Custom APIs for renderer
 
@@ -134,6 +135,14 @@ const api = {
       routeCode,
       vendorCode
     ),
+  getRejectionReport: (
+    params: PaginationRequestDto,
+    shift?: number,
+    date?: string,
+    routeCode?: string,
+    vendorCode?: string
+  ): Promise<PaginatedRejectionMilkReportDto> =>
+    ipcRenderer.invoke('report:getRejectionReport', params, shift, date, routeCode, vendorCode),
 
   // ==============================MILK COLLECTION===============================
   getPaginatedMilkCollctions: (

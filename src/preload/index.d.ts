@@ -44,6 +44,7 @@ import {
   ShiftDto
 } from '@shared/dtos/master/master.dto'
 import { PeriodicReportDto } from '@shared/dtos/reports/periodic-report.dto'
+import { PaginatedRejectionMilkReportDto } from '@shared/dtos/reports/rejection-milk-report.dto'
 
 declare global {
   interface Window {
@@ -98,6 +99,13 @@ declare global {
         routeCode?: string,
         vendorCode?: string
       ) => Promise<PaginatedMilkCollectionDto>
+      getRejectionReport: (
+        params: PaginationRequestDto,
+        shift?: number,
+        date?: string,
+        routeCode?: string,
+        vendorCode?: string
+      ) => Promise<PaginatedRejectionMilkReportDto>
       getPeriodicReport: (fromDate: string, toDate: string) => Promise<PeriodicReportDto[]>
 
       // =========================MILK COLLECTION=========================
