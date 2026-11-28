@@ -10,18 +10,24 @@ import TableToolbar from '@renderer/components/table/TableToolbar'
 import TablePagination from '@renderer/components/table/TablePagination'
 import { useAuth } from '@renderer/context/AuthContext'
 import { useShift } from '@renderer/hooks/useShift'
-import { MilkRejectionResponseDto } from '@shared/dtos/milk-collection/milk-rejection.dto'
+import { RejectionMilkReportDto } from '@shared/dtos/reports/rejection-milk-report.dto'
+import { RouteResponseDto } from '@shared/dtos/route/route.dto'
+import { VendoreResponseDto } from '@shared/dtos/vendor/vendor.dto'
 
 import { RejectionPrintButton } from '@renderer/components/rejectionreport/RejectionPrintButton'
 import { RejectionPdfButton } from '@renderer/components/rejectionreport/RejectionPdfButton'
 
+interface SelectOption {
+  value: string
+  label: string
+}
+
 export const RejectionReport: React.FC = () => {
   const { user } = useAuth()
-  const { shiftOptions, currentShiftId, loadingShifts, getShiftLabel } = useShift(user?.plant)
+  const { shiftOptions, loadingShifts, getShiftLabel } = useShift(user?.plant)
 
-  const shiftOptionsWithAll = [{ value: '', label: 'All Shifts' }, ...shiftOptions]
+  const shiftOptionsWithAll: SelectOption[] = [{ value: '', label: 'All Shifts' }, ...shiftOptions]
 
-  // console.log('shiftOptions', shiftOptions)
   // Format today's date as YYYY-MM-DD
   const getCurrentLocalDate = (): string => {
     const today = new Date()
@@ -55,19 +61,22 @@ export const RejectionReport: React.FC = () => {
   // Filter input states
   const [date, setDate] = useState<string>(getCurrentLocalDate())
   const [shift, setShift] = useState<string>('')
+  const [routeCode, setRouteCode] = useState<string>('')
+  const [vendorCode, setVendorCode] = useState<string>('')
+
+  // Route & Vendor Dropdown Options
+  const [routeOptions, setRouteOptions] = useState<SelectOption[]>([{ value: '', label: 'All Routes' }])
+  const [vendorOptions, setVendorOptions] = useState<SelectOption[]>([{ value: '', label: 'All Vendors' }])
+  const [loadingRoutes, setLoadingRoutes] = useState<boolean>(false)
+  const [loadingVendors, setLoadingVendors] = useState<boolean>(false)
 
   // Applied filter states (locked until user clicks Search)
   const [appliedDate, setAppliedDate] = useState<string>(getCurrentLocalDate())
   const [appliedShift, setAppliedShift] = useState<string>('')
+  const [appliedRouteCode, setAppliedRouteCode] = useState<string>('')
+  const [appliedVendorCode, setAppliedVendorCode] = useState<string>('')
 
-  // useEffect(() => {
-  //   if (currentShiftId) {
-  //     setShift((prev) => prev || currentShiftId)
-  //     setAppliedShift((prev) => prev || currentShiftId)
-  //   }
-  // }, [currentShiftId])
-
-  const [rejections, setRejections] = useState<MilkRejectionResponseDto[]>([])
+  const [rejections, setRejections] = useState<RejectionMilkReportDto[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
   const [pageSize, setPageSize] = useState<number | 'all'>(10)
@@ -81,32 +90,109 @@ export const RejectionReport: React.FC = () => {
     hasPrevPage: false
   })
 
-  // Fetch paginated rejections
+  // 1. Fetch Routes on Component Mount
+  const fetchRoutes = async (): Promise<void> => {
+    try {
+      setLoadingRoutes(true)
+      const res = await window.api.getRoutes()
+      const routeList: RouteResponseDto[] = Array.isArray(res)
+        ? res
+        : Array.isArray((res as any)?.data)
+          ? (res as any).data
+          : []
+
+      const options: SelectOption[] = [
+        { value: '', label: 'All Routes' },
+        ...routeList.map((r) => ({
+          value: String(r.routeCode || r.id),
+          label: `${r.routeCode} - ${r.routeName}`
+        }))
+      ]
+      setRouteOptions(options)
+    } catch (err) {
+      console.error('Failed to fetch routes:', err)
+      setRouteOptions([{ value: '', label: 'All Routes' }])
+    } finally {
+      setLoadingRoutes(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchRoutes()
+  }, [])
+
+  // 2. Fetch Vendors when routeCode changes (filtered by route if routeCode is selected)
+  useEffect(() => {
+    const fetchVendors = async (): Promise<void> => {
+      try {
+        setLoadingVendors(true)
+        setVendorCode('') // Reset vendor when route changes
+        let res: any = []
+        if (routeCode) {
+          res = await window.api.getVendorsByRoute(routeCode)
+        } else {
+          res = await window.api.getVendors()
+        }
+
+        const vendorList: VendoreResponseDto[] = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+            ? res.data
+            : []
+
+        const options: SelectOption[] = [
+          { value: '', label: 'All Vendors' },
+          ...vendorList.map((v) => ({
+            value: String(v.dskCode || v.vendorCode || v.id),
+            label: `${v.dskCode || v.vendorCode} - ${v.dskName}`
+          }))
+        ]
+        setVendorOptions(options)
+      } catch (err) {
+        console.error('Failed to fetch vendors:', err)
+        setVendorOptions([{ value: '', label: 'All Vendors' }])
+      } finally {
+        setLoadingVendors(false)
+      }
+    }
+
+    fetchVendors()
+  }, [routeCode])
+
+  // 3. Fetch Paginated Rejection Report from API
   const fetchPaginatedRejections = async (
     pageNo = pagination.page,
     limitVal = pageSize,
     searchVal = searchQuery,
     selectedShift = appliedShift,
-    selectedDate = appliedDate
+    selectedDate = appliedDate,
+    selectedRoute = appliedRouteCode,
+    selectedVendor = appliedVendorCode
   ) => {
     try {
       setLoading(true)
       const actualLimit = limitVal === 'all' ? 1000000000 : limitVal
-      const response = await window.api.getPaginatedMilkRejections(
+      const shiftNum = selectedShift ? Number(selectedShift) : undefined
+      const routeVal = selectedRoute?.trim() || undefined
+      const vendorVal = selectedVendor?.trim() || undefined
+
+      const response = await window.api.getRejectionReport(
         {
           page: pageNo,
           limit: actualLimit,
           search: searchVal.trim()
         },
-        selectedShift ? Number(selectedShift) : undefined,
-        selectedDate
+        shiftNum,
+        selectedDate,
+        routeVal,
+        vendorVal
       )
 
       if (response) {
-        const dataList = Array.isArray(response.data)
+        const dataList: RejectionMilkReportDto[] = Array.isArray(response.data)
           ? response.data
           : Array.isArray(response)
-            ? response
+            ? (response as any)
             : []
         setRejections(dataList)
 
@@ -115,13 +201,14 @@ export const RejectionReport: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error('Failed to fetch milk rejections:', error)
-      toast.error('Failed to fetch milk rejections.')
+      console.error('Failed to fetch rejection report:', error)
+      toast.error('Failed to fetch rejection report.')
     } finally {
       setLoading(false)
     }
   }
 
+  // Handle Search submit
   const handleSubmitFilter = (e?: React.FormEvent) => {
     if (e) e.preventDefault()
     if (!date) {
@@ -130,16 +217,26 @@ export const RejectionReport: React.FC = () => {
     }
     setAppliedDate(date)
     setAppliedShift(shift)
-    fetchPaginatedRejections(1, pageSize, searchQuery, shift, date)
+    setAppliedRouteCode(routeCode)
+    setAppliedVendorCode(vendorCode)
+    fetchPaginatedRejections(1, pageSize, searchQuery, shift, date, routeCode, vendorCode)
   }
 
-  // Initial load & debounced search
+  // Debounced search & pagination re-fetch
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchPaginatedRejections(1, pageSize, searchQuery, appliedShift, appliedDate)
+      fetchPaginatedRejections(
+        1,
+        pageSize,
+        searchQuery,
+        appliedShift,
+        appliedDate,
+        appliedRouteCode,
+        appliedVendorCode
+      )
     }, 300)
     return () => clearTimeout(timer)
-  }, [searchQuery, pageSize, appliedShift, appliedDate])
+  }, [searchQuery, pageSize, appliedShift, appliedDate, appliedRouteCode, appliedVendorCode])
 
   // Column Totals
   const totals = useMemo(() => {
@@ -192,7 +289,7 @@ export const RejectionReport: React.FC = () => {
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `Rejection_Report_${appliedDate}_Shift_${appliedShift || 'All'}.xls`
+    link.download = `Rejection_Report_${appliedDate}_Shift_${appliedShift || 'All'}${appliedRouteCode ? `_Route_${appliedRouteCode}` : ''}.xls`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -200,7 +297,7 @@ export const RejectionReport: React.FC = () => {
     toast.success('Excel export successfully!')
   }
 
-  // Download PDF (Landscape A4 matching TruckReport letterhead styling)
+  // Download PDF (Landscape A4)
   const handleDownloadPdf = () => {
     if (rejections.length === 0) {
       toast.warn('No records available to download as PDF.')
@@ -238,7 +335,9 @@ export const RejectionReport: React.FC = () => {
             ? getShiftLabel(appliedShift)
             : 'All Shifts'
 
-    const dateHeaderStr = `Date: ${formatDateForDisplay(appliedDate)}    |    Shift: ${shiftLabel}`
+    let dateHeaderStr = `Date: ${formatDateForDisplay(appliedDate)}    |    Shift: ${shiftLabel}`
+    if (appliedRouteCode) dateHeaderStr += `    |    Route: ${appliedRouteCode}`
+    if (appliedVendorCode) dateHeaderStr += `    |    Vendor: ${appliedVendorCode}`
 
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(8.5)
@@ -268,10 +367,10 @@ export const RejectionReport: React.FC = () => {
       formatDateDDMMYYYY(item.createdAt),
       String(item.shiftName || item.shift || ''),
       String(item.plant || ''),
-      String((item as any).routeName || item.route || '-'),
+      String(item.routeName || item.route || '-'),
       String(item.dskCode || '-'),
       String(item.dskName || '-'),
-      String(item.supervisor || '-'),
+      String(item.supervisorName || item.supervisor || '-'),
       String(item.noOfCanes ?? 0),
       Number(item.aproxQuantity || 0).toFixed(1),
       String(item.reason || '-'),
@@ -372,9 +471,9 @@ export const RejectionReport: React.FC = () => {
 
       {/* Main Table Card */}
       <div className="mt-2 p-3 sm:p-4 bg-white rounded-2xl border border-slate-100 shadow-xs">
-        {/* Single Date & Shift Filter Bar */}
+        {/* Date, Shift, Route & Vendor Filter Bar */}
         <CustomForm onSubmit={handleSubmitFilter} className="w-full">
-          <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-3 mb-3 items-end">
+          <div className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-3 mb-3 items-end">
             {/* Date Field */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700">Date</label>
@@ -398,6 +497,38 @@ export const RejectionReport: React.FC = () => {
                 options={shiftOptionsWithAll}
                 placeholder={loadingShifts ? 'Loading shifts...' : 'Select shift...'}
                 disabled={loadingShifts}
+              />
+            </div>
+
+            {/* Route Dropdown */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700">
+                Select Route{' '}
+                {loadingRoutes && <span className="text-slate-400 font-normal">(Loading...)</span>}
+              </label>
+              <CustomForm.CustomSelectSearchField
+                name="routeCode"
+                value={routeCode}
+                onChange={(e: any) => setRouteCode(e.target.value)}
+                options={routeOptions}
+                placeholder={loadingRoutes ? 'Loading routes...' : 'Select route...'}
+                disabled={loadingRoutes}
+              />
+            </div>
+
+            {/* Vendor Dropdown */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700">
+                Select Vendor{' '}
+                {loadingVendors && <span className="text-slate-400 font-normal">(Loading...)</span>}
+              </label>
+              <CustomForm.CustomSelectSearchField
+                name="vendorCode"
+                value={vendorCode}
+                onChange={(e: any) => setVendorCode(e.target.value)}
+                options={vendorOptions}
+                placeholder={loadingVendors ? 'Loading vendors...' : 'Select vendor...'}
+                disabled={loadingVendors}
               />
             </div>
 
@@ -427,7 +558,6 @@ export const RejectionReport: React.FC = () => {
           <table id="rejection-report-table" className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-500/10 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                {/* <th className="py-2 px-2 whitespace-nowrap">ID</th> */}
                 <th className="py-2 px-2 whitespace-nowrap">Date</th>
                 <th className="py-2 px-2 whitespace-nowrap">Shift</th>
                 <th className="py-2 px-2 whitespace-nowrap">Plant Id</th>
@@ -438,28 +568,27 @@ export const RejectionReport: React.FC = () => {
                 <th className="py-2 px-2 whitespace-nowrap">No. of Cans</th>
                 <th className="py-2 px-2 whitespace-nowrap">Approx Qty (LTR)</th>
                 <th className="py-2 px-2 whitespace-nowrap">Reason</th>
-                <th className="py-2 px-2">Action</th>
+                <th className="py-2 px-2 text-center">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
               {loading && (
                 <tr>
-                  <td colSpan={12} className="py-4 text-center text-slate-400 font-medium">
+                  <td colSpan={11} className="py-4 text-center text-slate-400 font-medium">
                     Loading rejections...
                   </td>
                 </tr>
               )}
               {!loading && rejections.length === 0 && (
                 <tr>
-                  <td colSpan={12} className="py-4 text-center text-slate-400 font-medium">
-                    No milk rejections found for the selected date and shift
+                  <td colSpan={11} className="py-4 text-center text-slate-400 font-medium">
+                    No milk rejections found for the selected filters
                   </td>
                 </tr>
               )}
               {!loading &&
                 rejections.map((item, index) => (
                   <tr key={item.id ?? index} className="hover:bg-slate-50/70 transition">
-                    {/* <td className="py-2 px-2 font-semibold text-primary">{item.id}</td> */}
                     <td className="py-2 px-2 text-slate-700">
                       {item.createdAt
                         ? (() => {
@@ -476,17 +605,16 @@ export const RejectionReport: React.FC = () => {
                     </td>
                     <td className="py-2 px-2">
                       <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-rose-50 text-rose-500 border-rose-200">
-                        {item.shiftName}
+                        {item.shiftName || item.shift}
                       </span>
                     </td>
                     <td className="py-2 px-2 font-semibold text-slate-800">{item.plant}</td>
                     <td className="py-2 px-2 font-semibold text-primary">
-                      {(item as any).routeName || item.route}
+                      {item.routeName || item.route}
                     </td>
                     <td className="py-2 px-2 text-slate-700">{item.dskCode}</td>
                     <td className="py-2 px-2 font-semibold text-slate-800">{item.dskName}</td>
-                    <td className="py-2 px-2 text-slate-700">{item.supervisor}</td>
-
+                    <td className="py-2 px-2 text-slate-700">{item.supervisorName || item.supervisor}</td>
                     <td className="py-2 px-2 text-slate-700">{item.noOfCanes}</td>
                     <td className="py-2 px-2 font-bold text-emerald-600">
                       {Number(item.aproxQuantity || 0).toFixed(1)}
@@ -494,8 +622,8 @@ export const RejectionReport: React.FC = () => {
                     <td className="py-2 px-2 text-slate-700">{item.reason}</td>
                     <td className="py-2 px-2 text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <RejectionPrintButton item={item} user={user} />
-                        <RejectionPdfButton item={item} user={user} />
+                        <RejectionPrintButton item={item as any} user={user} />
+                        <RejectionPdfButton item={item as any} user={user} />
                       </div>
                     </td>
                   </tr>
@@ -504,7 +632,7 @@ export const RejectionReport: React.FC = () => {
             {rejections.length > 0 && (
               <tfoot className="bg-slate-50 border-t-2 border-slate-200 text-xs font-bold text-slate-800">
                 <tr>
-                  <td colSpan={8} className="py-2.5 px-2 text-right">
+                  <td colSpan={7} className="py-2.5 px-2 text-right">
                     Total:
                   </td>
                   <td className="py-2.5 px-2 text-slate-700">{totals.totalCans}</td>
@@ -527,7 +655,15 @@ export const RejectionReport: React.FC = () => {
           loading={loading}
           itemName="rejections"
           onPageChange={(newPage) =>
-            fetchPaginatedRejections(newPage, pageSize, searchQuery, appliedShift, appliedDate)
+            fetchPaginatedRejections(
+              newPage,
+              pageSize,
+              searchQuery,
+              appliedShift,
+              appliedDate,
+              appliedRouteCode,
+              appliedVendorCode
+            )
           }
         />
       </div>
