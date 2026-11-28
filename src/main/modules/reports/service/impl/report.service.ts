@@ -6,6 +6,7 @@ import { inject, injectable } from 'tsyringe'
 import { TOKENS } from '../../../../core/di/token'
 import type { IReportRepo } from '../../repo/i-report.repo'
 import { PeriodicReportDto } from '@shared/dtos/reports/periodic-report.dto'
+import { PaginatedRejectionMilkReportDto } from '@shared/dtos/reports/rejection-milk-report.dto'
 
 @injectable()
 export class ReportService implements IReportService {
@@ -13,6 +14,67 @@ export class ReportService implements IReportService {
     @inject(TOKENS.ReportRepo)
     private readonly reportRepo: IReportRepo
   ) {}
+
+  async getRejectionReport(
+    data: PaginationRequestDto,
+    shift?: number,
+    date?: string,
+    routeCode?: string,
+    vendorCode?: string
+  ): Promise<PaginatedRejectionMilkReportDto> {
+    const page = Math.max(1, Math.trunc(Number(data.page)) || 1)
+    const limit = Math.max(1, Math.trunc(Number(data.limit)) || 10)
+    const offset = (page - 1) * limit
+    const search = data.search?.trim() || undefined
+
+    try {
+      const { rows, total } = await this.reportRepo.getRejectionReport(
+        search,
+        limit,
+        offset,
+        shift,
+        date,
+        routeCode,
+        vendorCode
+      )
+      const totalPages = Math.ceil(total / limit)
+      return {
+        data: rows.map((r) => ({
+          id: r.id,
+          aproxQuantity: r.aprox_quantity,
+          dskCode: r.dsk_code,
+          dskName: r.dsk_name,
+          noOfCanes: r.no_of_canes,
+          plant: r.plant,
+          reason: r.reason,
+          rejectionCode: r.rejection_code,
+          route: r.route,
+          shift: r.shift,
+          supervisor: r.supervisor,
+          routeName: r.route_name,
+          shiftName: r.shift_name,
+          supervisorName: r.supervisor_name,
+
+          syncStatus: r.sync_status,
+          syncAt: r.sync_at,
+          createdAt: r.created_at,
+          updatedAt: r.updated_at,
+          dFlag: r.d_flag
+        })),
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages,
+          hasNextPage: page < totalPages,
+          hasPrevPage: page > 1
+        }
+      }
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new DatabaseError('Failed ', { cause: error })
+    }
+  }
 
   async getPeriodicReport(fromDate: string, toDate: string): Promise<PeriodicReportDto[]> {
     try {
