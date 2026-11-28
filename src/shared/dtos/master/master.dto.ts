@@ -35,6 +35,16 @@ export interface DashboardCountDto {
   collection: string
   analyze: string
   rejected: string
+
+  milkColleWeight: string
+  morningMilkColleWeight: string
+  eveningMilkColleWeight: string
+  milkRejWeight: string
+  morningMilkRejWeight: string
+  eveningMilkRejWeight: string
+  milkSample: string
+  morningMilkSample: string
+  eveningMilkSample: string
 }
 export interface LastSampleDateDto {
   last_sample_date: string

@@ -36,6 +36,15 @@ export interface DashboardCountRow extends RowDataPacket {
   collection: string
   analyze: string
   rejected: string
+  milk_colle_weight: string
+  morning_milk_colle_weight: string
+  evening_milk_colle_weight: string
+  milk_rej_weight: string
+  morning_milk_rej_weight: string
+  evening_milk_rej_weight: string  
+  milk_sample:string
+  morning_milk_sample:string
+  evening_milk_sample:string 
 }
 
 export interface LastSampleDateRow extends RowDataPacket {
